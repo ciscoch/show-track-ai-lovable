@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Animal } from "@/types/models";
 import PremiumFeatureBanner from "./PremiumFeatureBanner";
 import { useAppContext } from "@/contexts/AppContext";
-import { Camera, Box3D, Upload, LineChart } from "lucide-react";
+import { Camera, Box, Upload, LineChart } from "lucide-react";
 import { useState } from "react";
 
 type BodyCompositionCardProps = {
@@ -39,7 +38,7 @@ const BodyCompositionCard = ({ animal }: BodyCompositionCardProps) => {
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle className="flex items-center">
-            <Box3D className="h-5 w-5 mr-2 text-accent" />
+            <Box className="h-5 w-5 mr-2 text-accent" />
             Body Composition
           </CardTitle>
           <Badge className="bg-accent">Pro Feature</Badge>
@@ -131,7 +130,7 @@ const BodyCompositionCard = ({ animal }: BodyCompositionCardProps) => {
                 <div className="relative border rounded-md p-2 h-60 bg-muted/20">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center">
-                      <Box3D className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
+                      <Box className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
                       <p className="text-muted-foreground">
                         No 3D scans available.<br />
                         Use LIDAR-enabled device to scan.
@@ -140,7 +139,7 @@ const BodyCompositionCard = ({ animal }: BodyCompositionCardProps) => {
                   </div>
                 </div>
                 <Button className="w-full flex items-center">
-                  <Box3D className="h-4 w-4 mr-2" />
+                  <Box className="h-4 w-4 mr-2" />
                   Start 3D Scan
                 </Button>
               </div>
