@@ -14,7 +14,8 @@ const mockBadges: BadgeType[] = [
     icon: "award",
     earnedAt: "2025-01-15",
     category: "special",
-    type: "gold"
+    type: "gold",
+    year: 2025
   },
   // Weight Tracking Badges
   {
@@ -24,7 +25,8 @@ const mockBadges: BadgeType[] = [
     icon: "trophy",
     earnedAt: "2025-02-10",
     category: "streak",
-    type: "bronze"
+    type: "bronze",
+    year: 2025
   },
   {
     id: "6",
@@ -33,7 +35,8 @@ const mockBadges: BadgeType[] = [
     icon: "trophy",
     earnedAt: "2025-02-17",
     category: "streak",
-    type: "silver"
+    type: "silver",
+    year: 2025
   },
   {
     id: "7",
@@ -42,7 +45,8 @@ const mockBadges: BadgeType[] = [
     icon: "trophy",
     earnedAt: null,
     category: "streak",
-    type: "gold"
+    type: "gold",
+    year: 2025
   },
   // Feed Logging Badges
   {
@@ -52,7 +56,8 @@ const mockBadges: BadgeType[] = [
     icon: "trophy",
     earnedAt: "2025-02-25",
     category: "streak",
-    type: "bronze"
+    type: "bronze",
+    year: 2025
   },
   {
     id: "8",
@@ -61,7 +66,8 @@ const mockBadges: BadgeType[] = [
     icon: "trophy",
     earnedAt: "2025-03-05",
     category: "streak",
-    type: "silver"
+    type: "silver",
+    year: 2025
   },
   {
     id: "9",
@@ -70,7 +76,8 @@ const mockBadges: BadgeType[] = [
     icon: "trophy",
     earnedAt: null,
     category: "streak",
-    type: "gold"
+    type: "gold",
+    year: 2025
   },
   {
     id: "4",
@@ -79,7 +86,8 @@ const mockBadges: BadgeType[] = [
     icon: "trophy",
     earnedAt: "2025-03-31",
     category: "streak",
-    type: "gold"
+    type: "gold",
+    year: 2025
   },
   {
     id: "5",
@@ -88,7 +96,8 @@ const mockBadges: BadgeType[] = [
     icon: "award",
     earnedAt: null,
     category: "achievement",
-    type: "platinum"
+    type: "platinum",
+    year: 2025
   }
 ];
 

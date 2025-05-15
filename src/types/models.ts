@@ -83,6 +83,7 @@ export interface Badge {
   earnedAt: string | null;
   category: "achievement" | "streak" | "participation" | "special";
   type: "bronze" | "silver" | "gold" | "platinum";
+  year?: number; // Added year field to make badges/buckles unique by year
 }
 
 // User Profile Badges

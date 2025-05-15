@@ -46,9 +46,14 @@ const BadgeDisplay = ({ badge, size = "md", showDetails = false }: BadgeDisplayP
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
             <CardTitle className="text-base">{badge.name}</CardTitle>
-            <UiBadge className={cn("capitalize", getBadgeColor(badge.type))}>
-              {badge.type}
-            </UiBadge>
+            <div className="flex items-center gap-1">
+              {badge.year && (
+                <span className="text-xs text-muted-foreground">{badge.year}</span>
+              )}
+              <UiBadge className={cn("capitalize", getBadgeColor(badge.type))}>
+                {badge.type}
+              </UiBadge>
+            </div>
           </div>
           <CardDescription>{badge.category}</CardDescription>
         </CardHeader>
@@ -62,6 +67,7 @@ const BadgeDisplay = ({ badge, size = "md", showDetails = false }: BadgeDisplayP
               {badge.earnedAt && (
                 <p className="text-xs text-muted-foreground mt-1">
                   Earned on {new Date(badge.earnedAt).toLocaleDateString()}
+                  {badge.year ? ` (${badge.year})` : ''}
                 </p>
               )}
             </div>
@@ -78,7 +84,7 @@ const BadgeDisplay = ({ badge, size = "md", showDetails = false }: BadgeDisplayP
   };
 
   return (
-    <div className="relative" title={badge.name}>
+    <div className="relative" title={`${badge.name} ${badge.year ? `(${badge.year})` : ''}`}>
       <div className={cn("rounded-full p-2 bg-primary/10 flex items-center justify-center", 
         sizeClasses[size],
         "border-2", {
@@ -89,6 +95,11 @@ const BadgeDisplay = ({ badge, size = "md", showDetails = false }: BadgeDisplayP
         })}>
         {getBadgeIcon(badge.icon)}
       </div>
+      {badge.year && (
+        <div className="absolute -bottom-1 -right-1 text-xs bg-background rounded-full w-4 h-4 flex items-center justify-center border border-gray-200 font-bold">
+          {String(badge.year).slice(-2)}
+        </div>
+      )}
     </div>
   );
 };

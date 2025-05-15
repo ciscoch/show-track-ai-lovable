@@ -35,7 +35,10 @@ const BadgeNotification = ({ badge, friendName, friendAvatar, onDismiss }: Badge
             <AvatarFallback>{friendName.charAt(0)}</AvatarFallback>
           </Avatar>
           <div>
-            <p className="font-medium">{badge.name}</p>
+            <p className="font-medium">
+              {badge.name}
+              {badge.year && <span className="text-xs ml-1">({badge.year})</span>}
+            </p>
             <p className="text-sm text-muted-foreground">{badge.description}</p>
           </div>
         </div>
