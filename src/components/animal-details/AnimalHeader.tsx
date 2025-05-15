@@ -1,13 +1,14 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeftIcon, PencilIcon, CameraIcon } from "lucide-react";
+import { ArrowLeftIcon, PencilIcon, CameraIcon, CheckIcon, XIcon } from "lucide-react";
 import { Animal } from "@/types/models";
 import { calculateAge } from "@/lib/utils";
 import { useAppContext } from "@/contexts/AppContext";
 import ImageUploadButton from "@/components/ImageUploadButton";
+import { Input } from "@/components/ui/input";
 
 interface AnimalHeaderProps {
   animal: Animal;
@@ -16,6 +17,8 @@ interface AnimalHeaderProps {
 const AnimalHeader = ({ animal }: AnimalHeaderProps) => {
   const navigate = useNavigate();
   const { updateAnimal } = useAppContext();
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [animalName, setAnimalName] = useState(animal.name);
   
   const handleEditAnimal = () => {
     navigate(`/animal/${animal.id}/edit`);
@@ -23,6 +26,28 @@ const AnimalHeader = ({ animal }: AnimalHeaderProps) => {
   
   const handleBack = () => {
     navigate('/');
+  };
+
+  const startEditingName = () => {
+    setIsEditingName(true);
+    setAnimalName(animal.name);
+  };
+
+  const saveAnimalName = () => {
+    const trimmedName = animalName.trim();
+    if (trimmedName && trimmedName !== animal.name) {
+      const updatedAnimal = {
+        ...animal,
+        name: trimmedName
+      };
+      updateAnimal(updatedAnimal);
+    }
+    setIsEditingName(false);
+  };
+
+  const cancelEditingName = () => {
+    setIsEditingName(false);
+    setAnimalName(animal.name);
   };
 
   const handleImageUpload = async (file: File) => {
@@ -88,7 +113,45 @@ const AnimalHeader = ({ animal }: AnimalHeaderProps) => {
             
             <div className="flex-1">
               <div className="flex items-center gap-3">
-                <h1 className="text-3xl font-bold">{animal.name}</h1>
+                {isEditingName ? (
+                  <div className="flex items-center gap-2">
+                    <Input 
+                      value={animalName}
+                      onChange={(e) => setAnimalName(e.target.value)}
+                      className="text-xl font-bold h-auto py-1 max-w-[200px]"
+                      autoFocus
+                    />
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      onClick={saveAnimalName}
+                      className="h-8 w-8"
+                    >
+                      <CheckIcon className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      onClick={cancelEditingName}
+                      className="h-8 w-8"
+                    >
+                      <XIcon className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <h1 className="text-3xl font-bold">{animal.name}</h1>
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      onClick={startEditingName}
+                      className="h-8 w-8"
+                      title="Edit name"
+                    >
+                      <PencilIcon className="h-4 w-4" />
+                    </Button>
+                  </>
+                )}
                 <Badge>
                   {animal.species.charAt(0).toUpperCase() + animal.species.slice(1)}
                 </Badge>
@@ -97,6 +160,7 @@ const AnimalHeader = ({ animal }: AnimalHeaderProps) => {
                   size="icon"
                   onClick={handleEditAnimal}
                   className="h-8 w-8"
+                  title="Edit animal details"
                 >
                   <PencilIcon className="h-4 w-4" />
                 </Button>
