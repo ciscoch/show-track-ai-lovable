@@ -24,6 +24,9 @@ const PageHeader = ({ user }: PageHeaderProps) => {
         <div>
           <h1 className="text-4xl font-bold">ShowTrack AI</h1>
           <p className="text-muted-foreground">Your livestock show management assistant</p>
+          <p className="text-sm font-medium text-primary-foreground/80 mt-1 italic">
+            "Measure More. Guess Less. Win Bigger."
+          </p>
         </div>
       </div>
       
