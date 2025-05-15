@@ -67,6 +67,11 @@ const ExpensesPage = () => {
   const isProOrElite = userSubscription.level === "pro" || userSubscription.level === "elite";
   const isElite = userSubscription.level === "elite";
   
+  const handleUpgrade = () => {
+    // Redirect to subscription page
+    window.location.href = '/subscription';
+  };
+  
   return (
     <MainLayout title="Expenses Tracker">
       <div className="flex flex-col md:flex-row justify-between mb-6 gap-4">
@@ -235,8 +240,8 @@ const ExpensesPage = () => {
               <PremiumFeatureBanner 
                 title="Advanced Expense Reporting"
                 description="Upgrade to Pro or Elite for advanced expense reporting including charts, projections, and more detailed analysis."
-                currentLevel={userSubscription.level}
                 requiredLevel="pro"
+                onUpgrade={handleUpgrade}
               />
             </div>
           )}
@@ -285,8 +290,8 @@ const ExpensesPage = () => {
                 <PremiumFeatureBanner 
                   title="Elite Tax Features"
                   description="Upgrade to Elite for advanced tax forms and summaries that can be directly used for filing."
-                  currentLevel={userSubscription.level}
                   requiredLevel="elite"
+                  onUpgrade={handleUpgrade}
                 />
               )}
             </div>
@@ -294,8 +299,8 @@ const ExpensesPage = () => {
             <PremiumFeatureBanner 
               title="Tax Reporting"
               description="Upgrade to Pro or Elite to access tax reporting features, including deduction summaries and exportable reports."
-              currentLevel={userSubscription.level}
               requiredLevel="pro"
+              onUpgrade={handleUpgrade}
             />
           )}
         </TabsContent>

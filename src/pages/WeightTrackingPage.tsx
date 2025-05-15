@@ -71,6 +71,11 @@ const WeightTrackingPage = () => {
     return `${days} days`;
   };
   
+  const handleUpgrade = () => {
+    // Redirect to subscription page
+    window.location.href = '/subscription';
+  };
+  
   return (
     <MainLayout title="Weight Tracking">
       <Tabs defaultValue="overview" className="w-full mt-8">
@@ -212,7 +217,6 @@ const WeightTrackingPage = () => {
                   <WeightChart 
                     weights={weights} 
                     animalId={animal.id}
-                    height={200}
                   />
                   <div className="mt-4 text-center">
                     <Button 
@@ -232,8 +236,8 @@ const WeightTrackingPage = () => {
           <PremiumFeatureBanner 
             title="Advanced Weight Trend Analysis" 
             description="Upgrade to access advanced weight trend analysis, including growth projections and comparison to breed standards."
-            currentLevel={userSubscription.level}
             requiredLevel="pro"
+            onUpgrade={handleUpgrade}
           />
         </TabsContent>
         
@@ -241,8 +245,8 @@ const WeightTrackingPage = () => {
           <PremiumFeatureBanner 
             title="AI Weight Estimation & Analysis" 
             description="Upload photos of your animal and our AI will estimate weight and body composition."
-            currentLevel={userSubscription.level}
             requiredLevel="pro"
+            onUpgrade={handleUpgrade}
           />
         </TabsContent>
       </Tabs>

@@ -6,17 +6,22 @@ import { format } from 'date-fns';
 
 type ExpensesTableProps = {
   expenses: ExpenseEntry[];
-  animalId: string;
+  animalId?: string;
 };
 
 const ExpensesTable = ({ expenses, animalId }: ExpensesTableProps) => {
-  // Filter expenses for this animal
-  const animalExpenses = expenses
-    .filter(entry => entry.animalId === animalId)
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  // Filter expenses for this animal if animalId is provided, otherwise show all
+  const filteredExpenses = animalId 
+    ? expenses.filter(entry => entry.animalId === animalId)
+    : expenses;
+    
+  // Sort by date (newest first)
+  const sortedExpenses = [...filteredExpenses].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
   
   // Calculate total spent
-  const totalSpent = animalExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+  const totalSpent = sortedExpenses.reduce((sum, expense) => sum + expense.amount, 0);
   
   // Format category for display
   const formatCategory = (category: string) => {
@@ -37,7 +42,7 @@ const ExpensesTable = ({ expenses, animalId }: ExpensesTableProps) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {animalExpenses.map((expense) => (
+          {sortedExpenses.map((expense) => (
             <TableRow key={expense.id}>
               <TableCell>{format(new Date(expense.date), 'MM/dd/yyyy')}</TableCell>
               <TableCell>

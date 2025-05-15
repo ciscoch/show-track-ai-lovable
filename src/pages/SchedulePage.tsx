@@ -95,6 +95,11 @@ const SchedulePage = () => {
     }
   };
   
+  const handleUpgrade = () => {
+    // Redirect to subscription page
+    window.location.href = '/subscription';
+  };
+  
   return (
     <MainLayout title="Show Schedule">
       <div className="flex flex-col md:flex-row justify-between mb-6 gap-4">
@@ -263,8 +268,8 @@ const SchedulePage = () => {
             <PremiumFeatureBanner 
               title="Advanced Schedule Management"
               description="Upgrade to Pro or Elite for reminders, show readiness tracking, and automatic progress tracking for your animals."
-              currentLevel={userSubscription.level}
               requiredLevel="pro"
+              onUpgrade={handleUpgrade}
             />
           )}
         </div>

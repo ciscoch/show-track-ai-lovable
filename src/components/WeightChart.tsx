@@ -9,9 +9,10 @@ type WeightChartProps = {
   animalId: string;
   targetWeight?: number;
   showFullHistory?: boolean;
+  height?: number;
 };
 
-const WeightChart = ({ weights, animalId, targetWeight, showFullHistory = false }: WeightChartProps) => {
+const WeightChart = ({ weights, animalId, targetWeight, showFullHistory = false, height }: WeightChartProps) => {
   // Filter weights for this animal
   const animalWeights = weights
     .filter(entry => entry.animalId === animalId)
@@ -59,6 +60,9 @@ const WeightChart = ({ weights, animalId, targetWeight, showFullHistory = false 
     avgDailyGain = parseFloat((totalGain / totalDays).toFixed(2));
   }
   
+  // Set chart height based on prop or default
+  const chartHeight = height || '80%';
+  
   return (
     <Card className="w-full">
       <CardHeader>
@@ -66,7 +70,7 @@ const WeightChart = ({ weights, animalId, targetWeight, showFullHistory = false 
         <CardDescription>Track weight progress over time</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-64 md:h-80">
+        <div className={typeof chartHeight === 'number' ? `h-${chartHeight}` : "h-64 md:h-80"}>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={chartData}

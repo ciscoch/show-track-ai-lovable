@@ -59,6 +59,11 @@ const JournalPage = () => {
   
   const showAdvancedJournaling = userSubscription.level === "pro" || userSubscription.level === "elite";
   
+  const handleUpgrade = () => {
+    // Redirect to subscription page
+    window.location.href = '/subscription';
+  };
+  
   return (
     <MainLayout title="Journal Entries">
       <div className="flex flex-col md:flex-row justify-between mb-6 gap-4">
@@ -117,21 +122,24 @@ const JournalPage = () => {
         <PremiumFeatureBanner
           title="Advanced Journaling"
           description="Upgrade to Pro to access advanced journaling features including AI analysis, automatic tagging, and mood tracking insights."
-          currentLevel={userSubscription.level}
           requiredLevel="pro"
+          onUpgrade={handleUpgrade}
           className="mb-6"
         />
       )}
       
       <div className="space-y-6">
         {sortedJournals.length > 0 ? (
-          sortedJournals.map(entry => (
-            <JournalEntry 
-              key={entry.id} 
-              entry={entry}
-              animalName={animals.find(a => a.id === entry.animalId)?.name || "Unknown"}
-            />
-          ))
+          sortedJournals.map(entry => {
+            const animal = animals.find(a => a.id === entry.animalId);
+            return (
+              <JournalEntry 
+                key={entry.id} 
+                entry={entry}
+                animalName={animal?.name || "Unknown"}
+              />
+            );
+          })
         ) : (
           <div className="text-center py-12 border rounded-md border-dashed">
             {searchTerm || selectedAnimalId || selectedTags.length > 0 ? (

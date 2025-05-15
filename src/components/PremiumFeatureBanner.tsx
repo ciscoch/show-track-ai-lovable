@@ -7,25 +7,35 @@ import { LockIcon } from "lucide-react";
 type PremiumFeatureBannerProps = {
   title: string;
   description: string;
-  requiredTier: 'pro' | 'elite';
-  onUpgrade: () => void;
+  requiredLevel: 'pro' | 'elite';
+  onUpgrade?: () => void;
+  currentLevel?: 'free' | 'pro' | 'elite';
+  className?: string;
 };
 
 const PremiumFeatureBanner = ({ 
   title, 
   description, 
-  requiredTier, 
-  onUpgrade 
+  requiredLevel, 
+  onUpgrade,
+  currentLevel = 'free',
+  className = ''
 }: PremiumFeatureBannerProps) => {
-  const tierStyle = requiredTier === 'pro' 
+  const tierStyle = requiredLevel === 'pro' 
     ? "bg-accent text-accent-foreground" 
     : "bg-primary text-primary-foreground";
   
+  const handleUpgrade = () => {
+    if (onUpgrade) {
+      onUpgrade();
+    }
+  };
+  
   return (
-    <Alert className="relative border-2 border-dashed">
+    <Alert className={`relative border-2 border-dashed ${className}`}>
       <div className="absolute -top-3 right-4">
         <Badge className={tierStyle}>
-          {requiredTier.charAt(0).toUpperCase() + requiredTier.slice(1)} Feature
+          {requiredLevel.charAt(0).toUpperCase() + requiredLevel.slice(1)} Feature
         </Badge>
       </div>
       <LockIcon className="h-4 w-4" />
@@ -33,10 +43,10 @@ const PremiumFeatureBanner = ({
       <AlertDescription className="mt-2 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <span>{description}</span>
         <Button 
-          className={requiredTier === 'pro' ? "bg-accent hover:bg-accent/90" : ""}
-          onClick={onUpgrade}
+          className={requiredLevel === 'pro' ? "bg-accent hover:bg-accent/90" : ""}
+          onClick={handleUpgrade}
         >
-          Upgrade to {requiredTier.charAt(0).toUpperCase() + requiredTier.slice(1)}
+          Upgrade to {requiredLevel.charAt(0).toUpperCase() + requiredLevel.slice(1)}
         </Button>
       </AlertDescription>
     </Alert>
