@@ -1,71 +1,116 @@
 
-import { ExpenseEntry } from "@/types/models";
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { format } from 'date-fns';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Expense } from "@/types/models";
+import { useAppContext } from "@/contexts/AppContext";
+import { format } from "date-fns";
+import { Edit2Icon, Trash2Icon, Image } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useState } from "react";
 
-type ExpensesTableProps = {
-  expenses: ExpenseEntry[];
-  animalId?: string;
-};
+interface ExpensesTableProps {
+  expenses: Expense[];
+}
 
-const ExpensesTable = ({ expenses, animalId }: ExpensesTableProps) => {
-  // Filter expenses for this animal if animalId is provided, otherwise show all
-  const filteredExpenses = animalId 
-    ? expenses.filter(entry => entry.animalId === animalId)
-    : expenses;
-    
-  // Sort by date (newest first)
-  const sortedExpenses = [...filteredExpenses].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-  );
-  
-  // Calculate total spent
-  const totalSpent = sortedExpenses.reduce((sum, expense) => sum + expense.amount, 0);
-  
-  // Format category for display
-  const formatCategory = (category: string) => {
-    return category.charAt(0).toUpperCase() + category.slice(1);
+const ExpensesTable = ({ expenses }: ExpensesTableProps) => {
+  const { deleteExpenseEntry, animals } = useAppContext();
+  const [viewingReceipt, setViewingReceipt] = useState<Expense | null>(null);
+
+  const getAnimalName = (animalId: string) => {
+    const animal = animals.find((a) => a.id === animalId);
+    return animal ? animal.name : "Unknown";
   };
-  
+
+  const handleDelete = (id: string) => {
+    if (window.confirm("Are you sure you want to delete this expense?")) {
+      deleteExpenseEntry(id);
+    }
+  };
+
   return (
-    <div className="w-full">
-      <Table>
-        <TableCaption>Expense records for your animal</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Date</TableHead>
-            <TableHead>Category</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead className="text-right">Amount</TableHead>
-            <TableHead className="text-right">Tax Deductible</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {sortedExpenses.map((expense) => (
-            <TableRow key={expense.id}>
-              <TableCell>{format(new Date(expense.date), 'MM/dd/yyyy')}</TableCell>
-              <TableCell>
-                <Badge variant="outline">{formatCategory(expense.category)}</Badge>
-              </TableCell>
-              <TableCell>{expense.description}</TableCell>
-              <TableCell className="text-right">${expense.amount.toFixed(2)}</TableCell>
-              <TableCell className="text-right">
-                {expense.taxDeductible ? 
-                  <Badge className="bg-primary">Yes</Badge> : 
-                  <Badge variant="outline">No</Badge>
-                }
-              </TableCell>
+    <>
+      <div className="border rounded-md">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Date</TableHead>
+              <TableHead>Animal</TableHead>
+              <TableHead>Category</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead className="text-right">Amount</TableHead>
+              <TableHead className="text-center">Receipt</TableHead>
+              <TableHead></TableHead>
             </TableRow>
-          ))}
-          <TableRow className="font-bold">
-            <TableCell colSpan={3} className="text-right">Total:</TableCell>
-            <TableCell className="text-right">${totalSpent.toFixed(2)}</TableCell>
-            <TableCell></TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </div>
+          </TableHeader>
+          <TableBody>
+            {expenses.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={7} className="text-center py-4">
+                  No expenses found. Add an expense to get started.
+                </TableCell>
+              </TableRow>
+            ) : (
+              expenses.map((expense) => (
+                <TableRow key={expense.id}>
+                  <TableCell>{format(new Date(expense.date), "PP")}</TableCell>
+                  <TableCell>{getAnimalName(expense.animalId)}</TableCell>
+                  <TableCell className="capitalize">{expense.category}</TableCell>
+                  <TableCell>{expense.description}</TableCell>
+                  <TableCell className="text-right">${expense.amount.toFixed(2)}</TableCell>
+                  <TableCell className="text-center">
+                    {expense.receiptImageUrl && (
+                      <Button 
+                        variant="ghost" 
+                        size="icon"
+                        onClick={() => setViewingReceipt(expense)}
+                      >
+                        <Image className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-2">
+                      <Button variant="ghost" size="icon">
+                        <Edit2Icon className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleDelete(expense.id)}
+                      >
+                        <Trash2Icon className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
+      
+      <Dialog open={!!viewingReceipt} onOpenChange={() => setViewingReceipt(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Receipt - {viewingReceipt?.description}</DialogTitle>
+          </DialogHeader>
+          <div className="flex items-center justify-center p-2">
+            {viewingReceipt?.receiptImageUrl && (
+              <img
+                src={viewingReceipt.receiptImageUrl}
+                alt="Receipt"
+                className="max-h-[70vh] object-contain"
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

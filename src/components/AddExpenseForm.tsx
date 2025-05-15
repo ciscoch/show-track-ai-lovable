@@ -24,7 +24,7 @@ import { useAppContext } from "@/contexts/AppContext";
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Camera, Image } from "lucide-react";
 import { v4 as uuidv4 } from 'uuid';
 
 const formSchema = z.object({
@@ -34,6 +34,7 @@ const formSchema = z.object({
   category: z.enum(["feed", "medicine", "supplies", "entry", "travel", "other"]),
   description: z.string().min(1, "Description is required"),
   taxDeductible: z.boolean().default(true),
+  receiptImage: z.instanceof(File).optional(),
 });
 
 interface AddExpenseFormProps {
@@ -44,6 +45,7 @@ interface AddExpenseFormProps {
 const AddExpenseForm = ({ initialAnimalId, onSuccess }: AddExpenseFormProps) => {
   const { animals, addExpenseEntry } = useAppContext();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -57,6 +59,20 @@ const AddExpenseForm = ({ initialAnimalId, onSuccess }: AddExpenseFormProps) => 
     },
   });
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      form.setValue("receiptImage", file);
+      const fileReader = new FileReader();
+      fileReader.onload = (e) => {
+        if (e.target?.result) {
+          setPreviewUrl(e.target.result as string);
+        }
+      };
+      fileReader.readAsDataURL(file);
+    }
+  };
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
     
@@ -69,6 +85,7 @@ const AddExpenseForm = ({ initialAnimalId, onSuccess }: AddExpenseFormProps) => 
         category: values.category,
         description: values.description,
         taxDeductible: values.taxDeductible,
+        receiptImageUrl: previewUrl || null, // Store the image data URL
       };
       
       addExpenseEntry(newEntry);
@@ -86,6 +103,7 @@ const AddExpenseForm = ({ initialAnimalId, onSuccess }: AddExpenseFormProps) => 
         description: "",
         taxDeductible: true,
       });
+      setPreviewUrl(null);
       
       if (onSuccess) {
         onSuccess();
@@ -255,6 +273,66 @@ const AddExpenseForm = ({ initialAnimalId, onSuccess }: AddExpenseFormProps) => 
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel>Tax Deductible</FormLabel>
+              </div>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="receiptImage"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Receipt Image</FormLabel>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => document.getElementById('receipt-upload')?.click()}
+                    >
+                      <Camera className="h-4 w-4 mr-2" />
+                      Take Photo
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => document.getElementById('receipt-upload')?.click()}
+                    >
+                      <Image className="h-4 w-4 mr-2" />
+                      Upload Image
+                    </Button>
+                  </div>
+                  <Input
+                    id="receipt-upload"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleFileChange}
+                    ref={field.ref}
+                  />
+                  <FormMessage />
+                </div>
+                <div>
+                  {previewUrl ? (
+                    <div className="border rounded-md overflow-hidden h-28">
+                      <img 
+                        src={previewUrl} 
+                        alt="Receipt preview" 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="border rounded-md p-4 flex items-center justify-center h-28 bg-muted/20">
+                      <p className="text-sm text-muted-foreground text-center">
+                        No receipt image selected
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             </FormItem>
           )}
