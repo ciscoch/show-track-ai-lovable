@@ -1,4 +1,3 @@
-
 export interface Animal {
   id: string;
   name: string;
@@ -75,6 +74,25 @@ export interface Friend {
   addedAt: string;
 }
 
+// New Badge interface
+export interface Badge {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  earnedAt: string | null;
+  category: "achievement" | "streak" | "participation" | "special";
+  type: "bronze" | "silver" | "gold" | "platinum";
+}
+
+// User Profile Badges
+export interface UserBadge {
+  badgeId: string;
+  userId: string;
+  earnedAt: string;
+  sharedWith: string[]; // Array of friend IDs who were notified
+}
+
 // Additional types used in the app
 export interface User {
   id: string;
@@ -83,6 +101,12 @@ export interface User {
   lastName: string;
   subscriptionLevel: "free" | "pro" | "elite";
   subscriptionEndDate?: string; // Added subscriptionEndDate property
+  badges?: UserBadge[]; // Added badges property
+  streaks?: {
+    feedLogging?: number;
+    weightLogging?: number;
+    expenseTracking?: number;
+  };
   createdAt: string;
 }
 

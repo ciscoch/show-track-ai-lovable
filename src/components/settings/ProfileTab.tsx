@@ -1,18 +1,43 @@
 
 import React, { useState } from "react";
-import { User } from "@/types/models";
+import { User, Badge } from "@/types/models";
 import EmailVerificationModal from "./EmailVerificationModal";
 import ProfileForm from "./ProfileForm";
 import DeleteAccountSection from "./DeleteAccountSection";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import BadgeDisplay from "../badges/BadgeDisplay";
 
 interface ProfileTabProps {
   user: User | null;
 }
 
+// Mock badges for the user
+const mockUserBadges: Badge[] = [
+  {
+    id: "1",
+    name: "Early Adopter",
+    description: "One of the first users to join Stock Show Manager",
+    icon: "award",
+    earnedAt: "2025-01-15",
+    category: "special",
+    type: "gold"
+  },
+  {
+    id: "2",
+    name: "Weight Tracking Streak - 7 Days",
+    description: "Logged animal weights for 7 consecutive days",
+    icon: "trophy",
+    earnedAt: "2025-02-10",
+    category: "streak",
+    type: "bronze"
+  }
+];
+
 const ProfileTab = ({ user }: ProfileTabProps) => {
   const [emailVerified, setEmailVerified] = useState(true);
   const [isEmailVerificationOpen, setIsEmailVerificationOpen] = useState(false);
   const [newEmail, setNewEmail] = useState("");
+  const [userBadges] = useState<Badge[]>(mockUserBadges);
   
   const handleEmailChange = (email: string) => {
     setNewEmail(email);
@@ -32,6 +57,26 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
         emailVerified={emailVerified}
         onEmailChange={handleEmailChange}
       />
+      
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle>My Badges</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="flex flex-wrap gap-3">
+              {userBadges.map(badge => (
+                <BadgeDisplay key={badge.id} badge={badge} size="md" />
+              ))}
+            </div>
+            <div className="flex justify-end">
+              <a href="/friends?tab=badges" className="text-sm text-primary hover:underline">
+                View all badges
+              </a>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
       
       <DeleteAccountSection />
       

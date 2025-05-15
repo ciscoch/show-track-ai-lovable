@@ -37,6 +37,13 @@ const NotificationsTab = () => {
       description: "Receive notifications about new features and updates",
       enabled: true,
     },
+    // Add the new badge notification setting
+    {
+      id: "friend-badges",
+      title: "Friend Badge Notifications",
+      description: "Be notified when friends earn new badges",
+      enabled: true,
+    },
   ]);
 
   const toggleNotification = (id: string) => {
@@ -103,6 +110,10 @@ const NotificationsTab = () => {
             <div className="flex items-center justify-between">
               <label htmlFor="immediate-alerts" className="text-sm font-medium">Immediate Important Alerts</label>
               <Switch id="immediate-alerts" defaultChecked />
+            </div>
+            <div className="flex items-center justify-between">
+              <label htmlFor="badge-alerts" className="text-sm font-medium">Badge Achievement Alerts</label>
+              <Switch id="badge-alerts" defaultChecked />
             </div>
           </div>
         </CardContent>
