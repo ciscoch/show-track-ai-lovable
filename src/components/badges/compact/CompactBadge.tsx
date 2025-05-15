@@ -14,6 +14,7 @@ interface CompactBadgeProps {
 const CompactBadge = ({ badge, size }: CompactBadgeProps) => {
   const isGlowUpBuckle = badge.category === "glow-up";
   const classes = getSizeClasses(size);
+  const hasImage = 'imageUrl' in badge && badge.imageUrl;
   
   return (
     <div 
@@ -40,21 +41,29 @@ const CompactBadge = ({ badge, size }: CompactBadgeProps) => {
           }
         )}></div>
         
-        {/* Badge icon */}
+        {/* Badge icon or image */}
         <div className={cn(
           "absolute inset-0 rounded-full flex items-center justify-center z-10",
           {
-            "bg-primary/10": !isGlowUpBuckle,
-            "bg-gradient-to-br from-gray-300 to-gray-400": isGlowUpBuckle
+            "bg-primary/10": !isGlowUpBuckle && !hasImage,
+            "bg-gradient-to-br from-gray-300 to-gray-400": isGlowUpBuckle && !hasImage
           }
         )}>
-          <BadgeIcon 
-            icon={badge.icon} 
-            className={cn(
-              classes.iconSize,
-              isGlowUpBuckle && "text-yellow-500"
-            )} 
-          />
+          {hasImage ? (
+            <img 
+              src={badge.imageUrl} 
+              alt={badge.name}
+              className="w-full h-full object-cover rounded-full" 
+            />
+          ) : (
+            <BadgeIcon 
+              icon={badge.icon} 
+              className={cn(
+                classes.iconSize,
+                isGlowUpBuckle && "text-yellow-500"
+              )} 
+            />
+          )}
         </div>
         
         {/* Rodeo buckle with year - enhanced for glow-up */}

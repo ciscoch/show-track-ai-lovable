@@ -23,6 +23,9 @@ const LegacyBadgeAdapter = ({ badgeIds = [], user }: LegacyBadgeAdapterProps) =>
         const legacyBadge = badgeList.find((b: any) => b.id === id);
         if (!legacyBadge) return null;
         
+        // Extract image filename from the path for proper display
+        const imageUrl = legacyBadge.image;
+        
         return {
           id: legacyBadge.id,
           name: legacyBadge.title,
@@ -31,7 +34,8 @@ const LegacyBadgeAdapter = ({ badgeIds = [], user }: LegacyBadgeAdapterProps) =>
           earnedAt: new Date().toISOString(), // Since these are unlocked badges
           category: mapCategory(legacyBadge.id),
           type: mapBadgeType(legacyBadge.id),
-          year: 2025 // Hardcoded from the badge names that end with 2025
+          year: 2025, // Hardcoded from the badge names that end with 2025
+          imageUrl: imageUrl // Add the imageUrl property
         };
       }).filter(Boolean) as Badge[];
       
