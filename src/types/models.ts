@@ -1,4 +1,3 @@
-
 export interface Animal {
   id: string;
   name: string;
@@ -93,6 +92,24 @@ export interface JudgeTrend {
   avoidTraits: string[];
   recentShows: string[];
   notes?: string;
+}
+
+export interface FeedingTime {
+  id: string;
+  startTime: string; // Format: "HH:MM" (24-hour)
+  endTime: string; // Format: "HH:MM" (24-hour)
+  completed: boolean;
+  lastCompleted: string | null; // ISO string date
+}
+
+export interface FeedingSchedule {
+  id: string;
+  animalId: string;
+  name: string;
+  feedingTimes: FeedingTime[];
+  reminderEnabled: boolean;
+  reminderMinutesBefore: number;
+  createdAt: string;
 }
 
 export interface User {

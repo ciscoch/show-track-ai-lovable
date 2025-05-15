@@ -6,7 +6,7 @@ import AnimalCard from "@/components/AnimalCard";
 import SubscriptionFeatureCard from "@/components/SubscriptionFeatureCard";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { GalleryVerticalIcon, WeightIcon, BookIcon, ChartBarIcon } from "lucide-react";
+import { GalleryVerticalIcon, WeightIcon, BookIcon, ChartBarIcon, AlarmClockIcon } from "lucide-react";
 
 const Index = () => {
   const { animals, user, userSubscription } = useAppContext();
@@ -137,7 +137,7 @@ const Index = () => {
               <div className="mt-12 space-y-8">
                 <h2 className="text-2xl font-bold">Quick Access</h2>
                 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                   <Card className="hover:border-primary cursor-pointer" onClick={() => navigate('/weights')}>
                     <CardHeader className="pb-2">
                       <CardTitle className="flex items-center gap-2">
@@ -190,6 +190,20 @@ const Index = () => {
                     <CardContent>
                       <p className="text-sm text-muted-foreground">
                         View progress photos of your animals
+                      </p>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="hover:border-primary cursor-pointer" onClick={() => navigate('/feed-reminders')}>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="flex items-center gap-2">
+                        <AlarmClockIcon className="h-5 w-5 text-primary" />
+                        <span>Feed Reminders</span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">
+                        Set up feeding schedule reminders for your animals
                       </p>
                     </CardContent>
                   </Card>

@@ -1,6 +1,6 @@
-
 import { createContext, useState, useContext, ReactNode, useEffect } from "react";
-import { Animal, WeightEntry, JournalEntry, ExpenseEntry, User, SubscriptionLevel } from "@/types/models";
+import { Animal, WeightEntry, JournalEntry, ExpenseEntry, User, SubscriptionLevel, FeedingSchedule } from "@/types/models";
+import { toast } from "@/hooks/use-toast";
 
 type AppContextType = {
   animals: Animal[];
@@ -8,6 +8,7 @@ type AppContextType = {
   weights: WeightEntry[];
   journals: JournalEntry[];
   expenses: ExpenseEntry[];
+  feedingSchedules: FeedingSchedule[];
   user: User | null;
   userSubscription: SubscriptionLevel;
   loading: boolean;
@@ -18,6 +19,10 @@ type AppContextType = {
   addWeightEntry: (entry: WeightEntry) => void;
   addJournalEntry: (entry: JournalEntry) => void;
   addExpenseEntry: (entry: ExpenseEntry) => void;
+  addFeedingSchedule: (schedule: FeedingSchedule) => void;
+  updateFeedingSchedule: (schedule: FeedingSchedule) => void;
+  deleteFeedingSchedule: (scheduleId: string) => void;
+  completeFeedingTime: (scheduleId: string, timeId: string) => void;
   refreshData: () => void;
 };
 
@@ -226,12 +231,71 @@ const mockUser: User = {
   createdAt: '2023-01-01T00:00:00Z'
 };
 
+const mockFeedingSchedules: FeedingSchedule[] = [
+  {
+    id: 'fs1',
+    animalId: '1',
+    name: 'Morning and Evening',
+    feedingTimes: [
+      {
+        id: 'ft1',
+        startTime: '06:00',
+        endTime: '08:00',
+        completed: false,
+        lastCompleted: null
+      },
+      {
+        id: 'ft2',
+        startTime: '16:00',
+        endTime: '18:00',
+        completed: false,
+        lastCompleted: null
+      }
+    ],
+    reminderEnabled: true,
+    reminderMinutesBefore: 30,
+    createdAt: '2023-04-01T15:45:00Z',
+  },
+  {
+    id: 'fs2',
+    animalId: '2',
+    name: 'Three Times Daily',
+    feedingTimes: [
+      {
+        id: 'ft3',
+        startTime: '07:00',
+        endTime: '08:00',
+        completed: false,
+        lastCompleted: null
+      },
+      {
+        id: 'ft4',
+        startTime: '12:00',
+        endTime: '13:00',
+        completed: false,
+        lastCompleted: null
+      },
+      {
+        id: 'ft5',
+        startTime: '17:00',
+        endTime: '18:00',
+        completed: false,
+        lastCompleted: null
+      }
+    ],
+    reminderEnabled: true,
+    reminderMinutesBefore: 30,
+    createdAt: '2023-04-01T15:45:00Z',
+  }
+];
+
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [animals, setAnimals] = useState<Animal[]>(mockAnimals);
   const [currentAnimal, setCurrentAnimal] = useState<Animal | null>(null);
   const [weights, setWeights] = useState<WeightEntry[]>(mockWeights);
   const [journals, setJournals] = useState<JournalEntry[]>(mockJournals);
   const [expenses, setExpenses] = useState<ExpenseEntry[]>(mockExpenses);
+  const [feedingSchedules, setFeedingSchedules] = useState<FeedingSchedule[]>(mockFeedingSchedules);
   const [user, setUser] = useState<User | null>(mockUser);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -262,6 +326,106 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setExpenses(prev => [...prev, entry]);
   };
 
+  const addFeedingSchedule = (schedule: FeedingSchedule) => {
+    setFeedingSchedules(prev => [...prev, schedule]);
+  };
+
+  const updateFeedingSchedule = (schedule: FeedingSchedule) => {
+    setFeedingSchedules(prev => prev.map(s => s.id === schedule.id ? schedule : s));
+  };
+
+  const deleteFeedingSchedule = (scheduleId: string) => {
+    setFeedingSchedules(prev => prev.filter(s => s.id !== scheduleId));
+  };
+
+  const completeFeedingTime = (scheduleId: string, timeId: string) => {
+    setFeedingSchedules(prev => prev.map(schedule => {
+      if (schedule.id === scheduleId) {
+        return {
+          ...schedule,
+          feedingTimes: schedule.feedingTimes.map(time => {
+            if (time.id === timeId) {
+              return {
+                ...time,
+                completed: true,
+                lastCompleted: new Date().toISOString()
+              };
+            }
+            return time;
+          })
+        };
+      }
+      return schedule;
+    }));
+  };
+
+  // Check for feeding reminders
+  useEffect(() => {
+    const checkFeedingReminders = () => {
+      const now = new Date();
+      
+      feedingSchedules.forEach(schedule => {
+        if (!schedule.reminderEnabled) return;
+        
+        schedule.feedingTimes.forEach(time => {
+          if (time.completed) return;
+          
+          // Reset completion status at midnight
+          if (time.lastCompleted) {
+            const lastCompletedDate = new Date(time.lastCompleted).toDateString();
+            const today = now.toDateString();
+            
+            if (lastCompletedDate === today) return; // Already completed today
+          }
+          
+          // Parse end time
+          const [endHour, endMinute] = time.endTime.split(':').map(Number);
+          const endTimeDate = new Date();
+          endTimeDate.setHours(endHour, endMinute, 0, 0);
+          
+          // Calculate reminder time
+          const reminderTime = new Date(endTimeDate);
+          reminderTime.setMinutes(reminderTime.getMinutes() - (schedule.reminderMinutesBefore || 30));
+          
+          // If current time is past the reminder time but before end time, show reminder
+          if (now >= reminderTime && now <= endTimeDate) {
+            const animalName = animals.find(a => a.id === schedule.animalId)?.name || "your animal";
+            
+            // Only show reminder if we haven't already shown one in the last 15 minutes
+            const storageKey = `reminder-shown-${schedule.id}-${time.id}`;
+            const lastReminderShown = localStorage.getItem(storageKey);
+            
+            if (!lastReminderShown || (Date.now() - parseInt(lastReminderShown)) > 15 * 60 * 1000) {
+              toast({
+                title: "Feeding Reminder",
+                description: `Time to feed ${animalName}! Feeding window ends at ${formatTime(time.endTime)}.`,
+                duration: 10000, // Show for 10 seconds
+              });
+              
+              // Store the time we showed this reminder
+              localStorage.setItem(storageKey, Date.now().toString());
+            }
+          }
+        });
+      });
+    };
+    
+    // Helper function to format time for display
+    const formatTime = (time: string) => {
+      const [hours, minutes] = time.split(':');
+      const hour = parseInt(hours, 10);
+      const ampm = hour >= 12 ? 'PM' : 'AM';
+      const formattedHour = hour % 12 || 12;
+      return `${formattedHour}:${minutes} ${ampm}`;
+    };
+    
+    // Check immediately and then every minute
+    checkFeedingReminders();
+    const interval = setInterval(checkFeedingReminders, 60000);
+    
+    return () => clearInterval(interval);
+  }, [feedingSchedules, animals]);
+
   const refreshData = () => {
     setLoading(true);
     // Simulating a data fetch
@@ -282,6 +446,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         weights,
         journals,
         expenses,
+        feedingSchedules,
         user,
         userSubscription,
         loading,
@@ -292,6 +457,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         addWeightEntry,
         addJournalEntry,
         addExpenseEntry,
+        addFeedingSchedule,
+        updateFeedingSchedule,
+        deleteFeedingSchedule,
+        completeFeedingTime,
         refreshData
       }}
     >
