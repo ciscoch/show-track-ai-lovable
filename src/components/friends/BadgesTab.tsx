@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Badge as BadgeType } from "@/types/models";
-import BadgeCollection from "@/components/badges/BadgeCollection";
+import BadgeDisplay from "@/components/badges/BadgeDisplay";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 
@@ -140,7 +140,14 @@ const BadgesTab = ({ friendId, friendName }: BadgesTabProps) => {
         )}
       </div>
       
-      <BadgeCollection badges={badges} />
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        {badges.map((badge) => (
+          <div key={badge.id} className="flex flex-col items-center gap-2">
+            <BadgeDisplay badge={badge} size="md" />
+            <span className="text-xs font-medium text-center">{badge.name}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
