@@ -100,6 +100,37 @@ const mockBadges: BadgeType[] = [
     category: "achievement",
     type: "platinum",
     year: 2025
+  },
+  // New Buckle Categories
+  {
+    id: "10",
+    name: "Muscle-Up Buckle",
+    description: "Gain 15+ lbs muscle mass (AI detected)",
+    icon: "dumbbell",
+    earnedAt: "2025-04-10",
+    category: "muscle-up",
+    type: "gold",
+    year: 2025
+  },
+  {
+    id: "11",
+    name: "Glow-Up Buckle",
+    description: "Upload 12 progress photos over 3+ months",
+    icon: "camera",
+    earnedAt: "2025-03-25",
+    category: "glow-up",
+    type: "silver",
+    year: 2025
+  },
+  {
+    id: "12",
+    name: "Body Boss Buckle",
+    description: "Reach \"Show Ready\" AI score of 95%+",
+    icon: "medal",
+    earnedAt: null,
+    category: "body-boss",
+    type: "platinum",
+    year: 2025
   }
 ];
 
@@ -165,4 +196,3 @@ const BadgesTab = ({ friendId, friendName }: BadgesTabProps) => {
 };
 
 export default BadgesTab;
-

@@ -12,7 +12,7 @@ interface ProfileTabProps {
   user: User | null;
 }
 
-// Mock badges for the user
+// Updated mock badges for the user, including the new buckle types
 const mockUserBadges: Badge[] = [
   {
     id: "1",
@@ -32,6 +32,26 @@ const mockUserBadges: Badge[] = [
     earnedAt: "2025-02-10",
     category: "streak",
     type: "bronze",
+    year: 2025
+  },
+  {
+    id: "10",
+    name: "Muscle-Up Buckle",
+    description: "Gain 15+ lbs muscle mass (AI detected)",
+    icon: "dumbbell",
+    earnedAt: "2025-04-10",
+    category: "muscle-up",
+    type: "gold",
+    year: 2025
+  },
+  {
+    id: "11",
+    name: "Glow-Up Buckle",
+    description: "Upload 12 progress photos over 3+ months",
+    icon: "camera",
+    earnedAt: "2025-03-25",
+    category: "glow-up",
+    type: "silver",
     year: 2025
   }
 ];

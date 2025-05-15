@@ -1,3 +1,4 @@
+
 export interface Animal {
   id: string;
   name: string;
@@ -74,14 +75,14 @@ export interface Friend {
   addedAt: string;
 }
 
-// New Badge interface
+// Updated Badge interface with new category types
 export interface Badge {
   id: string;
   name: string;
   description: string;
   icon: string;
   earnedAt: string | null;
-  category: "achievement" | "streak" | "participation" | "special";
+  category: "achievement" | "streak" | "participation" | "special" | "muscle-up" | "glow-up" | "body-boss";
   type: "bronze" | "silver" | "gold" | "platinum";
   year?: number; // Added year field to make badges/buckles unique by year
 }
