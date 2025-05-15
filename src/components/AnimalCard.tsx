@@ -3,6 +3,7 @@ import { Animal } from "@/types/models";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { capitalizeFirstLetter } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 type AnimalCardProps = {
   animal: Animal;
@@ -20,12 +21,18 @@ const getSpeciesEmoji = (species: Animal['species']) => {
 };
 
 const AnimalCard = ({ animal, onClick }: AnimalCardProps) => {
+  const navigate = useNavigate();
   const age = animal.birthdate ? Math.floor((new Date().getTime() - new Date(animal.birthdate).getTime()) / (1000 * 60 * 60 * 24 * 30.44)) : 0;
+  
+  const handleCardClick = () => {
+    onClick(animal);
+    navigate(`/animal/${animal.id}`);
+  };
   
   return (
     <Card 
       className="animal-card hover:cursor-pointer border-2 hover:border-primary overflow-hidden"
-      onClick={() => onClick(animal)}
+      onClick={handleCardClick}
     >
       <div className="relative w-full h-40 overflow-hidden">
         <img 

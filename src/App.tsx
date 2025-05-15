@@ -21,7 +21,7 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<Index />} />
-        <Route path="/animal/:id" element={<AnimalDetails />} />
+        <Route path="/animal/:animalId" element={<AnimalDetails />} />
         <Route path="/add-animal" element={<AddAnimal />} />
         <Route path="/subscription" element={<Subscription />} />
         <Route path="/weights" element={<WeightTrackingPage />} />
