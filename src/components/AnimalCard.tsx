@@ -20,7 +20,7 @@ const getSpeciesEmoji = (species: Animal['species']) => {
 };
 
 const AnimalCard = ({ animal, onClick }: AnimalCardProps) => {
-  const age = animal.birthDate ? Math.floor((new Date().getTime() - new Date(animal.birthDate).getTime()) / (1000 * 60 * 60 * 24 * 30.44)) : 0;
+  const age = animal.birthdate ? Math.floor((new Date().getTime() - new Date(animal.birthdate).getTime()) / (1000 * 60 * 60 * 24 * 30.44)) : 0;
   
   return (
     <Card 
@@ -29,7 +29,7 @@ const AnimalCard = ({ animal, onClick }: AnimalCardProps) => {
     >
       <div className="relative w-full h-40 overflow-hidden">
         <img 
-          src={animal.imageUrl || "/placeholder.svg"} 
+          src={animal.image || animal.imageUrl || "/placeholder.svg"} 
           alt={animal.name} 
           className="w-full h-full object-cover" 
         />
@@ -56,7 +56,7 @@ const AnimalCard = ({ animal, onClick }: AnimalCardProps) => {
         <Badge variant="outline" className="text-xs">
           {animal.gender === 'male' ? '♂️ Male' : '♀️ Female'}
         </Badge>
-        <span className="text-xs text-muted-foreground">Added: {new Date(animal.createdAt).toLocaleDateString()}</span>
+        <span className="text-xs text-muted-foreground">Added: {animal.createdAt ? new Date(animal.createdAt).toLocaleDateString() : 'N/A'}</span>
       </CardFooter>
     </Card>
   );

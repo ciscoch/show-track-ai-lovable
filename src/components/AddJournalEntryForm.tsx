@@ -30,10 +30,11 @@ import { v4 as uuidv4 } from 'uuid';
 
 const formSchema = z.object({
   animalId: z.string().min(1, "Please select an animal"),
+  title: z.string().min(1, "Please enter a title"),
   content: z.string().min(1, "Please enter some content"),
   date: z.date(),
   tags: z.string().optional(),
-  mood: z.enum(["good", "neutral", "concerning"]).optional(),
+  mood: z.enum(["positive", "neutral", "negative"]).default("positive"),
 });
 
 interface AddJournalEntryFormProps {
@@ -49,10 +50,11 @@ const AddJournalEntryForm = ({ initialAnimalId, onSuccess }: AddJournalEntryForm
     resolver: zodResolver(formSchema),
     defaultValues: {
       animalId: initialAnimalId || "",
+      title: "",
       content: "",
       date: new Date(),
       tags: "",
-      mood: "good",
+      mood: "positive",
     },
   });
 
@@ -68,6 +70,7 @@ const AddJournalEntryForm = ({ initialAnimalId, onSuccess }: AddJournalEntryForm
         id: uuidv4(),
         animalId: values.animalId,
         date: format(values.date, "yyyy-MM-dd"),
+        title: values.title,
         content: values.content,
         tags: tagsArray,
         mood: values.mood,
@@ -82,10 +85,11 @@ const AddJournalEntryForm = ({ initialAnimalId, onSuccess }: AddJournalEntryForm
       
       form.reset({
         animalId: initialAnimalId || "",
+        title: "",
         content: "",
         date: new Date(),
         tags: "",
-        mood: "good",
+        mood: "positive",
       });
       
       if (onSuccess) {
@@ -130,6 +134,20 @@ const AddJournalEntryForm = ({ initialAnimalId, onSuccess }: AddJournalEntryForm
             )}
           />
         )}
+        
+        <FormField
+          control={form.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Title</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter a title for your journal entry" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <FormField
           control={form.control}
@@ -199,26 +217,30 @@ const AddJournalEntryForm = ({ initialAnimalId, onSuccess }: AddJournalEntryForm
               <FormLabel>Mood</FormLabel>
               <FormControl>
                 <div className="flex space-x-4">
-                  {["good", "neutral", "concerning"].map((mood) => (
-                    <label key={mood} className="flex items-center space-x-2 cursor-pointer">
+                  {[
+                    { value: "positive", emoji: "😊", label: "Positive" },
+                    { value: "neutral", emoji: "😐", label: "Neutral" },
+                    { value: "negative", emoji: "😟", label: "Negative" }
+                  ].map((mood) => (
+                    <label key={mood.value} className="flex items-center space-x-2 cursor-pointer">
                       <input
                         type="radio"
-                        value={mood}
-                        checked={field.value === mood}
-                        onChange={() => field.onChange(mood)}
+                        value={mood.value}
+                        checked={field.value === mood.value}
+                        onChange={() => field.onChange(mood.value)}
                         className="sr-only"
                       />
                       <div className={cn(
                         "w-10 h-10 flex items-center justify-center rounded-full border-2",
-                        field.value === mood 
+                        field.value === mood.value 
                           ? "border-primary" 
                           : "border-transparent"
                       )}>
                         <span className="text-2xl">
-                          {mood === "good" ? "😊" : mood === "neutral" ? "😐" : "😟"}
+                          {mood.emoji}
                         </span>
                       </div>
-                      <span className="capitalize">{mood}</span>
+                      <span className="capitalize">{mood.label}</span>
                     </label>
                   ))}
                 </div>

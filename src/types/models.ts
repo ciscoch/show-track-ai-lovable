@@ -11,6 +11,14 @@ export interface Animal {
   showAnimal: boolean;
   purpose: "breeding" | "show" | "market" | "pet" | "other";
   weight: number;
+  
+  // Additional fields used in existing components
+  tagNumber?: string;
+  purchaseDate?: string;
+  notes?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  imageUrl?: string;
 }
 
 export interface Expense {
@@ -46,6 +54,7 @@ export interface WeightEntry {
 export interface SubscriptionTier {
   level: "free" | "pro" | "elite";
   expiresAt: string;
+  features?: string[];
 }
 
 export interface Reminder {
@@ -56,3 +65,39 @@ export interface Reminder {
   days: string[];
   enabled: boolean;
 }
+
+// Additional types used in the app
+export interface User {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  subscriptionLevel: "free" | "pro" | "elite";
+  createdAt: string;
+}
+
+export interface SubscriptionLevel {
+  level: "free" | "pro" | "elite";
+  features: string[];
+}
+
+export interface FeedingTime {
+  id: string;
+  startTime: string;
+  endTime: string;
+  completed: boolean;
+  lastCompleted: string | null;
+}
+
+export interface FeedingSchedule {
+  id: string;
+  animalId: string;
+  name: string;
+  feedingTimes: FeedingTime[];
+  reminderEnabled: boolean;
+  reminderMinutesBefore: number;
+  createdAt: string;
+}
+
+// Alias for backward compatibility
+export type ExpenseEntry = Expense;

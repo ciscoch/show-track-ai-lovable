@@ -11,9 +11,9 @@ export interface JournalEntryProps {
 
 const JournalEntry = ({ entry, animalName }: JournalEntryProps) => {
   const moodColor = {
-    good: "bg-emerald-100 text-emerald-800 border-emerald-200",
+    positive: "bg-emerald-100 text-emerald-800 border-emerald-200",
     neutral: "bg-gray-100 text-gray-800 border-gray-200",
-    concerning: "bg-amber-100 text-amber-800 border-amber-200"
+    negative: "bg-amber-100 text-amber-800 border-amber-200"
   };
   
   const formatDate = (dateString: string) => {
@@ -45,9 +45,9 @@ const JournalEntry = ({ entry, animalName }: JournalEntryProps) => {
           {entry.content}
         </div>
         
-        {entry.imageUrls && entry.imageUrls.length > 0 && (
+        {entry.images && entry.images.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2">
-            {entry.imageUrls.map((url, index) => (
+            {entry.images.map((url, index) => (
               <div
                 key={index}
                 className="w-24 h-24 rounded-md overflow-hidden border bg-muted"

@@ -1,5 +1,6 @@
+
 import { createContext, useState, useContext, ReactNode, useEffect } from "react";
-import { Animal, WeightEntry, JournalEntry, ExpenseEntry, User, SubscriptionLevel, FeedingSchedule } from "@/types/models";
+import { Animal, WeightEntry, JournalEntry, Expense, User, SubscriptionLevel, FeedingSchedule } from "@/types/models";
 import { toast } from "@/hooks/use-toast";
 
 type AppContextType = {
@@ -7,7 +8,7 @@ type AppContextType = {
   currentAnimal: Animal | null;
   weights: WeightEntry[];
   journals: JournalEntry[];
-  expenses: ExpenseEntry[];
+  expenses: Expense[];
   feedingSchedules: FeedingSchedule[];
   user: User | null;
   userSubscription: SubscriptionLevel;
@@ -18,7 +19,8 @@ type AppContextType = {
   deleteAnimal: (animalId: string) => void;
   addWeightEntry: (entry: WeightEntry) => void;
   addJournalEntry: (entry: JournalEntry) => void;
-  addExpenseEntry: (entry: ExpenseEntry) => void;
+  addExpenseEntry: (entry: Expense) => void;
+  deleteExpenseEntry: (id: string) => void;
   addFeedingSchedule: (schedule: FeedingSchedule) => void;
   updateFeedingSchedule: (schedule: FeedingSchedule) => void;
   deleteFeedingSchedule: (scheduleId: string) => void;
@@ -73,13 +75,16 @@ const mockAnimals: Animal[] = [
     name: 'Buddy',
     species: 'goat',
     breed: 'Boer',
-    birthDate: '2023-01-15',
+    birthdate: '2023-01-15',
     purchaseDate: '2023-03-10',
     gender: 'male',
     tagNumber: 'G123',
-    userId: 'user1',
-    imageUrl: '/placeholder.svg',
+    description: 'First show animal, seems to have good muscle definition',
     notes: 'First show animal, seems to have good muscle definition',
+    showAnimal: true,
+    purpose: 'show',
+    weight: 45,
+    imageUrl: '/placeholder.svg',
     createdAt: '2023-03-10T10:30:00Z',
     updatedAt: '2023-04-15T14:22:00Z'
   },
@@ -88,13 +93,16 @@ const mockAnimals: Animal[] = [
     name: 'Daisy',
     species: 'cattle',
     breed: 'Angus',
-    birthDate: '2022-11-20',
+    birthdate: '2022-11-20',
     purchaseDate: '2023-02-05',
     gender: 'female',
     tagNumber: 'C456',
-    userId: 'user1',
-    imageUrl: '/placeholder.svg',
+    description: 'Good frame, needs work on muscle tone',
     notes: 'Good frame, needs work on muscle tone',
+    showAnimal: true,
+    purpose: 'show',
+    weight: 450,
+    imageUrl: '/placeholder.svg',
     createdAt: '2023-02-05T09:15:00Z',
     updatedAt: '2023-04-10T11:45:00Z'
   },
@@ -103,13 +111,16 @@ const mockAnimals: Animal[] = [
     name: 'Wilbur',
     species: 'pig',
     breed: 'Hampshire',
-    birthDate: '2023-02-10',
+    birthdate: '2023-02-10',
     purchaseDate: '2023-04-01',
     gender: 'male',
     tagNumber: 'P789',
-    userId: 'user1',
-    imageUrl: '/placeholder.svg',
+    description: 'Great temperament, working on weight gain',
     notes: 'Great temperament, working on weight gain',
+    showAnimal: true,
+    purpose: 'market',
+    weight: 85,
+    imageUrl: '/placeholder.svg',
     createdAt: '2023-04-01T15:45:00Z',
     updatedAt: '2023-04-18T16:30:00Z'
   }
@@ -136,22 +147,25 @@ const mockJournals: JournalEntry[] = [
     id: 'j1',
     animalId: '1',
     date: '2023-03-16',
+    title: 'New Environment',
     content: "Buddy is adjusting well to his new environment. He's very social and follows me around the pen.",
     tags: ['adjustment', 'behavior'],
-    mood: 'good'
+    mood: 'positive'
   },
   {
     id: 'j2',
     animalId: '1',
     date: '2023-03-25',
+    title: 'Feed Change',
     content: 'Started new feed mix today. Buddy seemed to enjoy it. Working on halter training.',
     tags: ['feed', 'training'],
-    mood: 'good'
+    mood: 'positive'
   },
   {
     id: 'j3',
     animalId: '1',
     date: '2023-04-02',
+    title: 'Show Practice',
     content: 'Had a practice session for the show. Buddy was a bit stubborn but eventually cooperated.',
     tags: ['training', 'showmanship'],
     mood: 'neutral'
@@ -160,21 +174,23 @@ const mockJournals: JournalEntry[] = [
     id: 'j4',
     animalId: '2',
     date: '2023-02-15',
+    title: 'Settling In',
     content: 'Daisy is settling in well. She has a calm temperament and is easy to handle.',
     tags: ['adjustment', 'behavior'],
-    mood: 'good'
+    mood: 'positive'
   },
   {
     id: 'j5',
     animalId: '3',
     date: '2023-04-08',
+    title: 'New Feed',
     content: 'Wilbur loves his new feed. Working on getting him used to the show stick.',
     tags: ['feed', 'training'],
-    mood: 'good'
+    mood: 'positive'
   }
 ];
 
-const mockExpenses: ExpenseEntry[] = [
+const mockExpenses: Expense[] = [
   {
     id: 'e1',
     animalId: '1',
@@ -294,7 +310,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [currentAnimal, setCurrentAnimal] = useState<Animal | null>(null);
   const [weights, setWeights] = useState<WeightEntry[]>(mockWeights);
   const [journals, setJournals] = useState<JournalEntry[]>(mockJournals);
-  const [expenses, setExpenses] = useState<ExpenseEntry[]>(mockExpenses);
+  const [expenses, setExpenses] = useState<Expense[]>(mockExpenses);
   const [feedingSchedules, setFeedingSchedules] = useState<FeedingSchedule[]>(mockFeedingSchedules);
   const [user, setUser] = useState<User | null>(mockUser);
   const [loading, setLoading] = useState<boolean>(false);
@@ -322,8 +338,12 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setJournals(prev => [...prev, entry]);
   };
 
-  const addExpenseEntry = (entry: ExpenseEntry) => {
+  const addExpenseEntry = (entry: Expense) => {
     setExpenses(prev => [...prev, entry]);
+  };
+  
+  const deleteExpenseEntry = (id: string) => {
+    setExpenses(prev => prev.filter(expense => expense.id !== id));
   };
 
   const addFeedingSchedule = (schedule: FeedingSchedule) => {
@@ -457,6 +477,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         addWeightEntry,
         addJournalEntry,
         addExpenseEntry,
+        deleteExpenseEntry,
         addFeedingSchedule,
         updateFeedingSchedule,
         deleteFeedingSchedule,
