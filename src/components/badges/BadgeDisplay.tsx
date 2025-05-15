@@ -3,7 +3,7 @@ import React from "react";
 import { Badge } from "@/types/models";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge as UiBadge } from "@/components/ui/badge";
-import { Trophy, Award, Bell, Dumbbell, Camera, Medal } from "lucide-react";
+import { Trophy, Award, Bell, Dumbbell, Camera, Medal, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface BadgeDisplayProps {
@@ -26,6 +26,8 @@ const getBadgeIcon = (icon: string) => {
       return <Camera className="h-4 w-4" />;
     case "medal":
       return <Medal className="h-4 w-4" />;
+    case "star":
+      return <Star className="h-4 w-4" />;
     default:
       return <Award className="h-4 w-4" />;
   }

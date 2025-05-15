@@ -131,6 +131,37 @@ const mockBadges: BadgeType[] = [
     category: "body-boss",
     type: "platinum",
     year: 2025
+  },
+  // New Show Achievement Buckles
+  {
+    id: "13",
+    name: "Ring Debut Buckle",
+    description: "Log your first show",
+    icon: "star",
+    earnedAt: "2025-04-15",
+    category: "ring-debut",
+    type: "bronze",
+    year: 2025
+  },
+  {
+    id: "14",
+    name: "Top 3 Finisher Buckle",
+    description: "Win 1st–3rd in class or breed",
+    icon: "medal",
+    earnedAt: "2025-04-20",
+    category: "top-3",
+    type: "silver",
+    year: 2025
+  },
+  {
+    id: "15",
+    name: "Champion Buckle",
+    description: "Verified Grand/Reserve win (upload proof or partner verification)",
+    icon: "trophy",
+    earnedAt: null,
+    category: "champion",
+    type: "platinum",
+    year: 2025
   }
 ];
 
