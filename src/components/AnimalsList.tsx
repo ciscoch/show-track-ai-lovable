@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import AnimalCard from "@/components/AnimalCard";
 import WelcomeMessage from "./WelcomeMessage";
-import QuickAccessSection from "./QuickAccessSection";
 
 type AnimalsListProps = {
   animals: Animal[];
@@ -47,8 +46,6 @@ const AnimalsList = ({ animals, user, onAnimalClick, onAddAnimal }: AnimalsListP
           </CardContent>
         </Card>
       </div>
-      
-      <QuickAccessSection />
     </>
   );
 };
