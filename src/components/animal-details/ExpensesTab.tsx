@@ -1,0 +1,32 @@
+
+import React from "react";
+import { Expense } from "@/types/models";
+import ExpensesTable from "@/components/ExpensesTable";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+
+interface ExpensesTabProps {
+  expenses: Expense[];
+  animalId: string;
+}
+
+const ExpensesTab = ({ expenses, animalId }: ExpensesTabProps) => {
+  const navigate = useNavigate();
+
+  const handleAddExpense = () => {
+    navigate(`/animal/${animalId}/add-expense`);
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold">Expenses</h2>
+        <Button onClick={handleAddExpense}>Add Expense</Button>
+      </div>
+      
+      <ExpensesTable expenses={expenses} animalId={animalId} />
+    </div>
+  );
+};
+
+export default ExpensesTab;
