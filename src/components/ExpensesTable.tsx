@@ -15,11 +15,17 @@ import { useState } from "react";
 
 interface ExpensesTableProps {
   expenses: Expense[];
+  animalId?: string; // Make animalId optional
 }
 
-const ExpensesTable = ({ expenses }: ExpensesTableProps) => {
-  const { animals } = useAppContext();
+const ExpensesTable = ({ expenses, animalId }: ExpensesTableProps) => {
+  const { animals, deleteExpenseEntry } = useAppContext();
   const [viewingReceipt, setViewingReceipt] = useState<Expense | null>(null);
+
+  // Filter expenses by animalId if provided
+  const filteredExpenses = animalId 
+    ? expenses.filter(expense => expense.animalId === animalId) 
+    : expenses;
 
   const getAnimalName = (animalId: string) => {
     const animal = animals.find((a) => a.id === animalId);
@@ -28,9 +34,7 @@ const ExpensesTable = ({ expenses }: ExpensesTableProps) => {
 
   const handleDelete = (id: string) => {
     if (window.confirm("Are you sure you want to delete this expense?")) {
-      // We'll need to add this function to the context
-      console.log("Delete expense:", id);
-      // For now, just log the ID
+      deleteExpenseEntry(id);
     }
   };
 
@@ -50,14 +54,14 @@ const ExpensesTable = ({ expenses }: ExpensesTableProps) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {expenses.length === 0 ? (
+            {filteredExpenses.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} className="text-center py-4">
                   No expenses found. Add an expense to get started.
                 </TableCell>
               </TableRow>
             ) : (
-              expenses.map((expense) => (
+              filteredExpenses.map((expense) => (
                 <TableRow key={expense.id}>
                   <TableCell>{format(new Date(expense.date), "PP")}</TableCell>
                   <TableCell>{getAnimalName(expense.animalId)}</TableCell>

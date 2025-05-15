@@ -73,6 +73,7 @@ export interface User {
   firstName: string;
   lastName: string;
   subscriptionLevel: "free" | "pro" | "elite";
+  subscriptionEndDate?: string; // Added subscriptionEndDate property
   createdAt: string;
 }
 

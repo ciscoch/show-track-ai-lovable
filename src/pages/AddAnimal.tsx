@@ -18,12 +18,13 @@ const AddAnimal = () => {
   const [name, setName] = useState("");
   const [species, setSpecies] = useState<"cattle" | "goat" | "sheep" | "pig">("goat");
   const [breed, setBreed] = useState("");
-  const [birthDate, setBirthDate] = useState("");
+  const [birthdate, setBirthdate] = useState(""); // Changed from birthDate to match Animal interface
   const [purchaseDate, setPurchaseDate] = useState("");
   const [gender, setGender] = useState<"male" | "female">("male");
   const [tagNumber, setTagNumber] = useState("");
   const [showId, setShowId] = useState("");
   const [notes, setNotes] = useState("");
+  const [weight, setWeight] = useState<number>(0); // Added weight field
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,15 +35,17 @@ const AddAnimal = () => {
       name,
       species,
       breed,
-      birthDate,
+      birthdate, // Changed from birthDate to match Animal interface
       purchaseDate: purchaseDate || undefined,
       gender,
       tagNumber: tagNumber || undefined,
-      showId: showId || undefined,
-      userId: user?.id || 'guest',
-      notes: notes || undefined,
+      showAnimal: true, // Default value for showAnimal
+      purpose: "show" as const, // Default value for purpose
+      description: notes || "", // Use notes as description
+      weight: weight || 0, // Added weight field
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
+      notes: notes || undefined
     };
     
     // Add to context
@@ -145,12 +148,12 @@ const AddAnimal = () => {
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="birthDate">Birth Date*</Label>
+                  <Label htmlFor="birthdate">Birth Date*</Label>
                   <Input
-                    id="birthDate"
+                    id="birthdate"
                     type="date"
-                    value={birthDate}
-                    onChange={(e) => setBirthDate(e.target.value)}
+                    value={birthdate}
+                    onChange={(e) => setBirthdate(e.target.value)}
                     required
                   />
                 </div>
@@ -194,12 +197,14 @@ const AddAnimal = () => {
                 </div>
                 
                 <div>
-                  <Label htmlFor="showId">Show ID</Label>
+                  <Label htmlFor="weight">Weight (lbs)*</Label>
                   <Input
-                    id="showId"
-                    value={showId}
-                    onChange={(e) => setShowId(e.target.value)}
-                    placeholder="Enter show ID"
+                    id="weight"
+                    type="number"
+                    value={weight.toString()}
+                    onChange={(e) => setWeight(Number(e.target.value))}
+                    placeholder="Enter weight"
+                    required
                   />
                 </div>
               </div>

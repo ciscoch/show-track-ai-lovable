@@ -127,8 +127,8 @@ const UserSettingsPage = () => {
                   </div>
                   
                   <div className="mt-2 text-sm text-muted-foreground">
-                    {user?.subscriptionEndDate ? (
-                      <span>Your subscription will renew on {new Date(user.subscriptionEndDate).toLocaleDateString()}</span>
+                    {userSubscription.expiresAt ? (
+                      <span>Your subscription will renew on {new Date(userSubscription.expiresAt).toLocaleDateString()}</span>
                     ) : (
                       <span>Free plan. Upgrade any time to access premium features.</span>
                     )}

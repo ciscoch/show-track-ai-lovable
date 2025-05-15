@@ -97,7 +97,7 @@ const AnimalDetails = () => {
           <div className="flex flex-wrap items-start gap-4">
             <div className="w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-primary">
               <img 
-                src={animal.imageUrl || '/placeholder.svg'} 
+                src={animal.imageUrl || animal.image || '/placeholder.svg'} 
                 alt={animal.name} 
                 className="w-full h-full object-cover"
               />
@@ -124,7 +124,7 @@ const AnimalDetails = () => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-2 mt-4">
                 <div>
                   <p className="text-sm text-muted-foreground">Age</p>
-                  <p className="font-medium">{calculateAge(animal.birthDate)}</p>
+                  <p className="font-medium">{calculateAge(animal.birthdate)}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Gender</p>
@@ -204,7 +204,7 @@ const AnimalDetails = () => {
                           </span>
                           {journal.mood && (
                             <span title={`Mood: ${journal.mood}`}>
-                              {journal.mood === 'good' ? '😊' : 
+                              {journal.mood === 'positive' ? '😊' : 
                                journal.mood === 'neutral' ? '😐' : '😟'}
                             </span>
                           )}
