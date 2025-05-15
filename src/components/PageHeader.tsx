@@ -15,9 +15,16 @@ const PageHeader = ({ user }: PageHeaderProps) => {
 
   return (
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-      <div>
-        <h1 className="text-4xl font-bold">ShowTrack AI</h1>
-        <p className="text-muted-foreground">Your livestock show management assistant</p>
+      <div className="flex items-center gap-4">
+        <img 
+          src="/lovable-uploads/d119b8a7-7a15-4e8f-810a-9920bdb1b775.png" 
+          alt="ShowTrack AI Logo" 
+          className="w-16 h-16 md:w-20 md:h-20"
+        />
+        <div>
+          <h1 className="text-4xl font-bold">ShowTrack AI</h1>
+          <p className="text-muted-foreground">Your livestock show management assistant</p>
+        </div>
       </div>
       
       <div className="flex items-center gap-4">
