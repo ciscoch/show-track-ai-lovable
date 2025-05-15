@@ -66,6 +66,15 @@ export interface Reminder {
   enabled: boolean;
 }
 
+// New Friend interface
+export interface Friend {
+  id: string;
+  name: string;
+  email: string;
+  avatarUrl: string | null;
+  addedAt: string;
+}
+
 // Additional types used in the app
 export interface User {
   id: string;
