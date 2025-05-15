@@ -1,15 +1,12 @@
 
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { User } from "lucide-react";
 import { Friend, Badge } from "@/types/models";
-import BadgesTab from "./BadgesTab";
-import BadgeDisplay from "../badges/BadgeDisplay";
-import BadgeNotification from "../badges/BadgeNotification";
+import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
+import FriendCard from "./FriendCard";
+import FriendBadgesDialog from "./FriendBadgesDialog";
+import BadgeNotificationsList from "./BadgeNotificationsList";
+import EmptyFriendsList from "./EmptyFriendsList";
 
 // Mock data - in a real app, this would come from an API
 const mockFriends: Friend[] = [
@@ -119,100 +116,34 @@ const FriendsList = () => {
       
       {/* Badge notifications */}
       {notifications.length > 0 && (
-        <div className="space-y-4 mb-6">
-          <h3 className="text-lg font-medium">Recent Badge Notifications</h3>
-          
-          {notifications.map((notification, index) => (
-            <BadgeNotification
-              key={index}
-              badge={notification.badge}
-              friendName={notification.friend.name}
-              friendAvatar={notification.friend.avatarUrl || undefined}
-              onDismiss={() => dismissNotification(index)}
+        <BadgeNotificationsList 
+          notifications={notifications} 
+          onDismiss={dismissNotification} 
+        />
+      )}
+      
+      {friends.length === 0 ? (
+        <EmptyFriendsList />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {friends.map(friend => (
+            <FriendCard 
+              key={friend.id}
+              friend={friend}
+              badges={mockFriendBadges[friend.id] || []}
+              onRemove={removeFriend}
+              onViewBadges={viewFriendBadges}
             />
           ))}
         </div>
       )}
       
-      {friends.length === 0 ? (
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-center py-8">
-              <p className="text-muted-foreground">No friends added yet. Add friends using the "Add Friend" tab.</p>
-            </div>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {friends.map(friend => {
-            const friendBadges = mockFriendBadges[friend.id] || [];
-            return (
-              <Card key={friend.id}>
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <Avatar className="h-12 w-12">
-                      <AvatarImage src={friend.avatarUrl || undefined} />
-                      <AvatarFallback>
-                        <User />
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold">{friend.name}</h3>
-                      <p className="text-sm text-muted-foreground">{friend.email}</p>
-                      
-                      {/* Display badges */}
-                      {friendBadges.length > 0 && (
-                        <div className="flex gap-1 mt-2">
-                          {friendBadges.slice(0, 3).map(badge => (
-                            <BadgeDisplay key={badge.id} badge={badge} size="sm" />
-                          ))}
-                          {friendBadges.length > 3 && (
-                            <div className="text-xs bg-muted rounded-full px-2 flex items-center">
-                              +{friendBadges.length - 3}
-                            </div>
-                          )}
-                        </div>
-                      )}
-                      
-                      <div className="flex gap-2 mt-3">
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => viewFriendBadges(friend)}
-                        >
-                          View Badges
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          onClick={() => removeFriend(friend.id)}
-                        >
-                          Remove
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      )}
-      
       {/* Dialog for viewing friend badges */}
-      <Dialog open={showBadges} onOpenChange={setShowBadges}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>{selectedFriend?.name}'s Badges</DialogTitle>
-          </DialogHeader>
-          {selectedFriend && (
-            <BadgesTab 
-              friendId={selectedFriend.id} 
-              friendName={selectedFriend.name}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
+      <FriendBadgesDialog
+        friend={selectedFriend}
+        open={showBadges}
+        onOpenChange={setShowBadges}
+      />
     </div>
   );
 };
