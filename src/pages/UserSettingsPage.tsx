@@ -127,8 +127,8 @@ const UserSettingsPage = () => {
                   </div>
                   
                   <div className="mt-2 text-sm text-muted-foreground">
-                    {userSubscription.expiresAt ? (
-                      <span>Your subscription will renew on {new Date(userSubscription.expiresAt).toLocaleDateString()}</span>
+                    {user?.subscriptionEndDate ? (
+                      <span>Your subscription will renew on {new Date(user.subscriptionEndDate).toLocaleDateString()}</span>
                     ) : (
                       <span>Free plan. Upgrade any time to access premium features.</span>
                     )}
@@ -229,7 +229,7 @@ const UserSettingsPage = () => {
               <div className="border-t pt-4">
                 <h3 className="font-medium mb-2">Features Included</h3>
                 <ul className="space-y-2">
-                  {userSubscription.features.map((feature, index) => (
+                  {userSubscription.features?.map((feature, index) => (
                     <li key={index} className="flex items-center gap-2">
                       <span className="text-green-500">✓</span>
                       <span>{feature}</span>
