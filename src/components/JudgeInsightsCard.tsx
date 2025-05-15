@@ -1,4 +1,3 @@
-
 import { useAppContext } from "@/contexts/AppContext";
 import { Animal } from "@/types/models";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,127 +11,8 @@ interface JudgeInsightsCardProps {
   animal: Animal;
 }
 
-const JudgeInsightsCard = ({ animal }: JudgeInsightsCardProps) => {
-  const { userSubscription } = useAppContext();
-  const isElite = userSubscription.level === 'elite';
-  
-  const handleNavigateToSubscriptions = () => {
-    window.location.href = '/subscription';
-  };
-  
-  if (!isElite) {
-    return (
-      <PremiumFeatureBanner
-        title="Premium Judge Insights"
-        description="Access deep research on what high-selling show judges look for in each type of livestock."
-        requiredLevel="elite"
-        onUpgrade={handleNavigateToSubscriptions}
-      />
-    );
-  }
-  
-  // Get insights based on animal species
-  const insights = getJudgeInsightsForSpecies(animal.species);
-  
-  return (
-    <Card className="w-full shadow-md">
-      <CardHeader>
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <TrophyIcon className="h-5 w-5 text-primary" />
-            <CardTitle>Judge Insights Research</CardTitle>
-          </div>
-          <Badge className="bg-primary">Elite Feature</Badge>
-        </div>
-        <CardDescription>
-          Deep research on what high-selling judges look for in {animal.species}
-        </CardDescription>
-      </CardHeader>
-      
-      <CardContent>
-        <Tabs defaultValue="criteria" className="w-full">
-          <TabsList className="grid grid-cols-3 mb-4">
-            <TabsTrigger value="criteria">Judging Criteria</TabsTrigger>
-            <TabsTrigger value="trends">Current Trends</TabsTrigger>
-            <TabsTrigger value="preparation">Preparation Tips</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="criteria" className="space-y-4">
-            <div className="flex items-center gap-2 mb-2">
-              <BarChart3Icon className="h-4 w-4 text-primary" />
-              <h3 className="font-medium">Key Judging Criteria for {animal.species}</h3>
-            </div>
-            
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Criteria</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead className="w-[100px]">Importance</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {insights.criteria.map((criterion, index) => (
-                  <TableRow key={index}>
-                    <TableCell className="font-medium">{criterion.name}</TableCell>
-                    <TableCell>{criterion.description}</TableCell>
-                    <TableCell>
-                      <Badge className={
-                        criterion.importance === 'High' ? 'bg-primary' : 
-                        criterion.importance === 'Medium' ? 'bg-accent' : 
-                        'bg-muted'
-                      }>
-                        {criterion.importance}
-                      </Badge>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TabsContent>
-          
-          <TabsContent value="trends" className="space-y-4">
-            <div className="flex items-center gap-2 mb-2">
-              <BookOpenIcon className="h-4 w-4 text-primary" />
-              <h3 className="font-medium">Current Trends in {animal.species} Judging</h3>
-            </div>
-            
-            <div className="space-y-4">
-              {insights.trends.map((trend, index) => (
-                <div key={index} className="border rounded-md p-3">
-                  <h4 className="font-medium mb-1">{trend.title}</h4>
-                  <p className="text-sm text-muted-foreground">{trend.description}</p>
-                </div>
-              ))}
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="preparation" className="space-y-4">
-            <div className="flex items-center gap-2 mb-2">
-              <BookOpenIcon className="h-4 w-4 text-primary" />
-              <h3 className="font-medium">Preparation Tips Based on Judge Research</h3>
-            </div>
-            
-            <div className="space-y-3">
-              {insights.preparationTips.map((tip, index) => (
-                <div key={index} className="flex items-start gap-2">
-                  <Badge className="mt-1">{index + 1}</Badge>
-                  <div>
-                    <h4 className="font-medium">{tip.title}</h4>
-                    <p className="text-sm text-muted-foreground">{tip.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </TabsContent>
-        </Tabs>
-      </CardContent>
-    </Card>
-  );
-};
-
 // Helper function to get judge insights data based on species
-function getJudgeInsightsForSpecies(species: string) {
+export function getJudgeInsightsForSpecies(species: string) {
   // Default research data
   let insightsData = {
     criteria: [
@@ -299,5 +179,124 @@ function getJudgeInsightsForSpecies(species: string) {
   
   return insightsData;
 }
+
+const JudgeInsightsCard = ({ animal }: JudgeInsightsCardProps) => {
+  const { userSubscription } = useAppContext();
+  const isElite = userSubscription.level === 'elite';
+  
+  const handleNavigateToSubscriptions = () => {
+    window.location.href = '/subscription';
+  };
+  
+  if (!isElite) {
+    return (
+      <PremiumFeatureBanner
+        title="Premium Judge Insights"
+        description="Access deep research on what high-selling show judges look for in each type of livestock."
+        requiredLevel="elite"
+        onUpgrade={handleNavigateToSubscriptions}
+      />
+    );
+  }
+  
+  // Get insights based on animal species
+  const insights = getJudgeInsightsForSpecies(animal.species);
+  
+  return (
+    <Card className="w-full shadow-md">
+      <CardHeader>
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <TrophyIcon className="h-5 w-5 text-primary" />
+            <CardTitle>Judge Insights Research</CardTitle>
+          </div>
+          <Badge className="bg-primary">Elite Feature</Badge>
+        </div>
+        <CardDescription>
+          Deep research on what high-selling judges look for in {animal.species}
+        </CardDescription>
+      </CardHeader>
+      
+      <CardContent>
+        <Tabs defaultValue="criteria" className="w-full">
+          <TabsList className="grid grid-cols-3 mb-4">
+            <TabsTrigger value="criteria">Judging Criteria</TabsTrigger>
+            <TabsTrigger value="trends">Current Trends</TabsTrigger>
+            <TabsTrigger value="preparation">Preparation Tips</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="criteria" className="space-y-4">
+            <div className="flex items-center gap-2 mb-2">
+              <BarChart3Icon className="h-4 w-4 text-primary" />
+              <h3 className="font-medium">Key Judging Criteria for {animal.species}</h3>
+            </div>
+            
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Criteria</TableHead>
+                  <TableHead>Description</TableHead>
+                  <TableHead className="w-[100px]">Importance</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {insights.criteria.map((criterion, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="font-medium">{criterion.name}</TableCell>
+                    <TableCell>{criterion.description}</TableCell>
+                    <TableCell>
+                      <Badge className={
+                        criterion.importance === 'High' ? 'bg-primary' : 
+                        criterion.importance === 'Medium' ? 'bg-accent' : 
+                        'bg-muted'
+                      }>
+                        {criterion.importance}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TabsContent>
+          
+          <TabsContent value="trends" className="space-y-4">
+            <div className="flex items-center gap-2 mb-2">
+              <BookOpenIcon className="h-4 w-4 text-primary" />
+              <h3 className="font-medium">Current Trends in {animal.species} Judging</h3>
+            </div>
+            
+            <div className="space-y-4">
+              {insights.trends.map((trend, index) => (
+                <div key={index} className="border rounded-md p-3">
+                  <h4 className="font-medium mb-1">{trend.title}</h4>
+                  <p className="text-sm text-muted-foreground">{trend.description}</p>
+                </div>
+              ))}
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="preparation" className="space-y-4">
+            <div className="flex items-center gap-2 mb-2">
+              <BookOpenIcon className="h-4 w-4 text-primary" />
+              <h3 className="font-medium">Preparation Tips Based on Judge Research</h3>
+            </div>
+            
+            <div className="space-y-3">
+              {insights.preparationTips.map((tip, index) => (
+                <div key={index} className="flex items-start gap-2">
+                  <Badge className="mt-1">{index + 1}</Badge>
+                  <div>
+                    <h4 className="font-medium">{tip.title}</h4>
+                    <p className="text-sm text-muted-foreground">{tip.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
+      </CardContent>
+    </Card>
+  );
+};
 
 export default JudgeInsightsCard;

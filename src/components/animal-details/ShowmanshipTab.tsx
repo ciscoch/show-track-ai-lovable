@@ -18,7 +18,7 @@ const ShowmanshipTab = ({ animal }: ShowmanshipTabProps) => {
   const [isManagerOpen, setIsManagerOpen] = useState(false);
   
   // Check if user is admin (in a real app, this would use proper roles)
-  const isAdmin = user?.email?.endsWith('@admin.com') || user?.role === 'admin';
+  const isAdmin = user?.email?.endsWith('@admin.com') || user?.email === 'admin@example.com';
   
   return (
     <div className="space-y-6">

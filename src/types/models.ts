@@ -1,4 +1,3 @@
-
 export interface Animal {
   id: string;
   name: string;
@@ -102,6 +101,7 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
+  role?: string; // Added role property
   subscriptionLevel: "free" | "pro" | "elite";
   subscriptionEndDate?: string; // Added subscriptionEndDate property
   badges?: UserBadge[]; // Added badges property
