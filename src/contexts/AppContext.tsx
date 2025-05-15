@@ -131,7 +131,7 @@ const mockJournals: JournalEntry[] = [
     id: 'j1',
     animalId: '1',
     date: '2023-03-16',
-    content: 'Buddy is adjusting well to his new environment. He's very social and follows me around the pen.',
+    content: "Buddy is adjusting well to his new environment. He's very social and follows me around the pen.",
     tags: ['adjustment', 'behavior'],
     mood: 'good'
   },

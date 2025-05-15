@@ -74,7 +74,7 @@ const mockShowTips: Record<string, ShowTip[]> = {
     {
       id: 'st1',
       title: 'Bracing Techniques',
-      content: 'When bracing, position yourself in front of the lamb. Firmly press on the lamb's chest while keeping its head up, which showcases muscle tone. Ensure all four legs are squarely beneath the animal.',
+      content: "When bracing, position yourself in front of the lamb. Firmly press on the lamb's chest while keeping its head up, which showcases muscle tone. Ensure all four legs are squarely beneath the animal.",
       category: 'showmanship'
     },
     {
