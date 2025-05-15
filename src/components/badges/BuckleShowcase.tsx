@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Badge } from "@/types/models";
 import BadgeDisplay from "./BadgeDisplay";
