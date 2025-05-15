@@ -2,8 +2,10 @@
 import { useState } from "react";
 import { Badge as BadgeType } from "@/types/models";
 import BadgeDisplay from "@/components/badges/BadgeDisplay";
+import BuckleShowcase from "@/components/badges/BuckleShowcase";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
+import { Separator } from "@/components/ui/separator";
 
 // Mock data - in a real app, this would come from an API
 const mockBadges: BadgeType[] = [
@@ -124,7 +126,17 @@ const BadgesTab = ({ friendId, friendName }: BadgesTabProps) => {
   };
   
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* Buckle Showcase Carousel */}
+      <div className="mt-2 mb-6">
+        <BuckleShowcase 
+          badges={badges} 
+          title={friendName ? `${friendName}'s Buckle Collection` : "My Buckle Collection"} 
+        />
+      </div>
+      
+      <Separator />
+      
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">
           {friendName ? `${friendName}'s Badges` : "My Badges"}
@@ -153,3 +165,4 @@ const BadgesTab = ({ friendId, friendName }: BadgesTabProps) => {
 };
 
 export default BadgesTab;
+

@@ -6,6 +6,7 @@ import ProfileForm from "./ProfileForm";
 import DeleteAccountSection from "./DeleteAccountSection";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import BadgeDisplay from "../badges/BadgeDisplay";
+import BuckleShowcase from "@/components/badges/BuckleShowcase";
 
 interface ProfileTabProps {
   user: User | null;
@@ -20,7 +21,8 @@ const mockUserBadges: Badge[] = [
     icon: "award",
     earnedAt: "2025-01-15",
     category: "special",
-    type: "gold"
+    type: "gold",
+    year: 2025
   },
   {
     id: "2",
@@ -29,7 +31,8 @@ const mockUserBadges: Badge[] = [
     icon: "trophy",
     earnedAt: "2025-02-10",
     category: "streak",
-    type: "bronze"
+    type: "bronze",
+    year: 2025
   }
 ];
 
@@ -60,20 +63,14 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
       
       <Card className="mt-6">
         <CardHeader>
-          <CardTitle>My Badges</CardTitle>
+          <CardTitle>My Buckle Collection</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            <div className="flex flex-wrap gap-3">
-              {userBadges.map(badge => (
-                <BadgeDisplay key={badge.id} badge={badge} size="md" />
-              ))}
-            </div>
-            <div className="flex justify-end">
-              <a href="/friends?tab=badges" className="text-sm text-primary hover:underline">
-                View all badges
-              </a>
-            </div>
+          <BuckleShowcase badges={userBadges} />
+          <div className="flex justify-end mt-4">
+            <a href="/friends?tab=badges" className="text-sm text-primary hover:underline">
+              View all badges
+            </a>
           </div>
         </CardContent>
       </Card>
