@@ -1,7 +1,8 @@
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { FeedingSchedule, Animal } from '@/types/models';
 import { toast } from "@/hooks/use-toast";
+import { getWeatherForecast, detectWeatherAlerts } from '@/services/weatherService';
 
 interface UseFeedingRemindersProps {
   feedingSchedules: FeedingSchedule[];
@@ -9,6 +10,64 @@ interface UseFeedingRemindersProps {
 }
 
 export const useFeedingReminders = ({ feedingSchedules, animals }: UseFeedingRemindersProps) => {
+  const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+  
+  // Request geolocation once
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          });
+        },
+        (error) => {
+          console.error("Geolocation error in reminders:", error);
+        }
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    // Check weather alerts once a day
+    const checkWeatherAlerts = async () => {
+      if (!location) return;
+      
+      try {
+        const forecast = await getWeatherForecast(location.latitude, location.longitude);
+        const alerts = detectWeatherAlerts(forecast);
+        
+        // Show important weather alerts as toasts
+        for (const alert of alerts) {
+          if (alert.severity === 'high' || alert.severity === 'medium') {
+            toast({
+              title: alert.event,
+              description: alert.description,
+              duration: 10000, // Show for 10 seconds
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Error checking weather alerts:", error);
+      }
+    };
+    
+    // Check weather once when location is available
+    if (location) {
+      checkWeatherAlerts();
+    }
+    
+    // Check weather alerts once a day
+    const weatherCheckInterval = setInterval(() => {
+      if (location) {
+        checkWeatherAlerts();
+      }
+    }, 24 * 60 * 60 * 1000); // 24 hours
+    
+    return () => clearInterval(weatherCheckInterval);
+  }, [location]);
+
   useEffect(() => {
     const checkFeedingReminders = () => {
       const now = new Date();

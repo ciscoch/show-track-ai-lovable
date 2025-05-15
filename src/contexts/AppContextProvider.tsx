@@ -72,7 +72,7 @@ export const useAppProviderState = () => {
     setFeedingSchedules(prev => prev.filter(s => s.id !== scheduleId));
   };
 
-  const completeFeedingTime = (scheduleId: string, timeId: string) => {
+  const completeFeedingTime = (scheduleId: string, timeId: string, locationData = null) => {
     setFeedingSchedules(prev => prev.map(schedule => {
       if (schedule.id === scheduleId) {
         return {
@@ -82,7 +82,8 @@ export const useAppProviderState = () => {
               return {
                 ...time,
                 completed: true,
-                lastCompleted: new Date().toISOString()
+                lastCompleted: new Date().toISOString(),
+                locationData: locationData || time.locationData
               };
             }
             return time;

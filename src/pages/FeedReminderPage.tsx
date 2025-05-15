@@ -10,14 +10,16 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
-import { AlarmClockIcon, PlusIcon, XIcon, CheckIcon, BellIcon } from "lucide-react";
+import { AlarmClockIcon, PlusIcon, XIcon, CheckIcon, BellIcon, MapPinIcon } from "lucide-react";
 import { FeedingSchedule, FeedingTime } from "@/types/models";
 import { Badge } from "@/components/ui/badge";
 import { v4 as uuidv4 } from "uuid";
+import { getWeatherForecast, detectWeatherAlerts, getRecommendedProducts } from "@/services/weatherService";
+import WeatherAlerts from "@/components/weather/WeatherAlerts";
 
 const FeedReminderPage = () => {
   const { animals, feedingSchedules, addFeedingSchedule, updateFeedingSchedule, deleteFeedingSchedule, completeFeedingTime } = useAppContext();
-  const [selectedAnimalId, setSelectedAnimalId] = useState<string>("all"); // Changed from "" to "all"
+  const [selectedAnimalId, setSelectedAnimalId] = useState<string>("all");
   const [newSchedule, setNewSchedule] = useState<Partial<FeedingSchedule>>({
     id: uuidv4(),
     animalId: "",
@@ -31,6 +33,64 @@ const FeedReminderPage = () => {
   const [startMinute, setStartMinute] = useState("00");
   const [endHour, setEndHour] = useState("10");
   const [endMinute, setEndMinute] = useState("00");
+  
+  // Geolocation and weather state
+  const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const [weatherAlerts, setWeatherAlerts] = useState<any[]>([]);
+  const [recommendedProducts, setRecommendedProducts] = useState<any[]>([]);
+  const [isLoadingWeather, setIsLoadingWeather] = useState(false);
+
+  // Request geolocation on component mount
+  useEffect(() => {
+    if (navigator.geolocation) {
+      setIsLoadingWeather(true);
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          });
+          setLocationError(null);
+        },
+        (error) => {
+          setLocationError("Unable to retrieve your location. Weather alerts disabled.");
+          setIsLoadingWeather(false);
+          console.error("Geolocation error:", error);
+        }
+      );
+    } else {
+      setLocationError("Geolocation is not supported by your browser. Weather alerts disabled.");
+      setIsLoadingWeather(false);
+    }
+  }, []);
+
+  // Fetch weather forecast when location is available
+  useEffect(() => {
+    const fetchWeatherData = async () => {
+      if (!location) return;
+      
+      try {
+        const forecast = await getWeatherForecast(location.latitude, location.longitude);
+        const alerts = detectWeatherAlerts(forecast);
+        setWeatherAlerts(alerts);
+        
+        const products = getRecommendedProducts(alerts);
+        setRecommendedProducts(products);
+      } catch (error) {
+        console.error("Error fetching weather data:", error);
+        toast({
+          title: "Weather Data Error",
+          description: "Unable to fetch weather alerts. Please try again later.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoadingWeather(false);
+      }
+    };
+    
+    fetchWeatherData();
+  }, [location]);
 
   // When an animal is selected, filter to its schedules
   useEffect(() => {
@@ -62,6 +122,13 @@ const FeedReminderPage = () => {
       });
       return;
     }
+
+    // Add location data if available
+    const locationData = location ? {
+      latitude: location.latitude,
+      longitude: location.longitude,
+      timestamp: new Date().toISOString(),
+    } : null;
     
     const newFeedingTime: FeedingTime = {
       id: uuidv4(),
@@ -69,6 +136,7 @@ const FeedReminderPage = () => {
       endTime,
       completed: false,
       lastCompleted: null,
+      locationData,
     };
     
     setNewSchedule(prev => ({
@@ -150,7 +218,15 @@ const FeedReminderPage = () => {
   };
 
   const handleMarkAsCompleted = (scheduleId: string, timeId: string) => {
-    completeFeedingTime(scheduleId, timeId);
+    // Add location data when marking as completed
+    const locationData = location ? {
+      latitude: location.latitude,
+      longitude: location.longitude,
+      timestamp: new Date().toISOString(),
+    } : null;
+    
+    completeFeedingTime(scheduleId, timeId, locationData);
+    
     toast({
       title: "Feeding completed",
       description: "Feeding has been marked as completed",
@@ -196,6 +272,29 @@ const FeedReminderPage = () => {
   return (
     <MainLayout title="Feed Reminders">
       <div className="space-y-8">
+        {/* Weather alerts section */}
+        {isLoadingWeather ? (
+          <Card>
+            <CardContent className="flex items-center justify-center py-6">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+                <p className="text-sm text-muted-foreground">Loading weather data...</p>
+              </div>
+            </CardContent>
+          </Card>
+        ) : locationError ? (
+          <Card className="border-dashed">
+            <CardContent className="py-6">
+              <div className="flex items-center justify-center text-muted-foreground">
+                <MapPinIcon className="mr-2 h-5 w-5" />
+                <p className="text-sm">{locationError}</p>
+              </div>
+            </CardContent>
+          </Card>
+        ) : (
+          <WeatherAlerts alerts={weatherAlerts} products={recommendedProducts} />
+        )}
+
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -307,6 +406,11 @@ const FeedReminderPage = () => {
               >
                 <PlusIcon className="h-4 w-4 mr-2" />
                 Add Time Block
+                {location && (
+                  <span className="ml-1 text-xs text-muted-foreground">
+                    (with location data)
+                  </span>
+                )}
               </Button>
               
               {newSchedule.feedingTimes && newSchedule.feedingTimes.length > 0 && (
@@ -315,7 +419,14 @@ const FeedReminderPage = () => {
                   <div className="space-y-2">
                     {newSchedule.feedingTimes.map(time => (
                       <div key={time.id} className="flex items-center justify-between p-2 bg-muted rounded-md">
-                        <span>{formatTime(time.startTime)} - {formatTime(time.endTime)}</span>
+                        <div className="flex flex-col">
+                          <span>{formatTime(time.startTime)} - {formatTime(time.endTime)}</span>
+                          {time.locationData && (
+                            <span className="text-xs text-muted-foreground">
+                              Location data will be stored
+                            </span>
+                          )}
+                        </div>
                         <Button 
                           variant="ghost" 
                           size="icon" 
