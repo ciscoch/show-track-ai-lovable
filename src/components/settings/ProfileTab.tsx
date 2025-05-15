@@ -4,7 +4,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { SaveIcon, UserIcon, MailCheckIcon } from "lucide-react";
+import { SaveIcon, UserIcon, MailCheckIcon, Trash2Icon } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { User } from "@/types/models";
 import { z } from "zod";
@@ -19,6 +19,18 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useNavigate } from "react-router-dom";
 
 const profileSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -33,9 +45,11 @@ interface ProfileTabProps {
 }
 
 const ProfileTab = ({ user }: ProfileTabProps) => {
+  const navigate = useNavigate();
   const [emailVerified, setEmailVerified] = useState(true); // In real app, this would come from user object
   const [isEmailVerificationOpen, setIsEmailVerificationOpen] = useState(false);
   const [newEmail, setNewEmail] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
@@ -87,6 +101,33 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
     // Now update the profile with the new verified email
     const values = form.getValues();
     updateProfile(values);
+  };
+
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true);
+    
+    try {
+      // Simulate API call to delete the account
+      // In a real implementation, this would be an API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      toast({
+        title: "Account deleted",
+        description: "Your account has been permanently deleted.",
+        variant: "destructive"
+      });
+      
+      // Redirect to login page after account deletion
+      navigate("/login");
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete account. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -190,6 +231,49 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
             </CardFooter>
           </form>
         </Form>
+      </Card>
+      
+      {/* Delete Account Section */}
+      <Card className="mt-6 border-destructive/20">
+        <CardHeader>
+          <CardTitle className="text-destructive flex items-center gap-2">
+            <Trash2Icon className="h-5 w-5" />
+            <span>Delete Account</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground mb-4">
+            Permanently delete your account and all associated data. This action cannot be undone.
+          </p>
+          
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" className="flex items-center gap-1">
+                <Trash2Icon className="h-4 w-4" />
+                Delete Account
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action will permanently delete your account and all associated data including your animals, 
+                  weight records, photos, journal entries, and other personal information. This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDeleteAccount}
+                  disabled={isDeleting}
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                >
+                  {isDeleting ? "Deleting..." : "Yes, delete my account"}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </CardContent>
       </Card>
       
       <EmailVerificationModal
