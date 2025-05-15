@@ -124,47 +124,95 @@ const BadgeDisplay = ({ badge, size = "md", showDetails = false }: BadgeDisplayP
     platinum: "bg-indigo-600 border-indigo-700 text-white",
   }[badge.type];
 
+  // Special enhanced styling for the Glow-Up buckle
+  const isGlowUpBuckle = badge.category === "glow-up";
+  
   return (
     <div 
       className="relative group" 
       title={`${badge.name} ${badge.year ? `(${badge.year})` : ''}`}
     >
+      {/* Enhanced badge display */}
       <div 
         className={cn(
           "rounded-full flex items-center justify-center", 
-          sizeClasses[size]
+          sizeClasses[size],
+          isGlowUpBuckle && "overflow-visible"
         )}
       >
-        {/* Base circle with border */}
+        {/* Base circle with ornate border for buckles */}
         <div className={cn(
-          "absolute inset-0 rounded-full border-2",
+          "absolute inset-0 rounded-full",
           {
-            "border-amber-600": badge.type === "bronze",
-            "border-gray-400": badge.type === "silver",
-            "border-yellow-500": badge.type === "gold",
-            "border-indigo-600": badge.type === "platinum",
+            "border-2 border-amber-600": badge.type === "bronze" && !isGlowUpBuckle,
+            "border-2 border-gray-400": badge.type === "silver" && !isGlowUpBuckle,
+            "border-2 border-yellow-500": badge.type === "gold" && !isGlowUpBuckle,
+            "border-2 border-indigo-600": badge.type === "platinum" && !isGlowUpBuckle,
+            "border-[3px] border-yellow-600 shadow-lg": isGlowUpBuckle,
           }
         )}></div>
         
         {/* Badge icon */}
-        <div className="absolute inset-0 rounded-full bg-primary/10 flex items-center justify-center z-10">
-          {React.cloneElement(getBadgeIcon(badge.icon), { className: badgeIconSize[size] })}
+        <div className={cn(
+          "absolute inset-0 rounded-full flex items-center justify-center z-10",
+          {
+            "bg-primary/10": !isGlowUpBuckle,
+            "bg-gradient-to-br from-gray-300 to-gray-400": isGlowUpBuckle
+          }
+        )}>
+          {React.cloneElement(getBadgeIcon(badge.icon), { 
+            className: cn(
+              badgeIconSize[size],
+              isGlowUpBuckle && "text-yellow-500"
+            )
+          })}
         </div>
         
-        {/* Rodeo buckle with year */}
+        {/* Rodeo buckle with year - enhanced for glow-up */}
         {badge.year && (
-          <div className={cn(
-            "absolute -bottom-2 -right-2 flex items-center justify-center",
-            "rounded-full shadow-md transform transition-transform group-hover:scale-110",
-            "border-2 z-20",
-            buckleColor,
-            yearBuckleSize[size]
-          )}>
-            <span className={cn("font-bold", yearTextSize[size])}>
-              {String(badge.year).slice(-2)}
-            </span>
-            {/* Decorative elements for rodeo buckle */}
-            <div className="absolute inset-0 rounded-full border border-white/30"></div>
+          <div 
+            className={cn(
+              "absolute flex items-center justify-center",
+              "rounded-full shadow-md transform transition-transform group-hover:scale-110",
+              "border-2 z-20",
+              isGlowUpBuckle ? "-bottom-3 -right-3" : "-bottom-2 -right-2",
+              isGlowUpBuckle 
+                ? "bg-gradient-to-br from-yellow-400 to-yellow-600 border-yellow-700" 
+                : buckleColor,
+              isGlowUpBuckle 
+                ? {
+                    sm: "h-6 w-6",
+                    md: "h-8 w-8",
+                    lg: "h-9 w-9",
+                  }[size]
+                : yearBuckleSize[size]
+            )}
+          >
+            {isGlowUpBuckle ? (
+              <>
+                {/* Ornate year display for glow-up buckle */}
+                <div className="absolute inset-0 rounded-full border border-yellow-300/30 overflow-hidden">
+                  {/* Decorative elements resembling the uploaded image */}
+                  <div className="absolute inset-x-0 top-0 h-[1px] bg-yellow-300/40"></div>
+                  <div className="absolute inset-x-0 bottom-0 h-[1px] bg-yellow-300/40"></div>
+                </div>
+                <span className={cn(
+                  "font-bold",
+                  isGlowUpBuckle ? "text-yellow-100" : "",
+                  {
+                    sm: "text-[8px]",
+                    md: "text-[10px]",
+                    lg: "text-xs",
+                  }[size]
+                )}>
+                  {String(badge.year).slice(-2)}
+                </span>
+              </>
+            ) : (
+              <span className={cn("font-bold", yearTextSize[size])}>
+                {String(badge.year).slice(-2)}
+              </span>
+            )}
           </div>
         )}
       </div>
