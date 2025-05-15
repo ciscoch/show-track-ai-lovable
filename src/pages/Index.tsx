@@ -76,6 +76,12 @@ const Index = () => {
     <div className="container max-w-7xl mx-auto py-8 px-4">
       <PageHeader user={user} />
       
+      <div className="text-center mb-8">
+        <h2 className="text-2xl md:text-3xl font-semibold italic text-primary">
+          "Measure More. Guess Less. Win Bigger."
+        </h2>
+      </div>
+      
       <MainNavigationMenu />
 
       <Tabs defaultValue="animals" className="w-full">
