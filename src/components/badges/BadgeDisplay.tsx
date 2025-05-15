@@ -78,28 +78,54 @@ const BadgeDisplay = ({ badge, size = "md", showDetails = false }: BadgeDisplayP
   }
 
   const sizeClasses = {
-    sm: "h-6 w-6",
-    md: "h-8 w-8",
-    lg: "h-10 w-10",
+    sm: "h-8 w-8",
+    md: "h-10 w-10",
+    lg: "h-12 w-12",
   };
 
+  // Get buckle color based on badge type
+  const buckleColor = {
+    bronze: "bg-amber-600 border-amber-700 text-white",
+    silver: "bg-gray-400 border-gray-500 text-white",
+    gold: "bg-yellow-500 border-yellow-600 text-white",
+    platinum: "bg-indigo-600 border-indigo-700 text-white",
+  }[badge.type];
+
   return (
-    <div className="relative" title={`${badge.name} ${badge.year ? `(${badge.year})` : ''}`}>
-      <div className={cn("rounded-full p-2 bg-primary/10 flex items-center justify-center", 
-        sizeClasses[size],
-        "border-2", {
-          "border-amber-600": badge.type === "bronze",
-          "border-gray-400": badge.type === "silver",
-          "border-yellow-500": badge.type === "gold",
-          "border-indigo-600": badge.type === "platinum",
-        })}>
-        {getBadgeIcon(badge.icon)}
-      </div>
-      {badge.year && (
-        <div className="absolute -bottom-1 -right-1 text-xs bg-background rounded-full w-4 h-4 flex items-center justify-center border border-gray-200 font-bold">
-          {String(badge.year).slice(-2)}
+    <div 
+      className="relative group" 
+      title={`${badge.name} ${badge.year ? `(${badge.year})` : ''}`}
+    >
+      <div 
+        className={cn(
+          "rounded-full flex items-center justify-center", 
+          sizeClasses[size],
+          "relative"
+        )}
+      >
+        {/* Badge icon */}
+        <div className="absolute inset-0 rounded-full bg-primary/10 flex items-center justify-center z-10">
+          {getBadgeIcon(badge.icon)}
         </div>
-      )}
+        
+        {/* Rodeo buckle background */}
+        {badge.year && (
+          <div className={cn(
+            "absolute -bottom-3 -right-3 flex items-center justify-center",
+            "rounded-full shadow-md transform transition-transform group-hover:scale-110",
+            "border-2",
+            buckleColor
+          )}>
+            <div className="h-6 w-6 flex items-center justify-center">
+              <span className="text-xs font-bold">
+                {String(badge.year).slice(-2)}
+              </span>
+            </div>
+            {/* Decorative elements for rodeo buckle */}
+            <div className="absolute inset-0 rounded-full border-2 border-dashed opacity-50"></div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

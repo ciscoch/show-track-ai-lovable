@@ -17,11 +17,22 @@ interface BadgeNotificationProps {
 }
 
 const BadgeNotification = ({ badge, friendName, friendAvatar, onDismiss }: BadgeNotificationProps) => {
+  // Get badge color class based on type
+  const getBadgeColorClass = (type: Badge["type"]) => {
+    switch (type) {
+      case "bronze": return "text-amber-600";
+      case "silver": return "text-gray-400";
+      case "gold": return "text-yellow-500";
+      case "platinum": return "text-indigo-600";
+      default: return "text-primary";
+    }
+  };
+
   return (
     <Card className="mb-4 animate-fade-in">
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2">
-          <Award className="h-4 w-4 text-primary" />
+          <Award className={`h-4 w-4 ${getBadgeColorClass(badge.type)}`} />
           <span>{friendName} earned a new badge!</span>
         </CardTitle>
         <CardDescription>
@@ -34,12 +45,15 @@ const BadgeNotification = ({ badge, friendName, friendAvatar, onDismiss }: Badge
             <AvatarImage src={friendAvatar || undefined} />
             <AvatarFallback>{friendName.charAt(0)}</AvatarFallback>
           </Avatar>
-          <div>
+          <div className="flex-1">
             <p className="font-medium">
               {badge.name}
               {badge.year && <span className="text-xs ml-1">({badge.year})</span>}
             </p>
             <p className="text-sm text-muted-foreground">{badge.description}</p>
+          </div>
+          <div className="flex-shrink-0">
+            <BadgeDisplay badge={badge} size="sm" />
           </div>
         </div>
       </CardContent>
