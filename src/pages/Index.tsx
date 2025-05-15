@@ -12,6 +12,7 @@ const Index = () => {
   const navigate = useNavigate();
 
   const handleAnimalClick = (animalId: string) => {
+    // Navigate to the animal details page with the overview tab selected
     navigate(`/animal/${animalId}`);
   };
 

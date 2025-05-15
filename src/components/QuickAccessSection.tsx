@@ -76,7 +76,7 @@ const QuickAccessSection = () => {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Set up feeding schedule reminders for your animals
+              Set up feeding schedule reminders for all animals
             </p>
           </CardContent>
         </Card>
