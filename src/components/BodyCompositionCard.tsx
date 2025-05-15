@@ -24,7 +24,7 @@ const BodyCompositionCard = ({ animal }: BodyCompositionCardProps) => {
       <PremiumFeatureBanner
         title="AI Body Composition Analysis"
         description="Unlock AI-powered body composition analysis to track muscle development, fat coverage, and structural correctness."
-        requiredTier="pro"
+        requiredLevel="pro"
         onUpgrade={handleNavigateToSubscriptions}
       />
     );

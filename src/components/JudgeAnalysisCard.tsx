@@ -24,7 +24,7 @@ const JudgeAnalysisCard = ({ animal }: JudgeAnalysisCardProps) => {
       <PremiumFeatureBanner
         title="Judge Trend Analysis"
         description="Get insights on what top judges look for in winning animals and how your animal measures up."
-        requiredTier="elite"
+        requiredLevel="elite"
         onUpgrade={handleNavigateToSubscriptions}
       />
     );

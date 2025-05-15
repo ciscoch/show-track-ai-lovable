@@ -14,9 +14,10 @@ interface Photo {
   id: string;
   animalId: string;
   url: string;
-  caption?: string;
   date: string;
   tags?: string[];
+  caption?: string;
+  title?: string;
 }
 
 interface PhotoGalleryProps {
@@ -104,12 +105,12 @@ const PhotoGallery = ({ photos = placeholderPhotos, animalId, onAddPhoto }: Phot
             >
               <img 
                 src={photo.url} 
-                alt={photo.caption || "Animal photo"} 
+                alt={photo.caption || photo.title || "Animal photo"} 
                 className="w-full h-full object-cover"
               />
-              {photo.caption && (
+              {(photo.caption || photo.title) && (
                 <div className="absolute bottom-0 left-0 right-0 bg-background/75 p-2 truncate">
-                  <p className="text-sm">{photo.caption}</p>
+                  <p className="text-sm">{photo.caption || photo.title}</p>
                 </div>
               )}
             </div>
@@ -126,7 +127,7 @@ const PhotoGallery = ({ photos = placeholderPhotos, animalId, onAddPhoto }: Phot
         <DialogContent className="max-w-3xl h-auto max-h-[80vh]">
           <DialogHeader>
             <DialogTitle className="flex justify-between items-center">
-              <span>{selectedPhoto?.caption || "Photo Details"}</span>
+              <span>{selectedPhoto?.caption || selectedPhoto?.title || "Photo Details"}</span>
               <Button 
                 variant="ghost" 
                 size="icon" 
@@ -141,7 +142,7 @@ const PhotoGallery = ({ photos = placeholderPhotos, animalId, onAddPhoto }: Phot
             <div className="relative max-h-[50vh] overflow-hidden rounded-md">
               <img 
                 src={selectedPhoto?.url} 
-                alt={selectedPhoto?.caption || "Animal photo"} 
+                alt={selectedPhoto?.caption || selectedPhoto?.title || "Animal photo"} 
                 className="w-full h-full object-contain"
               />
             </div>

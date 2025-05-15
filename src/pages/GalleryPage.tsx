@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useAppContext } from "@/contexts/AppContext";
 import MainLayout from "@/components/MainLayout";
@@ -178,12 +177,7 @@ const GalleryPage = () => {
         
         <TabsContent value="all" className="mt-6">
           <PhotoGallery 
-            photos={sortedPhotos.map(photo => ({
-              id: photo.id,
-              url: photo.url,
-              title: photo.title || '',
-              animalName: animals.find(a => a.id === photo.animalId)?.name || ''
-            }))}
+            photos={sortedPhotos}
           />
         </TabsContent>
         
@@ -194,12 +188,7 @@ const GalleryPage = () => {
                 <h3 className="text-lg font-medium">{group.animal.name}</h3>
                 {group.photos.length > 0 ? (
                   <PhotoGallery 
-                    photos={group.photos.map(photo => ({
-                      id: photo.id,
-                      url: photo.url,
-                      title: photo.title || '',
-                      animalName: ''
-                    }))}
+                    photos={group.photos}
                   />
                 ) : (
                   <p className="text-muted-foreground">No photos for this animal.</p>
