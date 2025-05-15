@@ -13,6 +13,8 @@ import ExpensesPage from "@/pages/ExpensesPage";
 import SchedulePage from "@/pages/SchedulePage";
 import UserSettingsPage from "@/pages/UserSettingsPage";
 import FeedReminderPage from "@/pages/FeedReminderPage";
+import SignupPage from "@/pages/SignupPage";
+import LoginPage from "@/pages/LoginPage";
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
         <Route path="/schedule" element={<SchedulePage />} />
         <Route path="/settings" element={<UserSettingsPage />} />
         <Route path="/feed-reminders" element={<FeedReminderPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster />
