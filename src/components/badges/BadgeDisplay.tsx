@@ -1,4 +1,5 @@
 
+import React from "react";
 import { Badge } from "@/types/models";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge as UiBadge } from "@/components/ui/badge";
