@@ -1,4 +1,3 @@
-
 import { useAppContext } from "@/contexts/AppContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { ArrowLeftIcon, CheckIcon, XIcon, ZapIcon, LineChartIcon, Camera3dIcon, BarChart3Icon, BookOpenCheckIcon } from "lucide-react";
+import { ArrowLeftIcon, CheckIcon, XIcon, ZapIcon, LineChartIcon, Camera, BarChart3Icon, BookOpenCheckIcon } from "lucide-react";
 import SubscriptionFeatureCard from "@/components/SubscriptionFeatureCard";
 
 const Subscription = () => {
@@ -184,15 +183,15 @@ const Subscription = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
                   <ul className="space-y-2 text-sm">
                     <li className="flex items-start gap-2">
-                      <Camera3dIcon className="h-4 w-4 mt-0.5 text-accent" />
+                      <Camera className="h-4 w-4 mt-0.5 text-accent" />
                       <span>AI weight estimation from photos</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <Camera3dIcon className="h-4 w-4 mt-0.5 text-accent" />
+                      <Camera className="h-4 w-4 mt-0.5 text-accent" />
                       <span>Muscle mass analysis</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <Camera3dIcon className="h-4 w-4 mt-0.5 text-accent" />
+                      <Camera className="h-4 w-4 mt-0.5 text-accent" />
                       <span>LIDAR body scanning</span>
                     </li>
                     <li className="flex items-start gap-2">
