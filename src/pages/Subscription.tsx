@@ -7,13 +7,31 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { ArrowLeftIcon, CheckIcon, XIcon } from "lucide-react";
+import { ArrowLeftIcon, CheckIcon, XIcon, ZapIcon, LineChartIcon, Camera3dIcon, BarChart3Icon, BookOpenCheckIcon } from "lucide-react";
+import SubscriptionFeatureCard from "@/components/SubscriptionFeatureCard";
 
 const Subscription = () => {
   const { user, userSubscription } = useAppContext();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  
+  const proTierHighlightedFeatures = [
+    "AI weight estimation",
+    "Muscle mass analysis",
+    "LIDAR body scanning", 
+    "Show readiness score",
+    "Feed conversion charts",
+    "Timeline visualization",
+    "Tax record exports"
+  ];
+
+  const eliteTierHighlightedFeatures = [
+    "Judge trend analysis",
+    "Smart feed suggestions",
+    "Pose guidance",
+    "Personalized showmanship tips"
+  ];
   
   const subscriptionPlans = [
     {
@@ -22,15 +40,11 @@ const Subscription = () => {
       price: 0,
       description: "Basic features for getting started",
       features: [
-        { name: "Basic animal profiles", included: true },
-        { name: "Manual weight tracking", included: true },
-        { name: "Simple journal", included: true },
-        { name: "Photo gallery", included: true },
-        { name: "Basic feed log", included: true },
-        { name: "AI weight estimation", included: false },
-        { name: "Muscle mass analysis", included: false },
-        { name: "Judge trend analysis", included: false },
-        { name: "Smart feed suggestions", included: false },
+        "Basic animal profiles",
+        "Manual weight tracking",
+        "Simple journal",
+        "Photo gallery",
+        "Basic feed log"
       ]
     },
     {
@@ -39,18 +53,15 @@ const Subscription = () => {
       price: 9.99,
       description: "Advanced features for serious exhibitors",
       features: [
-        { name: "Basic animal profiles", included: true },
-        { name: "Manual weight tracking", included: true },
-        { name: "Simple journal", included: true },
-        { name: "Photo gallery", included: true },
-        { name: "Basic feed log", included: true },
-        { name: "AI weight estimation", included: true },
-        { name: "Muscle mass analysis", included: true },
-        { name: "LIDAR integration", included: true },
-        { name: "Feed conversion charts", included: true },
-        { name: "Tax record exports", included: true },
-        { name: "Judge trend analysis", included: false },
-        { name: "Smart feed suggestions", included: false },
+        "AI weight estimation",
+        "Muscle mass analysis",
+        "LIDAR body scanning",
+        "Show readiness score",
+        "Feed conversion charts",
+        "Timeline visualization",
+        "Tax record exports",
+        "Advanced journaling",
+        "Everything in Free tier"
       ]
     },
     {
@@ -59,21 +70,12 @@ const Subscription = () => {
       price: 19.99,
       description: "Premium features for champions",
       features: [
-        { name: "Basic animal profiles", included: true },
-        { name: "Manual weight tracking", included: true },
-        { name: "Simple journal", included: true },
-        { name: "Photo gallery", included: true },
-        { name: "Basic feed log", included: true },
-        { name: "AI weight estimation", included: true },
-        { name: "Muscle mass analysis", included: true },
-        { name: "LIDAR integration", included: true },
-        { name: "Feed conversion charts", included: true },
-        { name: "Tax record exports", included: true },
-        { name: "Judge trend analysis", included: true },
-        { name: "Smart feed suggestions", included: true },
-        { name: "Pose guidance", included: true },
-        { name: "Personalized showmanship tips", included: true },
-        { name: "Tax summary exports", included: true },
+        "Judge trend analysis",
+        "Smart feed suggestions",
+        "Pose guidance",
+        "Personalized showmanship tips",
+        "Tax summary exports",
+        "Everything in Pro tier"
       ]
     }
   ];
@@ -132,81 +134,30 @@ const Subscription = () => {
         <TabsContent value="plans">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {subscriptionPlans.map((plan) => (
-              <Card key={plan.id} className={`h-full ${user?.subscriptionLevel === plan.id ? 'border-primary border-2' : ''}`}>
-                {user?.subscriptionLevel === plan.id && (
-                  <div className="absolute top-0 right-4 transform translate-y-[-50%]">
-                    <Badge className="bg-primary">Current Plan</Badge>
-                  </div>
-                )}
-                <CardHeader>
-                  <CardTitle className="flex justify-between items-center">
-                    {plan.title}
-                    <Badge className={
-                      plan.id === 'elite' 
-                        ? 'bg-primary' 
-                        : plan.id === 'pro' 
-                          ? 'bg-accent' 
-                          : 'bg-gray-600'
-                    }>
-                      {plan.id.charAt(0).toUpperCase() + plan.id.slice(1)}
-                    </Badge>
-                  </CardTitle>
-                  <div className="text-3xl font-bold">
-                    ${plan.price === 0 ? '0' : plan.price.toFixed(2)}
-                    <span className="text-sm font-normal text-muted-foreground ml-1">
-                      {plan.price > 0 ? '/month' : ''}
-                    </span>
-                  </div>
-                  <CardDescription>{plan.description}</CardDescription>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <ul className="space-y-2">
-                    {plan.features.map((feature, index) => (
-                      <li key={index} className="flex items-start gap-2">
-                        {feature.included ? (
-                          <CheckIcon className="h-4 w-4 mt-0.5 text-primary" />
-                        ) : (
-                          <XIcon className="h-4 w-4 mt-0.5 text-muted-foreground" />
-                        )}
-                        <span className={feature.included ? '' : 'text-muted-foreground'}>
-                          {feature.name}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-                <CardFooter>
-                  <Button 
-                    className={`w-full ${
-                      plan.id === 'elite' 
-                        ? 'bg-primary hover:bg-primary/90' 
-                        : plan.id === 'pro' 
-                          ? 'bg-accent hover:bg-accent/90' 
-                          : ''
-                    }`}
-                    disabled={user?.subscriptionLevel === plan.id || loading}
-                    onClick={() => handleUpgradeClick(plan.id)}
-                  >
-                    {user?.subscriptionLevel === plan.id
-                      ? 'Current Plan'
-                      : loading
-                        ? 'Processing...'
-                        : user?.subscriptionLevel === 'free'
-                          ? `Upgrade to ${plan.title}`
-                          : user?.subscriptionLevel === 'pro' && plan.id === 'elite'
-                            ? 'Upgrade to Elite'
-                            : user?.subscriptionLevel === 'elite' && plan.id !== 'elite'
-                              ? 'Downgrade to ' + plan.title
-                              : 'Select Plan'}
-                  </Button>
-                </CardFooter>
-              </Card>
+              <SubscriptionFeatureCard
+                key={plan.id}
+                title={plan.title}
+                price={plan.price === 0 ? 'Free' : `$${plan.price.toFixed(2)}`}
+                description={plan.description}
+                features={plan.features}
+                tier={plan.id as 'free' | 'pro' | 'elite'}
+                isCurrentPlan={user?.subscriptionLevel === plan.id}
+                onSelect={() => handleUpgradeClick(plan.id)}
+                buttonText={user?.subscriptionLevel === 'free'
+                  ? `Upgrade to ${plan.title}`
+                  : user?.subscriptionLevel === 'pro' && plan.id === 'elite'
+                    ? 'Upgrade to Elite'
+                    : user?.subscriptionLevel === 'elite' && plan.id !== 'elite'
+                      ? 'Downgrade to ' + plan.title
+                      : 'Select Plan'}
+                highlightedFeatures={plan.id === 'pro' ? proTierHighlightedFeatures : plan.id === 'elite' ? eliteTierHighlightedFeatures : []}
+              />
             ))}
           </div>
           
           <div className="mt-8 bg-muted/20 p-6 rounded-lg">
             <h3 className="text-xl font-bold mb-4">Premium Features Comparison</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <div>
                 <h4 className="font-medium mb-2">Free Plan</h4>
                 <ul className="space-y-2 text-sm">
@@ -225,22 +176,45 @@ const Subscription = () => {
                 </ul>
               </div>
               
-              <div>
-                <h4 className="font-medium mb-2">Pro-only Features</h4>
-                <ul className="space-y-2 text-sm">
-                  <li className="flex items-start gap-2">
-                    <CheckIcon className="h-4 w-4 mt-0.5 text-accent" />
-                    <span>AI weight estimation</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckIcon className="h-4 w-4 mt-0.5 text-accent" />
-                    <span>Muscle mass analysis</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckIcon className="h-4 w-4 mt-0.5 text-accent" />
-                    <span>LIDAR body scanning</span>
-                  </li>
-                </ul>
+              <div className="md:col-span-2">
+                <h4 className="font-medium mb-2 flex items-center">
+                  <ZapIcon className="h-4 w-4 mr-2 text-accent" />
+                  Pro-only Features
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+                  <ul className="space-y-2 text-sm">
+                    <li className="flex items-start gap-2">
+                      <Camera3dIcon className="h-4 w-4 mt-0.5 text-accent" />
+                      <span>AI weight estimation from photos</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Camera3dIcon className="h-4 w-4 mt-0.5 text-accent" />
+                      <span>Muscle mass analysis</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Camera3dIcon className="h-4 w-4 mt-0.5 text-accent" />
+                      <span>LIDAR body scanning</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <BarChart3Icon className="h-4 w-4 mt-0.5 text-accent" />
+                      <span>Show readiness score</span>
+                    </li>
+                  </ul>
+                  <ul className="space-y-2 text-sm">
+                    <li className="flex items-start gap-2">
+                      <LineChartIcon className="h-4 w-4 mt-0.5 text-accent" />
+                      <span>Feed conversion charts</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <LineChartIcon className="h-4 w-4 mt-0.5 text-accent" />
+                      <span>Timeline visualization</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <BookOpenCheckIcon className="h-4 w-4 mt-0.5 text-accent" />
+                      <span>Tax record exports</span>
+                    </li>
+                  </ul>
+                </div>
               </div>
               
               <div>
@@ -257,24 +231,6 @@ const Subscription = () => {
                   <li className="flex items-start gap-2">
                     <CheckIcon className="h-4 w-4 mt-0.5 text-primary" />
                     <span>Personalized show tips</span>
-                  </li>
-                </ul>
-              </div>
-              
-              <div>
-                <h4 className="font-medium mb-2">Coming Soon</h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li className="flex items-start gap-2">
-                    <span className="h-4 w-4 mt-0.5 flex items-center justify-center">⏳</span>
-                    <span>Show calendar integration</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="h-4 w-4 mt-0.5 flex items-center justify-center">⏳</span>
-                    <span>Community forums</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="h-4 w-4 mt-0.5 flex items-center justify-center">⏳</span>
-                    <span>Nutrition prediction AI</span>
                   </li>
                 </ul>
               </div>

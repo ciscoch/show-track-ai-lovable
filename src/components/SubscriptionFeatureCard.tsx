@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { ZapIcon, CrownIcon, SparklesIcon } from "lucide-react";
 
 type SubscriptionTier = 'free' | 'pro' | 'elite';
 
@@ -15,6 +16,7 @@ type SubscriptionFeatureCardProps = {
   isCurrentPlan?: boolean;
   onSelect: () => void;
   buttonText?: string;
+  highlightedFeatures?: string[];
 };
 
 const SubscriptionFeatureCard = ({
@@ -25,12 +27,14 @@ const SubscriptionFeatureCard = ({
   tier,
   isCurrentPlan = false,
   onSelect,
-  buttonText = "Select Plan"
+  buttonText = "Select Plan",
+  highlightedFeatures = []
 }: SubscriptionFeatureCardProps) => {
   // Determine card styling based on the tier and if it's current
   const cardStyles = cn(
     "h-full flex flex-col",
     isCurrentPlan && "border-primary border-2",
+    tier === 'pro' && !isCurrentPlan && "border-accent border-2",
     tier === 'elite' && "shadow-xl",
   );
 
@@ -48,6 +52,13 @@ const SubscriptionFeatureCard = ({
     tier === 'pro' && "bg-accent hover:bg-accent/90",
     tier === 'elite' && "bg-primary hover:bg-primary/90",
   );
+  
+  // Get the appropriate icon based on the tier
+  const TierIcon = tier === 'elite' 
+    ? CrownIcon 
+    : tier === 'pro' 
+      ? ZapIcon 
+      : SparklesIcon;
 
   return (
     <Card className={cardStyles}>
@@ -59,7 +70,10 @@ const SubscriptionFeatureCard = ({
       
       <CardHeader>
         <div className="flex justify-between items-center mb-2">
-          <CardTitle className="text-xl">{title}</CardTitle>
+          <CardTitle className="text-xl flex items-center">
+            <TierIcon className={`h-5 w-5 mr-2 ${tier === 'pro' ? 'text-accent' : tier === 'elite' ? 'text-primary' : 'text-gray-600'}`} />
+            {title}
+          </CardTitle>
           <Badge className={badgeStyles}>
             {tier.charAt(0).toUpperCase() + tier.slice(1)}
           </Badge>
@@ -74,8 +88,16 @@ const SubscriptionFeatureCard = ({
       <CardContent className="flex-1">
         <ul className="space-y-2">
           {features.map((feature, index) => (
-            <li key={index} className="flex items-start">
-              <span className="mr-2 text-primary">✓</span>
+            <li key={index} className={`flex items-start ${highlightedFeatures.includes(feature) ? "font-medium" : ""}`}>
+              <span className={`mr-2 ${highlightedFeatures.includes(feature) 
+                ? tier === 'pro' 
+                  ? "text-accent" 
+                  : tier === 'elite' 
+                    ? "text-primary" 
+                    : "text-green-500"
+                : "text-primary"}`}>
+                {highlightedFeatures.includes(feature) ? "★" : "✓"}
+              </span>
               <span>{feature}</span>
             </li>
           ))}
