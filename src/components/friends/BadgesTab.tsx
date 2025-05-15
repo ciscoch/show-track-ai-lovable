@@ -16,6 +16,7 @@ const mockBadges: BadgeType[] = [
     category: "special",
     type: "gold"
   },
+  // Weight Tracking Badges
   {
     id: "2",
     name: "Weight Tracking Streak - 7 Days",
@@ -26,13 +27,50 @@ const mockBadges: BadgeType[] = [
     type: "bronze"
   },
   {
+    id: "6",
+    name: "Weight Tracking Streak - 14 Days",
+    description: "Logged animal weights for 14 consecutive days",
+    icon: "trophy",
+    earnedAt: "2025-02-17",
+    category: "streak",
+    type: "silver"
+  },
+  {
+    id: "7",
+    name: "Weight Tracking Streak - 30 Days",
+    description: "Logged animal weights for 30 consecutive days",
+    icon: "trophy",
+    earnedAt: null,
+    category: "streak",
+    type: "gold"
+  },
+  // Feed Logging Badges
+  {
     id: "3",
+    name: "Feed Logging Streak - 7 Days",
+    description: "Recorded feeding schedules for 7 consecutive days",
+    icon: "trophy",
+    earnedAt: "2025-02-25",
+    category: "streak",
+    type: "bronze"
+  },
+  {
+    id: "8",
     name: "Feed Logging Streak - 14 Days",
     description: "Recorded feeding schedules for 14 consecutive days",
     icon: "trophy",
     earnedAt: "2025-03-05",
     category: "streak",
     type: "silver"
+  },
+  {
+    id: "9",
+    name: "Feed Logging Streak - 30 Days",
+    description: "Recorded feeding schedules for 30 consecutive days",
+    icon: "trophy",
+    earnedAt: null,
+    category: "streak",
+    type: "gold"
   },
   {
     id: "4",
