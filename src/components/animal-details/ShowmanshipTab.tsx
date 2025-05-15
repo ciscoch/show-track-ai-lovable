@@ -3,6 +3,7 @@ import React from "react";
 import { Animal } from "@/types/models";
 import ShowTipsCard from "@/components/ShowTipsCard";
 import JudgeAnalysisCard from "@/components/JudgeAnalysisCard";
+import JudgeInsightsCard from "@/components/JudgeInsightsCard";
 
 interface ShowmanshipTabProps {
   animal: Animal;
@@ -16,6 +17,7 @@ const ShowmanshipTab = ({ animal }: ShowmanshipTabProps) => {
       <div className="grid grid-cols-1 gap-6">
         <ShowTipsCard animal={animal} />
         <JudgeAnalysisCard animal={animal} />
+        <JudgeInsightsCard animal={animal} />
       </div>
     </div>
   );
