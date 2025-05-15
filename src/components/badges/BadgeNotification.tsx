@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Badge, Friend } from "@/types/models";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Award, Share2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -27,6 +27,8 @@ const BadgeNotification = ({ badge, friendName, friendAvatar, onDismiss }: Badge
       default: return "text-primary";
     }
   };
+
+  const [showDetails, setShowDetails] = useState(false);
 
   return (
     <Card className="mb-4 animate-fade-in">
@@ -53,7 +55,7 @@ const BadgeNotification = ({ badge, friendName, friendAvatar, onDismiss }: Badge
             <p className="text-sm text-muted-foreground">{badge.description}</p>
           </div>
           <div className="flex-shrink-0">
-            <BadgeDisplay badge={badge} size="sm" />
+            <BadgeDisplay badge={badge} size="md" />
           </div>
         </div>
       </CardContent>
@@ -61,9 +63,31 @@ const BadgeNotification = ({ badge, friendName, friendAvatar, onDismiss }: Badge
         <Button variant="ghost" size="sm" onClick={onDismiss}>
           Dismiss
         </Button>
-        <Button variant="outline" size="sm">
-          Congratulate
-        </Button>
+        <Dialog open={showDetails} onOpenChange={setShowDetails}>
+          <DialogTrigger asChild>
+            <Button variant="outline" size="sm">
+              Congratulate
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Congratulate {friendName}</DialogTitle>
+              <DialogDescription>Send a congratulatory message for earning the {badge.name} badge</DialogDescription>
+            </DialogHeader>
+            <div className="p-4 flex justify-center">
+              <BadgeDisplay badge={badge} size="lg" />
+            </div>
+            <Button onClick={() => {
+              toast({
+                title: "Congratulation sent!",
+                description: `You congratulated ${friendName} on earning the ${badge.name} badge!`
+              });
+              setShowDetails(false);
+            }}>
+              Send Congratulations
+            </Button>
+          </DialogContent>
+        </Dialog>
       </CardFooter>
     </Card>
   );

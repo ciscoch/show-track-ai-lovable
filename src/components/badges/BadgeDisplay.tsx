@@ -82,7 +82,25 @@ const BadgeDisplay = ({ badge, size = "md", showDetails = false }: BadgeDisplayP
     md: "h-10 w-10",
     lg: "h-12 w-12",
   };
+  
+  const badgeIconSize = {
+    sm: "h-3 w-3",
+    md: "h-4 w-4",
+    lg: "h-5 w-5",
+  };
 
+  const yearBuckleSize = {
+    sm: "h-5 w-5",
+    md: "h-6 w-6", 
+    lg: "h-7 w-7",
+  };
+
+  const yearTextSize = {
+    sm: "text-[10px]",
+    md: "text-xs",
+    lg: "text-sm",
+  };
+  
   // Get buckle color based on badge type
   const buckleColor = {
     bronze: "bg-amber-600 border-amber-700 text-white",
@@ -99,30 +117,39 @@ const BadgeDisplay = ({ badge, size = "md", showDetails = false }: BadgeDisplayP
       <div 
         className={cn(
           "rounded-full flex items-center justify-center", 
-          sizeClasses[size],
-          "relative"
+          sizeClasses[size]
         )}
       >
+        {/* Base circle with border */}
+        <div className={cn(
+          "absolute inset-0 rounded-full border-2",
+          {
+            "border-amber-600": badge.type === "bronze",
+            "border-gray-400": badge.type === "silver",
+            "border-yellow-500": badge.type === "gold",
+            "border-indigo-600": badge.type === "platinum",
+          }
+        )}></div>
+        
         {/* Badge icon */}
         <div className="absolute inset-0 rounded-full bg-primary/10 flex items-center justify-center z-10">
-          {getBadgeIcon(badge.icon)}
+          {React.cloneElement(getBadgeIcon(badge.icon), { className: badgeIconSize[size] })}
         </div>
         
-        {/* Rodeo buckle background */}
+        {/* Rodeo buckle with year */}
         {badge.year && (
           <div className={cn(
-            "absolute -bottom-3 -right-3 flex items-center justify-center",
+            "absolute -bottom-2 -right-2 flex items-center justify-center",
             "rounded-full shadow-md transform transition-transform group-hover:scale-110",
-            "border-2",
-            buckleColor
+            "border-2 z-20",
+            buckleColor,
+            yearBuckleSize[size]
           )}>
-            <div className="h-6 w-6 flex items-center justify-center">
-              <span className="text-xs font-bold">
-                {String(badge.year).slice(-2)}
-              </span>
-            </div>
+            <span className={cn("font-bold", yearTextSize[size])}>
+              {String(badge.year).slice(-2)}
+            </span>
             {/* Decorative elements for rodeo buckle */}
-            <div className="absolute inset-0 rounded-full border-2 border-dashed opacity-50"></div>
+            <div className="absolute inset-0 rounded-full border border-white/30"></div>
           </div>
         )}
       </div>
