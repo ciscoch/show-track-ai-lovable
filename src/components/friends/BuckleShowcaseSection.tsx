@@ -7,7 +7,7 @@ interface BuckleShowcaseSectionProps {
   title?: string;
 }
 
-const BuckleShowcaseSection = ({ badges, title }: BuckleShowcaseSectionProps) => {
+const BuckleShowcaseSection = ({ badges = [], title }: BuckleShowcaseSectionProps) => {
   // Filter to highlight glow-up buckles first if present
   const sortedBadges = [...badges].sort((a, b) => {
     // Prioritize glow-up buckles

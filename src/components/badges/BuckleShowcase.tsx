@@ -17,12 +17,17 @@ interface BuckleShowcaseProps {
   title?: string;
 }
 
-const BuckleShowcase = ({ badges, title = "My Buckle Collection" }: BuckleShowcaseProps) => {
+const BuckleShowcase = ({ badges = [], title = "My Buckle Collection" }: BuckleShowcaseProps) => {
   // Filter for earned badges only (those with an earnedAt date)
   const earnedBadges = badges.filter(badge => badge.earnedAt);
   
-  // Sort badges by type (platinum, gold, silver, bronze)
+  // Sort badges by type (platinum, gold, silver, bronze) and prioritize glow-up category
   const sortedBadges = [...earnedBadges].sort((a, b) => {
+    // Prioritize glow-up buckles
+    if (a.category === "glow-up" && b.category !== "glow-up") return -1;
+    if (a.category !== "glow-up" && b.category === "glow-up") return 1;
+    
+    // Then by type
     const typeOrder = { platinum: 0, gold: 1, silver: 2, bronze: 3 };
     return typeOrder[a.type] - typeOrder[b.type];
   });
@@ -76,8 +81,12 @@ const BuckleShowcase = ({ badges, title = "My Buckle Collection" }: BuckleShowca
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="left-0" />
-          <CarouselNext className="right-0" />
+          {sortedBadges.length > 1 && (
+            <>
+              <CarouselPrevious className="left-0" />
+              <CarouselNext className="right-0" />
+            </>
+          )}
         </Carousel>
       </div>
     </div>

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Friend, Badge } from "@/types/models";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
+import { mockBadges } from "@/data/mockBadges";
 import FriendCard from "./FriendCard";
 import FriendBadgesDialog from "./FriendBadgesDialog";
 import BadgeNotificationsList from "./BadgeNotificationsList";
@@ -26,44 +27,16 @@ const mockFriends: Friend[] = [
   }
 ];
 
-// Mock badges for each friend
+// Mock badges for each friend - using the same mockBadges data for all friends
 const mockFriendBadges: Record<string, Badge[]> = {
-  "1": [
-    {
-      id: "101",
-      name: "Show Champion",
-      description: "Won first place at a livestock show",
-      icon: "trophy",
-      earnedAt: "2025-02-20",
-      category: "achievement",
-      type: "gold"
-    },
-    {
-      id: "102",
-      name: "Feed Logging Streak - 30 Days",
-      description: "Recorded feeding schedules for 30 consecutive days",
-      icon: "trophy",
-      earnedAt: "2025-01-30",
-      category: "streak",
-      type: "gold"
-    }
-  ],
-  "2": [
-    {
-      id: "201",
-      name: "Early Adopter",
-      description: "One of the first users to join Stock Show Manager",
-      icon: "award",
-      earnedAt: "2025-01-10",
-      category: "special",
-      type: "gold"
-    }
-  ]
+  "1": mockBadges.filter((_, index) => index % 3 === 0), // Subset of badges
+  "2": mockBadges.filter((_, index) => index % 2 === 0), // Different subset
 };
 
 const FriendsList = () => {
   const [friends, setFriends] = useState<Friend[]>(mockFriends);
   const [selectedFriend, setSelectedFriend] = useState<Friend | null>(null);
+  const [selectedFriendBadges, setSelectedFriendBadges] = useState<Badge[]>([]);
   const [showBadges, setShowBadges] = useState(false);
   const [notifications, setNotifications] = useState<{badge: Badge, friend: Friend}[]>([]);
   
@@ -73,6 +46,8 @@ const FriendsList = () => {
   
   const viewFriendBadges = (friend: Friend) => {
     setSelectedFriend(friend);
+    // Set the badges for the selected friend
+    setSelectedFriendBadges(mockFriendBadges[friend.id] || []);
     setShowBadges(true);
   };
   
