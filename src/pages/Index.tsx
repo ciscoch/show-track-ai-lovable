@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -7,7 +6,7 @@ import AnimalCard from "@/components/AnimalCard";
 import SubscriptionFeatureCard from "@/components/SubscriptionFeatureCard";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { GalleryVerticalIcon, WeightIcon, JournalIcon, ChartBarIcon } from "lucide-react";
+import { GalleryVerticalIcon, WeightIcon, BookIcon, ChartBarIcon } from "lucide-react";
 
 const Index = () => {
   const { animals, user, userSubscription } = useAppContext();
@@ -156,7 +155,7 @@ const Index = () => {
                   <Card className="hover:border-primary cursor-pointer" onClick={() => navigate('/journal')}>
                     <CardHeader className="pb-2">
                       <CardTitle className="flex items-center gap-2">
-                        <JournalIcon className="h-5 w-5 text-primary" />
+                        <BookIcon className="h-5 w-5 text-primary" />
                         <span>Journal</span>
                       </CardTitle>
                     </CardHeader>
