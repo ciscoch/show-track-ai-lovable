@@ -12,7 +12,8 @@ import {
   HomeIcon, 
   SettingsIcon, 
   UserIcon, 
-  WeightIcon 
+  WeightIcon,
+  UsersIcon
 } from "lucide-react";
 
 interface MainLayoutProps {
@@ -39,6 +40,7 @@ const MainLayout = ({
     { path: "/gallery", label: "Gallery", icon: GalleryVerticalIcon },
     { path: "/expenses", label: "Expenses", icon: ChartBarIcon },
     { path: "/schedule", label: "Schedule", icon: CalendarIcon },
+    { path: "/friends", label: "Friends", icon: UsersIcon },
     { path: "/settings", label: "Settings", icon: SettingsIcon }
   ];
   

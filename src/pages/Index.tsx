@@ -6,6 +6,8 @@ import PageHeader from "@/components/PageHeader";
 import AnimalsList from "@/components/AnimalsList";
 import EmptyAnimalsState from "@/components/EmptyAnimalsState";
 import SubscriptionPlansSection from "@/components/SubscriptionPlansSection";
+import MainNavigationMenu from "@/components/NavigationMenu";
+import QuickAccessSection from "@/components/QuickAccessSection";
 
 const Index = () => {
   const { animals, user, userSubscription } = useAppContext();
@@ -73,6 +75,8 @@ const Index = () => {
   return (
     <div className="container max-w-7xl mx-auto py-8 px-4">
       <PageHeader user={user} />
+      
+      <MainNavigationMenu />
 
       <Tabs defaultValue="animals" className="w-full">
         <TabsList className="grid w-full grid-cols-2 md:w-auto md:inline-flex">
@@ -104,6 +108,8 @@ const Index = () => {
           />
         </TabsContent>
       </Tabs>
+      
+      <QuickAccessSection />
     </div>
   );
 };
