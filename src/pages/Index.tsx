@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -104,6 +105,13 @@ const Index = () => {
         <TabsContent value="animals" className="pt-6">
           {animals.length > 0 ? (
             <>
+              {/* Add welcome message here */}
+              <div className="mb-6">
+                <h2 className="text-2xl font-semibold text-muted-foreground">
+                  Welcome, {user?.firstName} {user?.lastName}
+                </h2>
+              </div>
+            
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold">Your Animals</h2>
                 <Button onClick={handleAddAnimal}>Add Animal</Button>
@@ -212,6 +220,13 @@ const Index = () => {
             </>
           ) : (
             <div className="text-center py-12">
+              {/* Add welcome message here too for empty state */}
+              <div className="mb-6">
+                <h2 className="text-2xl font-semibold text-muted-foreground">
+                  Welcome, {user?.firstName} {user?.lastName}
+                </h2>
+              </div>
+              
               <div className="rounded-full bg-muted w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                 <span className="text-3xl">🐄</span>
               </div>
