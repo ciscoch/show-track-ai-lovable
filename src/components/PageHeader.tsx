@@ -19,7 +19,7 @@ const PageHeader = ({ user }: PageHeaderProps) => {
         <img 
           src="/lovable-uploads/d119b8a7-7a15-4e8f-810a-9920bdb1b775.png" 
           alt="ShowTrack AI Logo" 
-          className="w-16 h-16 md:w-20 md:h-20"
+          className="w-20 h-20 md:w-24 md:h-24"
         />
         <div>
           <h1 className="text-4xl font-bold">ShowTrack AI</h1>
