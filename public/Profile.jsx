@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import BadgeGallery from "./BadgeGallery";
 import { checkBadgeUnlocks } from "./badgeLogic";
+import { Badge } from "@/types/models";
 
 export default function Profile({ user }) {
   const [unlocked, setUnlocked] = useState(user.unlocked || []);

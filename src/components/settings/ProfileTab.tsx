@@ -6,6 +6,7 @@ import ProfileForm from "./ProfileForm";
 import DeleteAccountSection from "./DeleteAccountSection";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import BuckleShowcase from "@/components/badges/BuckleShowcase";
+import ProfileBadges from "@/components/badges/ProfileBadges";
 import { mockBadges } from "@/data/mockBadges";
 
 interface ProfileTabProps {
@@ -22,7 +23,6 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
   const [emailVerified, setEmailVerified] = useState(true);
   const [isEmailVerificationOpen, setIsEmailVerificationOpen] = useState(false);
   const [newEmail, setNewEmail] = useState("");
-  const [userBadges] = useState(profileBadges);
   
   const handleEmailChange = (email: string) => {
     setNewEmail(email);
@@ -35,6 +35,18 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
     setEmailVerified(true);
   };
 
+  // Create a user object compatible with the legacy badge system
+  const legacyUser = user ? {
+    ...user,
+    unlocked: user.badges?.map(b => b.badgeId) || [],
+    // These fields simulate what the legacy system expects
+    muscleGain: 20, // Example value to trigger the muscle_up badge
+    photos: Array(15).fill({}), // Example to trigger glow_up badge
+    mentorTags: ['user1', 'user2', 'user3'], // For mentor badge
+    shows: [{ id: 'show1', name: 'First Show' }], // For ring_debut badge
+    placements: [{ place: 2, show: 'Show Championship' }] // For top_3_finisher badge
+  } : null;
+
   return (
     <>
       <ProfileForm 
@@ -43,19 +55,11 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
         onEmailChange={handleEmailChange}
       />
       
-      <Card className="mt-6">
-        <CardHeader>
-          <CardTitle>My Buckle Collection</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <BuckleShowcase badges={userBadges} />
-          <div className="flex justify-end mt-4">
-            <a href="/friends?tab=badges" className="text-sm text-primary hover:underline">
-              View all badges
-            </a>
-          </div>
-        </CardContent>
-      </Card>
+      {legacyUser && (
+        <div className="mt-6">
+          <ProfileBadges user={legacyUser} />
+        </div>
+      )}
       
       <DeleteAccountSection />
       
