@@ -17,7 +17,7 @@ const LegacyBadgeAdapter = ({ badgeIds = [], user }: LegacyBadgeAdapterProps) =>
   
   useEffect(() => {
     // Import the legacy badge list dynamically to avoid bundling issues
-    import("/public/badgeList").then(({ badgeList }) => {
+    import("../../../public/badgeList").then(({ badgeList }) => {
       // Convert legacy badges to the modern Badge format
       const modernBadges: Badge[] = badgeIds.map(id => {
         const legacyBadge = badgeList.find((b: any) => b.id === id);

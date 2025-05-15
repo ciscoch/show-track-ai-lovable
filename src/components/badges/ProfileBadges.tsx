@@ -12,7 +12,7 @@ const ProfileBadges = ({ user }: ProfileBadgesProps) => {
   
   useEffect(() => {
     // Import the legacy badge logic to check for unlocked badges
-    import("/public/badgeLogic").then(({ checkBadgeUnlocks }) => {
+    import("../../../public/badgeLogic").then(({ checkBadgeUnlocks }) => {
       checkBadgeUnlocks(user, (newUnlocked: string[]) => {
         setUnlockedBadges(newUnlocked);
       });
