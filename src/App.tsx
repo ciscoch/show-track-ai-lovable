@@ -16,6 +16,7 @@ import FeedReminderPage from "@/pages/FeedReminderPage";
 import SignupPage from "@/pages/SignupPage";
 import LoginPage from "@/pages/LoginPage";
 import FriendsPage from "@/pages/FriendsPage";
+import UploadsPage from "@/pages/UploadsPage";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
         <Route path="/friends" element={<FriendsPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/uploads" element={<UploadsPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster />
