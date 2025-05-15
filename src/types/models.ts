@@ -1,3 +1,4 @@
+
 export interface Animal {
   id: string;
   name: string;
@@ -123,6 +124,12 @@ export interface FeedingTime {
   endTime: string;
   completed: boolean;
   lastCompleted: string | null;
+  // Add locationData property
+  locationData?: {
+    latitude: number;
+    longitude: number;
+    timestamp: string;
+  } | null;
 }
 
 export interface FeedingSchedule {

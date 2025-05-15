@@ -24,6 +24,6 @@ export type AppContextType = {
   addFeedingSchedule: (schedule: FeedingSchedule) => void;
   updateFeedingSchedule: (schedule: FeedingSchedule) => void;
   deleteFeedingSchedule: (scheduleId: string) => void;
-  completeFeedingTime: (scheduleId: string, timeId: string) => void;
+  completeFeedingTime: (scheduleId: string, timeId: string, locationData?: {latitude: number; longitude: number; timestamp: string} | null) => void;
   refreshData: () => void;
 };
