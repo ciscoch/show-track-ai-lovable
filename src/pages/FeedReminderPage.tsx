@@ -17,7 +17,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const FeedReminderPage = () => {
   const { animals, feedingSchedules, addFeedingSchedule, updateFeedingSchedule, deleteFeedingSchedule, completeFeedingTime } = useAppContext();
-  const [selectedAnimalId, setSelectedAnimalId] = useState<string>("");
+  const [selectedAnimalId, setSelectedAnimalId] = useState<string>("all"); // Changed from "" to "all"
   const [newSchedule, setNewSchedule] = useState<Partial<FeedingSchedule>>({
     id: uuidv4(),
     animalId: "",
@@ -34,7 +34,7 @@ const FeedReminderPage = () => {
 
   // When an animal is selected, filter to its schedules
   useEffect(() => {
-    if (selectedAnimalId) {
+    if (selectedAnimalId && selectedAnimalId !== "all") {
       setNewSchedule(prev => ({ ...prev, animalId: selectedAnimalId }));
     }
   }, [selectedAnimalId]);
@@ -158,7 +158,7 @@ const FeedReminderPage = () => {
   };
 
   const getAnimalSchedules = () => {
-    if (!selectedAnimalId) return feedingSchedules;
+    if (!selectedAnimalId || selectedAnimalId === "all") return feedingSchedules;
     return feedingSchedules.filter(schedule => schedule.animalId === selectedAnimalId);
   };
 
@@ -376,7 +376,7 @@ const FeedReminderPage = () => {
                 <SelectValue placeholder="Filter by animal" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All animals</SelectItem>
+                <SelectItem value="all">All animals</SelectItem> {/* Changed from "" to "all" */}
                 {animals.map(animal => (
                   <SelectItem key={animal.id} value={animal.id}>{animal.name}</SelectItem>
                 ))}
