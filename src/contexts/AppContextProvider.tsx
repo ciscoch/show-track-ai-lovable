@@ -1,4 +1,3 @@
-
 import { useState, useEffect, ReactNode } from "react";
 import { Animal, WeightEntry, JournalEntry, Expense, User, FeedingSchedule } from "@/types/models";
 import { 
@@ -30,7 +29,7 @@ export const useAppProviderState = () => {
   const userSubscription = subscriptionLevels[user?.subscriptionLevel || 'free'];
 
   // Handle feeding reminders
-  useFeedingReminders({ feedingSchedules, animals });
+  useFeedingReminders({ feedingSchedules, animals, user });
 
   const addAnimal = (animal: Animal) => {
     setAnimals(prev => [...prev, animal]);

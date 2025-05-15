@@ -1,18 +1,17 @@
 
 import { useEffect, useState } from 'react';
-import { FeedingSchedule, Animal } from '@/types/models';
+import { FeedingSchedule, Animal, User } from '@/types/models';
 import { toast } from "@/hooks/use-toast";
 import { getWeatherForecast, detectWeatherAlerts } from '@/services/weatherService';
-import { useAppContext } from '@/contexts/AppContext';
 
 interface UseFeedingRemindersProps {
   feedingSchedules: FeedingSchedule[];
   animals: Animal[];
+  user: User | null;
 }
 
-export const useFeedingReminders = ({ feedingSchedules, animals }: UseFeedingRemindersProps) => {
+export const useFeedingReminders = ({ feedingSchedules, animals, user }: UseFeedingRemindersProps) => {
   const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
-  const { user } = useAppContext();
   
   // Check if the user has weather alert access (pro or elite subscription)
   const hasWeatherAccess = user?.subscriptionLevel === 'pro' || user?.subscriptionLevel === 'elite';

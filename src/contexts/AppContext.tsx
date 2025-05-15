@@ -1,9 +1,7 @@
 
 import { createContext, useContext } from "react";
 import { AppContextType } from "./AppContextTypes";
-import { AppProvider as AppProviderComponent, useAppProviderState } from "./AppContextProvider";
-
-export { AppProvider as AppProviderComponent } from "./AppContextProvider";
+import { useAppProviderState } from "./AppContextProvider";
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
