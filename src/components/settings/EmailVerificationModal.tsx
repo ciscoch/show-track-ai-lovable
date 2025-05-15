@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,13 +9,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/hooks/use-toast";
-import { 
-  InputOTP, 
-  InputOTPGroup, 
-  InputOTPSlot 
-} from "@/components/ui/input-otp";
 import { Loader2 } from "lucide-react";
+import VerificationCodeInput from "./VerificationCodeInput";
+import { useEmailVerification } from "@/hooks/useEmailVerification";
 
 interface EmailVerificationModalProps {
   email: string;
@@ -30,74 +26,14 @@ const EmailVerificationModal = ({
   onClose,
   onVerified,
 }: EmailVerificationModalProps) => {
-  const [code, setCode] = useState("");
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [isResending, setIsResending] = useState(false);
-  
-  // In a real implementation, this would send a request to your backend
-  const handleResendCode = async () => {
-    setIsResending(true);
-    
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      toast({
-        title: "Verification code sent",
-        description: `A new verification code has been sent to ${email}`,
-      });
-    } catch (error) {
-      toast({
-        title: "Failed to send verification code",
-        description: "Please try again later",
-        variant: "destructive",
-      });
-    } finally {
-      setIsResending(false);
-    }
-  };
-  
-  // In a real implementation, this would send the code to your backend for verification
-  const handleVerify = async () => {
-    if (code.length !== 6) {
-      toast({
-        title: "Invalid code",
-        description: "Please enter the 6-digit verification code",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    setIsVerifying(true);
-    
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Simulate successful verification
-      if (code === "123456") { // In real app, server would validate this
-        toast({
-          title: "Email verified",
-          description: "Your email has been successfully verified",
-        });
-        onVerified();
-      } else {
-        toast({
-          title: "Invalid verification code",
-          description: "Please check the code and try again",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      toast({
-        title: "Verification failed",
-        description: "Please try again later",
-        variant: "destructive",
-      });
-    } finally {
-      setIsVerifying(false);
-    }
-  };
+  const {
+    code,
+    setCode,
+    isVerifying,
+    isResending,
+    handleVerify,
+    handleResendCode
+  } = useEmailVerification(email, onVerified);
   
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -110,38 +46,12 @@ const EmailVerificationModal = ({
           </DialogDescription>
         </DialogHeader>
         
-        <div className="flex flex-col items-center space-y-4 py-4">
-          <InputOTP maxLength={6} value={code} onChange={setCode}>
-            <InputOTPGroup>
-              <InputOTPSlot index={0} />
-              <InputOTPSlot index={1} />
-              <InputOTPSlot index={2} />
-              <InputOTPSlot index={3} />
-              <InputOTPSlot index={4} />
-              <InputOTPSlot index={5} />
-            </InputOTPGroup>
-          </InputOTP>
-          
-          <p className="text-sm text-muted-foreground">
-            Didn't receive the code?{" "}
-            <Button 
-              variant="link" 
-              size="sm" 
-              className="p-0 h-auto" 
-              onClick={handleResendCode} 
-              disabled={isResending}
-            >
-              {isResending ? (
-                <>
-                  <Loader2 className="mr-2 h-3 w-3 animate-spin" />
-                  Resending...
-                </>
-              ) : (
-                "Resend"
-              )}
-            </Button>
-          </p>
-        </div>
+        <VerificationCodeInput
+          code={code}
+          setCode={setCode}
+          isResending={isResending}
+          onResendCode={handleResendCode}
+        />
         
         <DialogFooter className="flex space-x-2 sm:justify-between">
           <Button variant="outline" onClick={onClose}>
