@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Badge as BadgeType } from "@/types/models";
 import BadgeDisplay from "@/components/badges/BadgeDisplay";
@@ -161,6 +160,37 @@ const mockBadges: BadgeType[] = [
     earnedAt: null,
     category: "champion",
     type: "platinum",
+    year: 2025
+  },
+  // New Education and Skill Buckles
+  {
+    id: "16",
+    name: "Feed Smart Buckle",
+    description: "Complete 5 feed plan challenges",
+    icon: "book",
+    earnedAt: "2025-04-25",
+    category: "feed-smart",
+    type: "silver",
+    year: 2025
+  },
+  {
+    id: "17",
+    name: "Showmanship Scholar",
+    description: "Watch 10 showmanship tip videos",
+    icon: "file-text",
+    earnedAt: "2025-05-01",
+    category: "showmanship-scholar",
+    type: "gold",
+    year: 2025
+  },
+  {
+    id: "18",
+    name: "Quiz Master Buckle",
+    description: "Score 100% on 3 livestock judging quizzes",
+    icon: "file-check",
+    earnedAt: null,
+    category: "quiz-master",
+    type: "bronze",
     year: 2025
   }
 ];

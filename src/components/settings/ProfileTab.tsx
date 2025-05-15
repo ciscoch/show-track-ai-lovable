@@ -73,6 +73,26 @@ const mockUserBadges: Badge[] = [
     category: "top-3",
     type: "silver",
     year: 2025
+  },
+  {
+    id: "16",
+    name: "Feed Smart Buckle",
+    description: "Complete 5 feed plan challenges",
+    icon: "book",
+    earnedAt: "2025-04-25",
+    category: "feed-smart",
+    type: "silver",
+    year: 2025
+  },
+  {
+    id: "17",
+    name: "Showmanship Scholar",
+    description: "Watch 10 showmanship tip videos",
+    icon: "file-text",
+    earnedAt: "2025-05-10", 
+    category: "showmanship-scholar",
+    type: "gold",
+    year: 2025
   }
 ];
 

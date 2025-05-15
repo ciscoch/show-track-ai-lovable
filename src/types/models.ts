@@ -1,5 +1,6 @@
 
 
+
 export interface Animal {
   id: string;
   name: string;
@@ -83,7 +84,7 @@ export interface Badge {
   description: string;
   icon: string;
   earnedAt: string | null;
-  category: "achievement" | "streak" | "participation" | "special" | "muscle-up" | "glow-up" | "body-boss" | "ring-debut" | "top-3" | "champion";
+  category: "achievement" | "streak" | "participation" | "special" | "muscle-up" | "glow-up" | "body-boss" | "ring-debut" | "top-3" | "champion" | "feed-smart" | "showmanship-scholar" | "quiz-master";
   type: "bronze" | "silver" | "gold" | "platinum";
   year?: number; // Added year field to make badges/buckles unique by year
 }
@@ -138,4 +139,5 @@ export interface FeedingSchedule {
 
 // Alias for backward compatibility
 export type ExpenseEntry = Expense;
+
 
