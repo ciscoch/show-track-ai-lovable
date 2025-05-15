@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { FeedingSchedule, Animal } from '@/types/models';
 import { toast } from "@/hooks/use-toast";
 import { getWeatherForecast, detectWeatherAlerts } from '@/services/weatherService';
+import { useAppContext } from '@/contexts/AppContext';
 
 interface UseFeedingRemindersProps {
   feedingSchedules: FeedingSchedule[];
@@ -11,10 +12,14 @@ interface UseFeedingRemindersProps {
 
 export const useFeedingReminders = ({ feedingSchedules, animals }: UseFeedingRemindersProps) => {
   const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+  const { user } = useAppContext();
+  
+  // Check if the user has weather alert access (pro or elite subscription)
+  const hasWeatherAccess = user?.subscriptionLevel === 'pro' || user?.subscriptionLevel === 'elite';
   
   // Request geolocation once
   useEffect(() => {
-    if (navigator.geolocation) {
+    if (navigator.geolocation && hasWeatherAccess) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           setLocation({
@@ -27,12 +32,12 @@ export const useFeedingReminders = ({ feedingSchedules, animals }: UseFeedingRem
         }
       );
     }
-  }, []);
+  }, [hasWeatherAccess]);
 
   useEffect(() => {
     // Check weather alerts once a day
     const checkWeatherAlerts = async () => {
-      if (!location) return;
+      if (!location || !hasWeatherAccess) return;
       
       try {
         const forecast = await getWeatherForecast(location.latitude, location.longitude);
@@ -54,19 +59,19 @@ export const useFeedingReminders = ({ feedingSchedules, animals }: UseFeedingRem
     };
     
     // Check weather once when location is available
-    if (location) {
+    if (location && hasWeatherAccess) {
       checkWeatherAlerts();
     }
     
     // Check weather alerts once a day
     const weatherCheckInterval = setInterval(() => {
-      if (location) {
+      if (location && hasWeatherAccess) {
         checkWeatherAlerts();
       }
     }, 24 * 60 * 60 * 1000); // 24 hours
     
     return () => clearInterval(weatherCheckInterval);
-  }, [location]);
+  }, [location, hasWeatherAccess]);
 
   useEffect(() => {
     const checkFeedingReminders = () => {

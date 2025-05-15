@@ -21,9 +21,13 @@ export const FeedingTimesList = ({ feedingTimes, onRemoveFeedingTime }: FeedingT
           <div key={time.id} className="flex items-center justify-between p-2 bg-muted rounded-md">
             <div className="flex flex-col">
               <span>{formatTime(time.startTime)} - {formatTime(time.endTime)}</span>
-              {time.locationData && (
+              {time.locationData ? (
                 <span className="text-xs text-muted-foreground">
                   Location data will be stored
+                </span>
+              ) : (
+                <span className="text-xs text-muted-foreground">
+                  No location data (Pro/Elite feature)
                 </span>
               )}
             </div>

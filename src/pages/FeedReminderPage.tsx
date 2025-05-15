@@ -5,6 +5,8 @@ import MainLayout from "@/components/MainLayout";
 import { toast } from "@/hooks/use-toast";
 import { v4 as uuidv4 } from "uuid";
 import { getWeatherForecast, detectWeatherAlerts } from "@/services/weatherService";
+import PremiumFeatureBanner from "@/components/PremiumFeatureBanner";
+import { useNavigate } from "react-router-dom";
 
 // Import refactored components
 import { ScheduleForm } from "@/components/feeding/ScheduleForm";
@@ -19,9 +21,11 @@ const FeedReminderPage = () => {
     addFeedingSchedule, 
     updateFeedingSchedule, 
     deleteFeedingSchedule, 
-    completeFeedingTime 
+    completeFeedingTime,
+    user
   } = useAppContext();
   
+  const navigate = useNavigate();
   const [selectedAnimalId, setSelectedAnimalId] = useState<string>("all");
   const [editingSchedule, setEditingSchedule] = useState<any>(null);
   
@@ -32,9 +36,12 @@ const FeedReminderPage = () => {
   const [recommendedProducts, setRecommendedProducts] = useState<any[]>([]);
   const [isLoadingWeather, setIsLoadingWeather] = useState(false);
 
+  // Check if the user has a premium subscription (pro or elite)
+  const hasWeatherAccess = user?.subscriptionLevel === 'pro' || user?.subscriptionLevel === 'elite';
+
   // Request geolocation on component mount
   useEffect(() => {
-    if (navigator.geolocation) {
+    if (navigator.geolocation && hasWeatherAccess) {
       setIsLoadingWeather(true);
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -50,16 +57,19 @@ const FeedReminderPage = () => {
           console.error("Geolocation error:", error);
         }
       );
+    } else if (!hasWeatherAccess) {
+      setLocationError(null);
+      setIsLoadingWeather(false);
     } else {
       setLocationError("Geolocation is not supported by your browser. Weather alerts disabled.");
       setIsLoadingWeather(false);
     }
-  }, []);
+  }, [hasWeatherAccess]);
 
   // Fetch weather forecast when location is available
   useEffect(() => {
     const fetchWeatherData = async () => {
-      if (!location) return;
+      if (!location || !hasWeatherAccess) return;
       
       try {
         const forecast = await getWeatherForecast(location.latitude, location.longitude);
@@ -81,7 +91,7 @@ const FeedReminderPage = () => {
     };
     
     fetchWeatherData();
-  }, [location]);
+  }, [location, hasWeatherAccess]);
 
   // When an animal is selected, filter to its schedules
   useEffect(() => {
@@ -133,6 +143,10 @@ const FeedReminderPage = () => {
       title: "Feeding completed",
       description: "Feeding has been marked as completed",
     });
+  };
+
+  const handleUpgradeClick = () => {
+    navigate('/subscription');
   };
 
   const getRecommendedProducts = (alerts: any[]) => {
@@ -193,11 +207,23 @@ const FeedReminderPage = () => {
   return (
     <MainLayout title="Feed Reminders">
       <div className="space-y-8">
-        {/* Weather alerts section */}
-        <LocationStatus isLoading={isLoadingWeather} error={locationError} />
-        
-        {!isLoadingWeather && !locationError && (
-          <WeatherAlerts alerts={weatherAlerts} products={recommendedProducts} />
+        {/* Weather alerts section - Premium feature */}
+        {!hasWeatherAccess ? (
+          <PremiumFeatureBanner
+            title="Weather Alerts"
+            description="Receive weather alerts and recommended products for your animals based on your location. Upgrade to Pro or Elite to access this feature."
+            requiredLevel="pro"
+            onUpgrade={handleUpgradeClick}
+            currentLevel={user?.subscriptionLevel || 'free'}
+          />
+        ) : (
+          <>
+            <LocationStatus isLoading={isLoadingWeather} error={locationError} />
+            
+            {!isLoadingWeather && !locationError && (
+              <WeatherAlerts alerts={weatherAlerts} products={recommendedProducts} />
+            )}
+          </>
         )}
 
         {/* Schedule form */}
@@ -206,7 +232,7 @@ const FeedReminderPage = () => {
           selectedAnimalId={selectedAnimalId}
           onSave={handleSaveSchedule}
           initialSchedule={editingSchedule}
-          location={location}
+          location={hasWeatherAccess ? location : null}
         />
         
         {/* Schedules list */}
