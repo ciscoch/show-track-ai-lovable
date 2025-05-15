@@ -3,9 +3,11 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeftIcon, PencilIcon } from "lucide-react";
+import { ArrowLeftIcon, PencilIcon, CameraIcon } from "lucide-react";
 import { Animal } from "@/types/models";
 import { calculateAge } from "@/lib/utils";
+import { useAppContext } from "@/contexts/AppContext";
+import ImageUploadButton from "@/components/ImageUploadButton";
 
 interface AnimalHeaderProps {
   animal: Animal;
@@ -13,6 +15,7 @@ interface AnimalHeaderProps {
 
 const AnimalHeader = ({ animal }: AnimalHeaderProps) => {
   const navigate = useNavigate();
+  const { updateAnimal } = useAppContext();
   
   const handleEditAnimal = () => {
     navigate(`/animal/${animal.id}/edit`);
@@ -20,6 +23,36 @@ const AnimalHeader = ({ animal }: AnimalHeaderProps) => {
   
   const handleBack = () => {
     navigate('/');
+  };
+
+  const handleImageUpload = async (file: File) => {
+    try {
+      // Create a data URL from the file
+      const reader = new FileReader();
+      
+      const imageUrl = await new Promise<string>((resolve, reject) => {
+        reader.onload = (e) => {
+          if (e.target?.result) {
+            resolve(e.target.result as string);
+          } else {
+            reject(new Error('Failed to read file'));
+          }
+        };
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+      });
+      
+      // Update animal with new image
+      const updatedAnimal = {
+        ...animal,
+        imageUrl: imageUrl
+      };
+      
+      updateAnimal(updatedAnimal);
+    } catch (error) {
+      console.error("Error processing image:", error);
+      throw error;
+    }
   };
 
   return (
@@ -36,12 +69,21 @@ const AnimalHeader = ({ animal }: AnimalHeaderProps) => {
       <div className="flex flex-col md:flex-row justify-between items-start gap-6 mb-8">
         <div className="flex-1">
           <div className="flex flex-wrap items-start gap-4">
-            <div className="w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-primary">
+            <div className="relative w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-primary">
               <img 
                 src={animal.imageUrl || animal.image || '/placeholder.svg'} 
                 alt={animal.name} 
                 className="w-full h-full object-cover"
               />
+              
+              <ImageUploadButton
+                onImageSelected={handleImageUpload}
+                className="absolute inset-0 bg-black/0 hover:bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"
+              >
+                <div className="bg-black/70 text-white rounded-full p-2 hover:bg-black/90 transition-colors">
+                  <CameraIcon className="w-5 h-5" />
+                </div>
+              </ImageUploadButton>
             </div>
             
             <div className="flex-1">

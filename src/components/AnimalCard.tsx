@@ -4,6 +4,9 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { capitalizeFirstLetter } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
+import { useAppContext } from "@/contexts/AppContext";
+import ImageUploadButton from "./ImageUploadButton";
+import { CameraIcon } from "lucide-react";
 
 type AnimalCardProps = {
   animal: Animal;
@@ -22,11 +25,47 @@ const getSpeciesEmoji = (species: Animal['species']) => {
 
 const AnimalCard = ({ animal, onClick }: AnimalCardProps) => {
   const navigate = useNavigate();
+  const { updateAnimal } = useAppContext();
   const age = animal.birthdate ? Math.floor((new Date().getTime() - new Date(animal.birthdate).getTime()) / (1000 * 60 * 60 * 24 * 30.44)) : 0;
   
-  const handleCardClick = () => {
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Prevent card click when clicking on the upload button
+    if ((e.target as Element).closest('.animal-card-upload-btn')) {
+      e.stopPropagation();
+      return;
+    }
     onClick(animal);
     navigate(`/animal/${animal.id}`);
+  };
+
+  const handleImageUpload = async (file: File) => {
+    try {
+      // Create a data URL from the file
+      const reader = new FileReader();
+      
+      const imageUrl = await new Promise<string>((resolve, reject) => {
+        reader.onload = (e) => {
+          if (e.target?.result) {
+            resolve(e.target.result as string);
+          } else {
+            reject(new Error('Failed to read file'));
+          }
+        };
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+      });
+      
+      // Update animal with new image
+      const updatedAnimal = {
+        ...animal,
+        imageUrl: imageUrl
+      };
+      
+      updateAnimal(updatedAnimal);
+    } catch (error) {
+      console.error("Error processing image:", error);
+      throw error;
+    }
   };
   
   return (
@@ -43,7 +82,20 @@ const AnimalCard = ({ animal, onClick }: AnimalCardProps) => {
         <div className="absolute top-2 right-2">
           <Badge className="bg-primary hover:bg-primary/90">{capitalizeFirstLetter(animal.species)}</Badge>
         </div>
+        
+        {/* Upload button overlay */}
+        <div className="animal-card-upload-btn absolute inset-0 bg-black/0 hover:bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+          <ImageUploadButton
+            onImageSelected={handleImageUpload}
+            className="z-10"
+          >
+            <div className="bg-black/70 text-white rounded-full p-3 hover:bg-black/90 transition-colors">
+              <CameraIcon className="w-6 h-6" />
+            </div>
+          </ImageUploadButton>
+        </div>
       </div>
+      
       <CardHeader className="p-4 pb-2">
         <CardTitle className="flex items-center gap-2">
           <span>{getSpeciesEmoji(animal.species)}</span>
