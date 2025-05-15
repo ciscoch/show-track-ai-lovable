@@ -37,9 +37,9 @@ const mockBadges: BadgeType[] = [
   {
     id: "4",
     name: "Master Tracker",
-    description: "Logged expenses for 30 consecutive days",
+    description: "Logged expenses at least once per week for 30 consecutive days",
     icon: "trophy",
-    earnedAt: "2025-04-01",
+    earnedAt: "2025-03-31",
     category: "streak",
     type: "gold"
   },
