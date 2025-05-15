@@ -23,7 +23,7 @@ const PageHeader = ({ user }: PageHeaderProps) => {
         />
         <div>
           <h1 className="text-4xl font-bold">ShowTrack AI</h1>
-          <p className="text-muted-foreground">The champion's choice for livestock tracking</p>
+          <p className="text-muted-foreground">Built for Champions. Wired with Data. Raised on Grit.</p>
           <p className="text-sm font-medium text-primary-foreground/80 mt-1 italic">
             "Measure More. Guess Less. Win Bigger."
           </p>
