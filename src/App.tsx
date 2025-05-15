@@ -10,6 +10,12 @@ import NotFound from "./pages/NotFound";
 import AddAnimal from "./pages/AddAnimal";
 import AnimalDetails from "./pages/AnimalDetails";
 import Subscription from "./pages/Subscription";
+import WeightTrackingPage from "./pages/WeightTrackingPage";
+import JournalPage from "./pages/JournalPage";
+import GalleryPage from "./pages/GalleryPage";
+import ExpensesPage from "./pages/ExpensesPage";
+import SchedulePage from "./pages/SchedulePage";
+import UserSettingsPage from "./pages/UserSettingsPage";
 
 const queryClient = new QueryClient();
 
@@ -24,7 +30,13 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/add-animal" element={<AddAnimal />} />
             <Route path="/animal/:animalId" element={<AnimalDetails />} />
+            <Route path="/weights" element={<WeightTrackingPage />} />
+            <Route path="/journal" element={<JournalPage />} />
+            <Route path="/gallery" element={<GalleryPage />} />
+            <Route path="/expenses" element={<ExpensesPage />} />
+            <Route path="/schedule" element={<SchedulePage />} />
             <Route path="/subscription" element={<Subscription />} />
+            <Route path="/settings" element={<UserSettingsPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
