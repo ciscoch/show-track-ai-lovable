@@ -8,6 +8,9 @@ import EmptyAnimalsState from "@/components/EmptyAnimalsState";
 import SubscriptionPlansSection from "@/components/SubscriptionPlansSection";
 import MainNavigationMenu from "@/components/NavigationMenu";
 import QuickAccessSection from "@/components/QuickAccessSection";
+import WelcomeMessage from "@/components/WelcomeMessage";
+import { Button } from "@/components/ui/button";
+import { LogInIcon } from "lucide-react";
 
 const Index = () => {
   const { animals, user, userSubscription } = useAppContext();
@@ -24,6 +27,10 @@ const Index = () => {
 
   const handleUpgradeSubscription = (tier: string) => {
     navigate('/subscription');
+  };
+
+  const handleLoginClick = () => {
+    navigate('/login');
   };
 
   const subscriptionPlans = [
@@ -75,6 +82,19 @@ const Index = () => {
   return (
     <div className="container max-w-7xl mx-auto py-8 px-4">
       <PageHeader user={user} />
+      
+      {!user && (
+        <div className="flex justify-end mb-4">
+          <Button 
+            variant="default" 
+            onClick={handleLoginClick}
+            className="flex items-center gap-2"
+          >
+            <LogInIcon className="h-4 w-4" />
+            Login
+          </Button>
+        </div>
+      )}
       
       <div className="text-center mb-8">
         <h2 className="text-2xl md:text-3xl font-semibold italic text-primary">
