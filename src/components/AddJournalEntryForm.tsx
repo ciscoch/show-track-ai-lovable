@@ -27,13 +27,14 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
 import { v4 as uuidv4 } from 'uuid';
+import TagsInput from "./TagsInput";
 
 const formSchema = z.object({
   animalId: z.string().min(1, "Please select an animal"),
   title: z.string().min(1, "Please enter a title"),
   content: z.string().min(1, "Please enter some content"),
   date: z.date(),
-  tags: z.string().optional(),
+  tags: z.array(z.string()),
   mood: z.enum(["positive", "neutral", "negative"]).default("positive"),
 });
 
@@ -53,7 +54,7 @@ const AddJournalEntryForm = ({ initialAnimalId, onSuccess }: AddJournalEntryForm
       title: "",
       content: "",
       date: new Date(),
-      tags: "",
+      tags: [],
       mood: "positive",
     },
   });
@@ -62,17 +63,13 @@ const AddJournalEntryForm = ({ initialAnimalId, onSuccess }: AddJournalEntryForm
     setIsSubmitting(true);
     
     try {
-      const tagsArray = values.tags 
-        ? values.tags.split(",").map(tag => tag.trim()) 
-        : [];
-      
       const newEntry = {
         id: uuidv4(),
         animalId: values.animalId,
         date: format(values.date, "yyyy-MM-dd"),
         title: values.title,
         content: values.content,
-        tags: tagsArray,
+        tags: values.tags,
         mood: values.mood,
       };
       
@@ -88,7 +85,7 @@ const AddJournalEntryForm = ({ initialAnimalId, onSuccess }: AddJournalEntryForm
         title: "",
         content: "",
         date: new Date(),
-        tags: "",
+        tags: [],
         mood: "positive",
       });
       
@@ -257,13 +254,13 @@ const AddJournalEntryForm = ({ initialAnimalId, onSuccess }: AddJournalEntryForm
             <FormItem>
               <FormLabel>Tags</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="feed, behavior, health, etc."
-                  {...field}
+                <TagsInput 
+                  value={field.value} 
+                  onChange={field.onChange} 
                 />
               </FormControl>
               <FormDescription>
-                Separate tags with commas
+                Select tags or add your own custom tags
               </FormDescription>
               <FormMessage />
             </FormItem>
