@@ -1,28 +1,10 @@
 import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { PlusIcon, XIcon, ThumbsUp, MessageCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { CommentSection, Comment } from "./gallery/CommentSection";
 import { useAppContext } from "@/contexts/AppContext";
-
-export interface Photo {
-  id: string;
-  animalId: string;
-  url: string;
-  date: string;
-  tags?: string[];
-  caption?: string;
-  title?: string;
-  likes?: number;
-  comments?: Comment[];
-  likedByUser?: boolean;
-}
+import { PhotoGrid } from "./gallery/PhotoGrid";
+import { PhotoModal } from "./gallery/PhotoModal";
+import { Photo } from "@/contexts/AppContextTypes";
+import { Comment } from "./gallery/CommentSection";
 
 interface PhotoGalleryProps {
   photos: Photo[];
@@ -170,128 +152,22 @@ const PhotoGallery = ({ photos = placeholderPhotos, animalId, onAddPhoto }: Phot
   };
   
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Photo Gallery</h2>
-        <Button onClick={handleAddPhoto} disabled={isUploading}>
-          <PlusIcon className="h-4 w-4 mr-2" />
-          {isUploading ? "Uploading..." : "Add Photo"}
-        </Button>
-      </div>
+    <>
+      <PhotoGrid
+        photos={filteredPhotos}
+        onPhotoClick={handlePhotoClick}
+        onAddPhoto={handleAddPhoto}
+        isUploading={isUploading}
+      />
       
-      {filteredPhotos.length > 0 ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {filteredPhotos.map((photo) => (
-            <div 
-              key={photo.id} 
-              className="aspect-square rounded-md overflow-hidden relative cursor-pointer border border-border hover:border-primary group"
-              onClick={() => handlePhotoClick(photo)}
-            >
-              <img 
-                src={photo.url} 
-                alt={photo.caption || photo.title || "Animal photo"} 
-                className="w-full h-full object-cover"
-              />
-              {(photo.caption || photo.title) && (
-                <div className="absolute bottom-0 left-0 right-0 bg-background/75 p-2 truncate">
-                  <p className="text-sm">{photo.caption || photo.title}</p>
-                </div>
-              )}
-
-              <div className="absolute bottom-2 right-2 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                {photo.likes !== undefined && (
-                  <div className="flex items-center bg-background/75 rounded-full px-2 py-1">
-                    <ThumbsUp className="h-3 w-3 mr-1" />
-                    <span className="text-xs">{photo.likes}</span>
-                  </div>
-                )}
-                {photo.comments && photo.comments.length > 0 && (
-                  <div className="flex items-center bg-background/75 rounded-full px-2 py-1">
-                    <MessageCircle className="h-3 w-3 mr-1" />
-                    <span className="text-xs">{photo.comments.length}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-12 border rounded-md border-dashed">
-          <p className="text-muted-foreground mb-4">No photos available.</p>
-          <Button onClick={handleAddPhoto}>Add Your First Photo</Button>
-        </div>
-      )}
-      
-      <Dialog open={!!selectedPhoto} onOpenChange={(open) => !open && setSelectedPhoto(null)}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="flex justify-between items-center">
-              <span>{selectedPhoto?.caption || selectedPhoto?.title || "Photo Details"}</span>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={() => setSelectedPhoto(null)}
-              >
-                <XIcon className="h-4 w-4" />
-              </Button>
-            </DialogTitle>
-          </DialogHeader>
-          
-          {selectedPhoto && (
-            <div className="flex flex-col space-y-4">
-              <div className="relative max-h-[50vh] overflow-hidden rounded-md">
-                <img 
-                  src={selectedPhoto.url} 
-                  alt={selectedPhoto.caption || selectedPhoto.title || "Animal photo"} 
-                  className="w-full h-full object-contain"
-                />
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm">
-                    <span className="font-medium">Date:</span>{" "}
-                    {selectedPhoto.date ? new Date(selectedPhoto.date).toLocaleDateString() : "Unknown"}
-                  </p>
-                  <div className="flex items-center gap-3">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className={selectedPhoto.likedByUser ? "text-primary" : ""}
-                      onClick={() => handleLike(selectedPhoto)}
-                    >
-                      <ThumbsUp className="h-4 w-4 mr-2" />
-                      {selectedPhoto.likes || 0} Likes
-                    </Button>
-                  </div>
-                </div>
-                
-                {selectedPhoto.tags && selectedPhoto.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {selectedPhoto.tags.map((tag, index) => (
-                      <span 
-                        key={index} 
-                        className="px-2 py-1 bg-secondary text-secondary-foreground rounded-full text-xs"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
-                
-                <div className="border-t pt-4 mt-4">
-                  <CommentSection 
-                    photoId={selectedPhoto.id}
-                    comments={selectedPhoto.comments || []}
-                    onAddComment={handleAddComment}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-    </div>
+      <PhotoModal
+        photo={selectedPhoto}
+        isOpen={!!selectedPhoto}
+        onClose={() => setSelectedPhoto(null)}
+        onLike={handleLike}
+        onAddComment={handleAddComment}
+      />
+    </>
   );
 };
 
