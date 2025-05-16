@@ -44,12 +44,15 @@ const Navigation = ({ navigationItems, user }: NavigationProps) => {
         </div>
 
         {!user && (
-          <div
-            onClick={handleLoginClick}
-            className="flex items-center gap-2 px-4 py-2 cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90 rounded-md shadow-md hover:shadow-lg transition-all"
-          >
-            <LogInIcon className="h-4 w-4" />
-            <span>Login</span>
+          <div className="ml-4">
+            <Button
+              onClick={handleLoginClick}
+              className="flex items-center gap-2 shadow-md hover:shadow-lg transition-all"
+              size="sm"
+            >
+              <LogInIcon className="h-4 w-4" />
+              <span>Login</span>
+            </Button>
           </div>
         )}
       </div>

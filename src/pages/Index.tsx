@@ -11,6 +11,7 @@ import QuickAccessSection from "@/components/QuickAccessSection";
 import WelcomeMessage from "@/components/WelcomeMessage";
 import { Button } from "@/components/ui/button";
 import { LogInIcon } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Index = () => {
   const { animals, user, userSubscription } = useAppContext();
@@ -83,18 +84,33 @@ const Index = () => {
     <div className="container max-w-7xl mx-auto py-8 px-4">
       <PageHeader user={user} />
       
-      {/* Login button prominently displayed for non-logged-in users */}
       {!user && (
-        <div className="flex justify-center my-8">
-          <Button
-            onClick={handleLoginClick}
-            className="flex items-center gap-2 px-8 py-7 text-xl font-medium rounded-lg shadow-xl hover:shadow-2xl transition-all"
-            size="lg"
-          >
-            <LogInIcon className="h-5 w-5" />
-            Login to Show Track
-          </Button>
-        </div>
+        <Card className="my-8 border-2 border-primary/20 shadow-lg">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl md:text-3xl font-bold">Welcome to Show Track</CardTitle>
+            <CardDescription className="text-base md:text-lg">
+              Login to manage your animals, track weights, expenses, and more
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col items-center pb-8">
+            <Button
+              onClick={handleLoginClick}
+              className="flex items-center gap-2 px-8 py-6 text-xl font-medium rounded-lg shadow-lg hover:shadow-xl transition-all w-full max-w-xs"
+              size="lg"
+            >
+              <LogInIcon className="h-5 w-5" />
+              Login to Show Track
+            </Button>
+            <div className="mt-4 text-sm text-muted-foreground">
+              Don't have an account? <span 
+                className="text-primary font-medium hover:underline cursor-pointer"
+                onClick={() => navigate('/signup')}
+              >
+                Sign Up Now
+              </span>
+            </div>
+          </CardContent>
+        </Card>
       )}
       
       <div className="text-center mb-8">
