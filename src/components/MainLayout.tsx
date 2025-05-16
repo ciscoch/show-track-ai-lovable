@@ -13,7 +13,8 @@ import {
   SettingsIcon, 
   UserIcon, 
   WeightIcon,
-  UsersIcon
+  UsersIcon,
+  LogInIcon
 } from "lucide-react";
 
 interface MainLayoutProps {
@@ -64,23 +65,34 @@ const MainLayout = ({
           </div>
         </div>
         
-        {user && (
-          <div className="flex items-center gap-4">
-            <Badge className={`py-1 px-3 text-xs ${
-              user.subscriptionLevel === 'elite' 
-                ? 'bg-primary' 
-                : user.subscriptionLevel === 'pro' 
-                  ? 'bg-accent' 
-                  : 'bg-gray-600'
-            }`}>
-              {user.subscriptionLevel.charAt(0).toUpperCase() + user.subscriptionLevel.slice(1)} Plan
-            </Badge>
-            
-            <Button variant="outline" onClick={() => navigate('/subscription')}>
-              Manage Subscription
+        <div className="flex items-center gap-4">
+          {user ? (
+            <>
+              <Badge className={`py-1 px-3 text-xs ${
+                user.subscriptionLevel === 'elite' 
+                  ? 'bg-primary' 
+                  : user.subscriptionLevel === 'pro' 
+                    ? 'bg-accent' 
+                    : 'bg-gray-600'
+              }`}>
+                {user.subscriptionLevel.charAt(0).toUpperCase() + user.subscriptionLevel.slice(1)} Plan
+              </Badge>
+              
+              <Button variant="outline" onClick={() => navigate('/subscription')}>
+                Manage Subscription
+              </Button>
+            </>
+          ) : (
+            <Button 
+              variant="default" 
+              onClick={() => navigate('/login')}
+              className="flex items-center gap-2"
+            >
+              <LogInIcon className="h-4 w-4" />
+              Login
             </Button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
       
       {!hideNavigation && (
@@ -100,6 +112,20 @@ const MainLayout = ({
                 <span>{item.label}</span>
               </Link>
             ))}
+
+            {!user && (
+              <Link
+                to="/login"
+                className={`flex items-center gap-2 px-4 py-2 transition-colors hover:text-primary ml-auto ${
+                  location.pathname === "/login"
+                    ? "border-b-2 border-primary text-primary font-medium"
+                    : "text-muted-foreground"
+                }`}
+              >
+                <LogInIcon className="h-4 w-4" />
+                <span>Login</span>
+              </Link>
+            )}
           </div>
         </div>
       )}
