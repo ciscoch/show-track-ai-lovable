@@ -44,7 +44,7 @@ const Navigation = ({ navigationItems, user }: NavigationProps) => {
         {!user && (
           <div
             onClick={handleLoginClick}
-            className="flex items-center gap-2 px-4 py-2 transition-colors hover:text-primary ml-auto cursor-pointer text-primary font-medium"
+            className="flex items-center gap-2 px-4 py-2 ml-auto cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90 rounded-md animate-pulse"
           >
             <LogInIcon className="h-4 w-4" />
             <span>Login</span>

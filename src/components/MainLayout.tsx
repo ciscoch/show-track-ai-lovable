@@ -89,7 +89,7 @@ const MainLayout = ({
           ) : (
             <div 
               onClick={handleLoginClick} 
-              className="cursor-pointer flex items-center gap-2 text-primary font-medium hover:underline"
+              className="cursor-pointer flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md font-medium shadow-lg"
             >
               <LogInIcon className="h-4 w-4" />
               Login

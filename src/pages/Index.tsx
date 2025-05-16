@@ -87,9 +87,9 @@ const Index = () => {
         <div className="flex justify-center my-6">
           <div 
             onClick={handleLoginClick} 
-            className="cursor-pointer flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-md text-lg font-medium"
+            className="cursor-pointer flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-4 rounded-md text-xl font-medium shadow-xl animate-pulse border-2 border-primary/20 transition-all hover:scale-105"
           >
-            <LogInIcon className="h-5 w-5" />
+            <LogInIcon className="h-6 w-6" />
             Login to Show Track
           </div>
         </div>
@@ -101,6 +101,7 @@ const Index = () => {
         </h2>
       </div>
       
+      {/* Making sure login CTA appears for non-users before navigation menu */}
       <MainNavigationMenu />
 
       <Tabs defaultValue="animals" className="w-full">
