@@ -3,6 +3,9 @@ import { JournalEntry as JournalEntryType } from "@/types/models";
 import { format } from "date-fns";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
+import SocialShareButtons from "./journal/SocialShareButtons";
+import { Image } from "lucide-react";
 
 export interface JournalEntryProps {
   entry: JournalEntryType;
@@ -10,6 +13,8 @@ export interface JournalEntryProps {
 }
 
 const JournalEntry = ({ entry, animalName }: JournalEntryProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  
   const moodColor = {
     positive: "bg-emerald-100 text-emerald-800 border-emerald-200",
     neutral: "bg-gray-100 text-gray-800 border-gray-200",
@@ -20,6 +25,11 @@ const JournalEntry = ({ entry, animalName }: JournalEntryProps) => {
     return format(new Date(dateString), 'MMMM d, yyyy');
   };
   
+  const formatTime = (timeString?: string) => {
+    if (!timeString) return "";
+    return format(new Date(`1970-01-01T${timeString}`), 'h:mm a');
+  };
+  
   return (
     <Card>
       <CardHeader className="pb-2">
@@ -27,6 +37,7 @@ const JournalEntry = ({ entry, animalName }: JournalEntryProps) => {
           <div>
             <div className="text-sm text-muted-foreground">
               {formatDate(entry.date)}
+              {entry.time && ` at ${formatTime(entry.time)}`}
             </div>
             {animalName && (
               <div className="font-medium">{animalName}</div>
@@ -39,11 +50,21 @@ const JournalEntry = ({ entry, animalName }: JournalEntryProps) => {
             </Badge>
           )}
         </div>
+        <h3 className="text-lg font-semibold mt-1">{entry.title}</h3>
       </CardHeader>
       <CardContent>
-        <div className="whitespace-pre-wrap">
+        <div className={`whitespace-pre-wrap ${!isExpanded && entry.content.length > 300 ? "line-clamp-5" : ""}`}>
           {entry.content}
         </div>
+        
+        {entry.content.length > 300 && (
+          <button 
+            onClick={() => setIsExpanded(!isExpanded)} 
+            className="text-primary font-medium text-sm mt-2"
+          >
+            {isExpanded ? "Show less" : "Read more"}
+          </button>
+        )}
         
         {entry.images && entry.images.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2">
@@ -63,15 +84,22 @@ const JournalEntry = ({ entry, animalName }: JournalEntryProps) => {
         )}
       </CardContent>
       
-      {entry.tags && entry.tags.length > 0 && (
-        <CardFooter className="flex flex-wrap gap-2">
-          {entry.tags.map((tag, index) => (
-            <Badge key={index} variant="secondary">
-              {tag}
-            </Badge>
-          ))}
-        </CardFooter>
-      )}
+      <CardFooter className="flex flex-col items-start gap-4">
+        {entry.tags && entry.tags.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {entry.tags.map((tag, index) => (
+              <Badge key={index} variant="secondary">
+                {tag}
+              </Badge>
+            ))}
+          </div>
+        )}
+        
+        <SocialShareButtons 
+          title={entry.title}
+          text={entry.content}
+        />
+      </CardFooter>
     </Card>
   );
 };

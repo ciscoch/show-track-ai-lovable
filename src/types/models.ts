@@ -35,11 +35,13 @@ export interface JournalEntry {
   id: string;
   animalId: string;
   date: string;
+  time?: string;
   title: string;
   content: string;
   tags: string[];
   mood: "positive" | "neutral" | "negative";
   images?: string[];
+  timestamp?: string;
 }
 
 export interface WeightEntry {

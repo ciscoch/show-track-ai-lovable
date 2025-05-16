@@ -21,8 +21,11 @@ import { v4 as uuidv4 } from 'uuid';
 import TagsInput from "./TagsInput";
 import AnimalSelectField from "./journal/AnimalSelectField";
 import DatePickerField from "./journal/DatePickerField";
+import TimePickerField from "./journal/TimePickerField";
 import MoodSelector from "./journal/MoodSelector";
+import JournalImageUpload from "./journal/JournalImageUpload";
 import { journalFormSchema, JournalFormValues } from "./journal/journalFormSchema";
+import { usePhotoUpload } from "@/hooks/usePhotoUpload";
 
 interface AddJournalEntryFormProps {
   initialAnimalId?: string;
@@ -32,6 +35,7 @@ interface AddJournalEntryFormProps {
 const AddJournalEntryForm = ({ initialAnimalId, onSuccess }: AddJournalEntryFormProps) => {
   const { animals, addJournalEntry } = useAppContext();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { uploadPhoto } = usePhotoUpload();
 
   const form = useForm<JournalFormValues>({
     resolver: zodResolver(journalFormSchema),
@@ -40,23 +44,49 @@ const AddJournalEntryForm = ({ initialAnimalId, onSuccess }: AddJournalEntryForm
       title: "",
       content: "",
       date: new Date(),
+      time: format(new Date(), "HH:mm"),
       tags: [],
       mood: "positive",
+      images: [],
     },
   });
 
-  const onSubmit = (values: JournalFormValues) => {
+  const onSubmit = async (values: JournalFormValues) => {
     setIsSubmitting(true);
     
     try {
+      // Upload images if any
+      const imageUrls: string[] = [];
+      
+      if (values.images && values.images.length > 0) {
+        await Promise.all(
+          values.images.map(async (file) => {
+            try {
+              const photo = await uploadPhoto({
+                file,
+                animalId: values.animalId,
+                caption: values.title,
+                tags: values.tags
+              });
+              imageUrls.push(photo.url);
+            } catch (error) {
+              console.error("Error uploading image:", error);
+            }
+          })
+        );
+      }
+      
       const newEntry = {
         id: uuidv4(),
         animalId: values.animalId,
         date: format(values.date, "yyyy-MM-dd"),
+        time: values.time,
         title: values.title,
         content: values.content,
         tags: values.tags,
         mood: values.mood,
+        images: imageUrls,
+        timestamp: new Date().toISOString()
       };
       
       addJournalEntry(newEntry);
@@ -71,8 +101,10 @@ const AddJournalEntryForm = ({ initialAnimalId, onSuccess }: AddJournalEntryForm
         title: "",
         content: "",
         date: new Date(),
+        time: format(new Date(), "HH:mm"),
         tags: [],
         mood: "positive",
+        images: [],
       });
       
       if (onSuccess) {
@@ -110,7 +142,10 @@ const AddJournalEntryForm = ({ initialAnimalId, onSuccess }: AddJournalEntryForm
           )}
         />
 
-        <DatePickerField form={form} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <DatePickerField form={form} />
+          <TimePickerField form={form} />
+        </div>
 
         <FormField
           control={form.control}
@@ -131,6 +166,8 @@ const AddJournalEntryForm = ({ initialAnimalId, onSuccess }: AddJournalEntryForm
         />
 
         <MoodSelector form={form} />
+
+        <JournalImageUpload form={form} />
 
         <FormField
           control={form.control}
