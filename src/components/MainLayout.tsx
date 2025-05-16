@@ -45,6 +45,10 @@ const MainLayout = ({
     { path: "/settings", label: "Settings", icon: SettingsIcon }
   ];
   
+  const handleLoginClick = () => {
+    navigate('/login');
+  };
+  
   return (
     <div className="container max-w-7xl mx-auto py-8 px-4">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
@@ -85,7 +89,7 @@ const MainLayout = ({
           ) : (
             <Button 
               variant="default" 
-              onClick={() => navigate('/login')}
+              onClick={handleLoginClick}
               className="flex items-center gap-2"
             >
               <LogInIcon className="h-4 w-4" />
@@ -114,17 +118,17 @@ const MainLayout = ({
             ))}
 
             {!user && (
-              <Link
-                to="/login"
-                className={`flex items-center gap-2 px-4 py-2 transition-colors hover:text-primary ml-auto ${
+              <div 
+                className={`flex items-center gap-2 px-4 py-2 transition-colors hover:text-primary ml-auto cursor-pointer ${
                   location.pathname === "/login"
                     ? "border-b-2 border-primary text-primary font-medium"
                     : "text-muted-foreground"
                 }`}
+                onClick={handleLoginClick}
               >
                 <LogInIcon className="h-4 w-4" />
                 <span>Login</span>
-              </Link>
+              </div>
             )}
           </div>
         </div>
