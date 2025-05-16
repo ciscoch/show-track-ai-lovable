@@ -10,7 +10,7 @@ import WeightTargetsSection from "./timeline/WeightTargetsSection";
 import PracticeSessionsSection from "./timeline/PracticeSessionsSection";
 import ChecklistSection from "./timeline/ChecklistSection";
 import { generateDefaultTargetWeights, createDefaultTimeline } from "./timeline/timelineUtils";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase, isRealSupabaseConnection } from "@/lib/supabaseClient";
 
 interface PrepTimelineProps {
   event: ShowEvent;
@@ -28,21 +28,46 @@ const PrepTimeline = ({ event, animals, onSaveTimeline }: PrepTimelineProps) => 
     () => generateDefaultTargetWeights(animals, event.animals)
   );
 
+  const [isSaving, setIsSaving] = useState(false);
   const daysUntilShow = Math.max(0, differenceInDays(event.date, new Date()));
 
   const handleSaveTimeline = async () => {
     try {
+      setIsSaving(true);
       const updatedTimeline = {
         ...timeline,
         targetWeightGoal: Object.values(targetWeights)[0]
       };
 
+      // If not connected to a real Supabase instance, show test mode message
+      if (!isRealSupabaseConnection()) {
+        console.log("Test mode: Using mock Supabase connection");
+        toast({
+          title: "Test Mode",
+          description: "Using mock Supabase connection. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to connect to a real instance.",
+          variant: "default"
+        });
+        
+        // Still update local state even in test mode
+        onSaveTimeline(event.id, updatedTimeline);
+        
+        toast({
+          title: "Timeline saved locally",
+          description: "Your timeline was saved to local state only (not to Supabase)"
+        });
+        
+        setIsSaving(false);
+        return;
+      }
+      
+      // Real Supabase connection flow
       const {
         data: { user },
       } = await supabase.auth.getUser();
 
       if (user) {
         // Save to Supabase if the user is authenticated
+        console.log("Saving timeline to Supabase for user:", user.id);
         const { error } = await supabase
           .from("show_plans")
           .upsert(
@@ -58,11 +83,21 @@ const PrepTimeline = ({ event, animals, onSaveTimeline }: PrepTimelineProps) => 
           console.error("Failed to save timeline:", error);
           toast({
             title: "Error",
-            description: "Could not save your timeline.",
+            description: "Could not save your timeline to Supabase.",
             variant: "destructive"
           });
+          setIsSaving(false);
           return;
         }
+        
+        console.log("Timeline successfully saved to Supabase");
+      } else {
+        console.log("No authenticated user found. Timeline will only be saved locally.");
+        toast({
+          title: "Not logged in",
+          description: "You need to be logged in to save to Supabase. Timeline saved locally only.",
+          variant: "default"
+        });
       }
       
       // Always call the parent handler to update local state
@@ -79,6 +114,8 @@ const PrepTimeline = ({ event, animals, onSaveTimeline }: PrepTimelineProps) => 
         description: "Could not save your timeline.",
         variant: "destructive"
       });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -121,8 +158,8 @@ const PrepTimeline = ({ event, animals, onSaveTimeline }: PrepTimelineProps) => 
       />
 
       <div className="flex justify-end">
-        <Button onClick={handleSaveTimeline}>
-          Save Timeline
+        <Button onClick={handleSaveTimeline} disabled={isSaving}>
+          {isSaving ? "Saving..." : "Save Timeline"}
         </Button>
       </div>
     </div>
