@@ -3,7 +3,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon, ClockIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ShowEvent } from "@/types/schedule";
 import { Animal } from "@/types/models";
@@ -14,6 +14,7 @@ interface ScheduleCalendarViewProps {
   selectedDateEvents: ShowEvent[];
   animals: Animal[];
   getCategoryColor: (category: string) => string;
+  onPrepTimelineClick?: (event: ShowEvent) => void;
 }
 
 const ScheduleCalendarView = ({
@@ -22,6 +23,7 @@ const ScheduleCalendarView = ({
   selectedDateEvents,
   animals,
   getCategoryColor,
+  onPrepTimelineClick,
 }: ScheduleCalendarViewProps) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -88,9 +90,22 @@ const ScheduleCalendarView = ({
                         </div>
                       </div>
                       
-                      <Badge className={getCategoryColor(event.category)}>
-                        {event.category.charAt(0).toUpperCase() + event.category.slice(1)}
-                      </Badge>
+                      <div className="flex flex-col gap-2 items-end">
+                        <Badge className={getCategoryColor(event.category)}>
+                          {event.category.charAt(0).toUpperCase() + event.category.slice(1)}
+                        </Badge>
+                        
+                        {event.category === "show" && onPrepTimelineClick && (
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => onPrepTimelineClick(event)}
+                          >
+                            <ClockIcon className="h-4 w-4 mr-1" />
+                            Prep Timeline
+                          </Button>
+                        )}
+                      </div>
                     </div>
                     
                     {event.notes && (

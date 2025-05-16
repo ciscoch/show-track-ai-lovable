@@ -2,6 +2,8 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ClockIcon } from "lucide-react";
 import PremiumFeatureBanner from "@/components/PremiumFeatureBanner";
 import { ShowEvent } from "@/types/schedule";
 import { Animal } from "@/types/models";
@@ -12,6 +14,7 @@ interface ScheduleListViewProps {
   getCategoryColor: (category: string) => string;
   isProOrElite: boolean;
   handleUpgrade: () => void;
+  onPrepTimelineClick?: (event: ShowEvent) => void;
 }
 
 const ScheduleListView = ({
@@ -20,6 +23,7 @@ const ScheduleListView = ({
   getCategoryColor,
   isProOrElite,
   handleUpgrade,
+  onPrepTimelineClick,
 }: ScheduleListViewProps) => {
   return (
     <div className="space-y-6">
@@ -52,6 +56,19 @@ const ScheduleListView = ({
                         
                         {event.notes && (
                           <div className="mt-3 text-sm">{event.notes}</div>
+                        )}
+                        
+                        {event.category === "show" && onPrepTimelineClick && (
+                          <div className="mt-4">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={() => onPrepTimelineClick(event)}
+                            >
+                              <ClockIcon className="h-4 w-4 mr-2" />
+                              Prep Timeline
+                            </Button>
+                          </div>
                         )}
                       </div>
                       
