@@ -10,6 +10,7 @@ import WeightTargetsSection from "./timeline/WeightTargetsSection";
 import PracticeSessionsSection from "./timeline/PracticeSessionsSection";
 import ChecklistSection from "./timeline/ChecklistSection";
 import { generateDefaultTargetWeights, createDefaultTimeline } from "./timeline/timelineUtils";
+import { supabase } from "@/lib/supabaseClient";
 
 interface PrepTimelineProps {
   event: ShowEvent;
@@ -29,50 +30,41 @@ const PrepTimeline = ({ event, animals, onSaveTimeline }: PrepTimelineProps) => 
 
   const daysUntilShow = Math.max(0, differenceInDays(event.date, new Date()));
 
-  const handleSaveTimeline = () => {
+  const handleSaveTimeline = async () => {
     const updatedTimeline = {
       ...timeline,
-      targetWeightGoal: Object.values(targetWeights)[0] // Just saving the first target for now
+      targetWeightGoal: Object.values(targetWeights)[0]
     };
-    
-import { supabase } from "@/lib/supabaseClient";
 
-const handleSaveTimeline = async () => {
-  const updatedTimeline = {
-    ...timeline,
-    targetWeightGoal: Object.values(targetWeights)[0]
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const { error } = await supabase
+      .from("show_plans")
+      .upsert(
+        {
+          user_id: user?.id,
+          event_id: event.id,
+          prep_timeline: updatedTimeline
+        },
+        { onConflict: "event_id" }
+      );
+
+    if (error) {
+      console.error("Failed to save timeline:", error);
+      toast({
+        title: "Error",
+        description: "Could not save your timeline.",
+        variant: "destructive"
+      });
+    } else {
+      toast({
+        title: "Timeline saved",
+        description: "Your show preparation timeline has been updated"
+      });
+    }
   };
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const { error } = await supabase
-    .from("show_plans")
-    .upsert(
-      {
-        user_id: user?.id,
-        event_id: event.id,
-        prep_timeline: updatedTimeline
-      },
-      { onConflict: "event_id" }
-    );
-
-  if (error) {
-    console.error("Failed to save timeline:", error);
-    toast({
-      title: "Error",
-      description: "Could not save your timeline.",
-      variant: "destructive"
-    });
-  } else {
-    toast({
-      title: "Timeline saved",
-      description: "Your show preparation timeline has been updated"
-    });
-  }
-};
-
 
   return (
     <div className="space-y-6">
