@@ -10,7 +10,7 @@ import WeightTargetsSection from "./timeline/WeightTargetsSection";
 import PracticeSessionsSection from "./timeline/PracticeSessionsSection";
 import ChecklistSection from "./timeline/ChecklistSection";
 import { generateDefaultTargetWeights, createDefaultTimeline } from "./timeline/timelineUtils";
-import { supabase, isRealSupabaseConnection } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabaseClient";
 
 interface PrepTimelineProps {
   event: ShowEvent;
@@ -18,13 +18,14 @@ interface PrepTimelineProps {
   onSaveTimeline: (eventId: string, timeline: PrepTimelineType) => void;
 }
 
+const isUsingLocalFallback = !import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY;
+
 const PrepTimeline = ({ event, animals, onSaveTimeline }: PrepTimelineProps) => {
-  // Initialize timeline state from event or with defaults
   const [timeline, setTimeline] = useState<PrepTimelineType>(
     event.prepTimeline || createDefaultTimeline(event.date)
   );
 
-  const [targetWeights, setTargetWeights] = useState<{[key: string]: number}>(
+  const [targetWeights, setTargetWeights] = useState<{ [key: string]: number }>(
     () => generateDefaultTargetWeights(animals, event.animals)
   );
 
@@ -39,74 +40,59 @@ const PrepTimeline = ({ event, animals, onSaveTimeline }: PrepTimelineProps) => 
         targetWeightGoal: Object.values(targetWeights)[0]
       };
 
-      // If not connected to a real Supabase instance, show test mode message
-      if (!isRealSupabaseConnection()) {
-        console.log("Test mode: Using mock Supabase connection");
+      if (isUsingLocalFallback) {
+        console.warn("⚠️ Running in local-only mode: not connected to Supabase.");
+        console.log("Saved locally:", updatedTimeline);
         toast({
-          title: "Test Mode",
-          description: "Using mock Supabase connection. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to connect to a real instance.",
-          variant: "default"
+          title: "Local Save Mode",
+          description: "Data saved to local state only (no Supabase connection).",
         });
-        
-        // Still update local state even in test mode
         onSaveTimeline(event.id, updatedTimeline);
-        
-        toast({
-          title: "Timeline saved locally",
-          description: "Your timeline was saved to local state only (not to Supabase)"
-        });
-        
         setIsSaving(false);
         return;
       }
-      
-      // Real Supabase connection flow
+
       const {
         data: { user },
+        error: userError,
       } = await supabase.auth.getUser();
 
-      if (user) {
-        // Save to Supabase if the user is authenticated
-        console.log("Saving timeline to Supabase for user:", user.id);
-        const { error } = await supabase
-          .from("show_plans")
-          .upsert(
-            {
-              user_id: user.id,
-              event_id: event.id,
-              prep_timeline: updatedTimeline
-            },
-            { onConflict: "event_id" }
-          );
-
-        if (error) {
-          console.error("Failed to save timeline:", error);
-          toast({
-            title: "Error",
-            description: "Could not save your timeline to Supabase.",
-            variant: "destructive"
-          });
-          setIsSaving(false);
-          return;
-        }
-        
-        console.log("Timeline successfully saved to Supabase");
-      } else {
-        console.log("No authenticated user found. Timeline will only be saved locally.");
+      if (userError || !user) {
         toast({
           title: "Not logged in",
-          description: "You need to be logged in to save to Supabase. Timeline saved locally only.",
-          variant: "default"
+          description: "You must be logged in to save your timeline.",
+          variant: "destructive",
         });
+        console.warn("No user detected.");
+        setIsSaving(false);
+        return;
       }
-      
-      // Always call the parent handler to update local state
-      onSaveTimeline(event.id, updatedTimeline);
-      
-      toast({
-        title: "Timeline saved",
-        description: "Your show preparation timeline has been updated"
-      });
+
+      const { error } = await supabase
+        .from("show_plans")
+        .upsert({
+          user_id: user.id,
+          event_id: event.id,
+          prep_timeline: updatedTimeline
+        }, {
+          onConflict: "event_id"
+        });
+
+      if (error) {
+        console.error("Supabase Save Error:", error);
+        toast({
+          title: "Save Failed",
+          description: "Could not save your timeline to Supabase.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Timeline Saved",
+          description: "Your show preparation timeline was saved successfully.",
+        });
+        console.log("Supabase save successful:", updatedTimeline);
+        onSaveTimeline(event.id, updatedTimeline);
+      }
     } catch (error) {
       console.error("Error saving timeline:", error);
       toast({
@@ -129,15 +115,13 @@ const PrepTimeline = ({ event, animals, onSaveTimeline }: PrepTimelineProps) => 
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Key dates section */}
-        <KeyDatesSection 
+        <KeyDatesSection
           timeline={timeline}
           eventDate={event.date}
           onTimelineChange={setTimeline}
         />
 
-        {/* Weight targets section */}
-        <WeightTargetsSection 
+        <WeightTargetsSection
           animals={animals}
           eventAnimals={event.animals}
           targetWeights={targetWeights}
@@ -145,13 +129,11 @@ const PrepTimeline = ({ event, animals, onSaveTimeline }: PrepTimelineProps) => 
         />
       </div>
 
-      {/* Showmanship practice sessions */}
       <PracticeSessionsSection
         timeline={timeline}
         onTimelineChange={setTimeline}
       />
 
-      {/* Checklist items */}
       <ChecklistSection
         timeline={timeline}
         onTimelineChange={setTimeline}
