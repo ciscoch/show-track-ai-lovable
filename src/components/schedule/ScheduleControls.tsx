@@ -7,9 +7,15 @@ interface ScheduleControlsProps {
   view: "calendar" | "list";
   setView: (view: "calendar" | "list") => void;
   onOpenTimelineClick?: () => void;
+  onAddEventClick: () => void;
 }
 
-const ScheduleControls = ({ view, setView, onOpenTimelineClick }: ScheduleControlsProps) => {
+const ScheduleControls = ({ 
+  view, 
+  setView, 
+  onOpenTimelineClick, 
+  onAddEventClick 
+}: ScheduleControlsProps) => {
   return (
     <div className="flex flex-col md:flex-row justify-between mb-6 gap-4">
       <div className="flex gap-4">
@@ -34,7 +40,7 @@ const ScheduleControls = ({ view, setView, onOpenTimelineClick }: ScheduleContro
             Prep Timeline
           </Button>
         )}
-        <Button>
+        <Button onClick={onAddEventClick}>
           <PlusCircleIcon className="h-4 w-4 mr-2" />
           Add Event
         </Button>

@@ -3,7 +3,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ClockIcon } from "lucide-react";
+import { ClockIcon, Edit, Trash2 } from "lucide-react";
 import PremiumFeatureBanner from "@/components/PremiumFeatureBanner";
 import { ShowEvent } from "@/types/schedule";
 import { Animal } from "@/types/models";
@@ -15,6 +15,8 @@ interface ScheduleListViewProps {
   isProOrElite: boolean;
   handleUpgrade: () => void;
   onPrepTimelineClick?: (event: ShowEvent) => void;
+  onEditEvent?: (event: ShowEvent) => void;
+  onDeleteEvent?: (event: ShowEvent) => void;
 }
 
 const ScheduleListView = ({
@@ -24,6 +26,8 @@ const ScheduleListView = ({
   isProOrElite,
   handleUpgrade,
   onPrepTimelineClick,
+  onEditEvent,
+  onDeleteEvent
 }: ScheduleListViewProps) => {
   return (
     <div className="space-y-6">
@@ -57,19 +61,6 @@ const ScheduleListView = ({
                         {event.notes && (
                           <div className="mt-3 text-sm">{event.notes}</div>
                         )}
-                        
-                        {event.category === "show" && onPrepTimelineClick && (
-                          <div className="mt-4">
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              onClick={() => onPrepTimelineClick(event)}
-                            >
-                              <ClockIcon className="h-4 w-4 mr-2" />
-                              Prep Timeline
-                            </Button>
-                          </div>
-                        )}
                       </div>
                       
                       <div className="flex flex-col items-end gap-2">
@@ -79,6 +70,40 @@ const ScheduleListView = ({
                         <p className="text-sm font-medium">
                           {event.date.toLocaleDateString()}
                         </p>
+                        
+                        <div className="flex gap-2 mt-2">
+                          {event.category === "show" && onPrepTimelineClick && (
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={() => onPrepTimelineClick(event)}
+                            >
+                              <ClockIcon className="h-4 w-4 mr-2" />
+                              Prep Timeline
+                            </Button>
+                          )}
+                          
+                          {onEditEvent && (
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              onClick={() => onEditEvent(event)}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          )}
+                          
+                          {onDeleteEvent && (
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="text-destructive hover:bg-destructive/10"
+                              onClick={() => onDeleteEvent(event)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </CardContent>

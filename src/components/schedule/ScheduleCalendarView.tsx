@@ -3,7 +3,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon, ClockIcon } from "lucide-react";
+import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon, ClockIcon, Edit, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ShowEvent } from "@/types/schedule";
 import { Animal } from "@/types/models";
@@ -15,6 +15,8 @@ interface ScheduleCalendarViewProps {
   animals: Animal[];
   getCategoryColor: (category: string) => string;
   onPrepTimelineClick?: (event: ShowEvent) => void;
+  onEditEvent?: (event: ShowEvent) => void;
+  onDeleteEvent?: (event: ShowEvent) => void;
 }
 
 const ScheduleCalendarView = ({
@@ -24,6 +26,8 @@ const ScheduleCalendarView = ({
   animals,
   getCategoryColor,
   onPrepTimelineClick,
+  onEditEvent,
+  onDeleteEvent
 }: ScheduleCalendarViewProps) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -95,16 +99,39 @@ const ScheduleCalendarView = ({
                           {event.category.charAt(0).toUpperCase() + event.category.slice(1)}
                         </Badge>
                         
-                        {event.category === "show" && onPrepTimelineClick && (
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            onClick={() => onPrepTimelineClick(event)}
-                          >
-                            <ClockIcon className="h-4 w-4 mr-1" />
-                            Prep Timeline
-                          </Button>
-                        )}
+                        <div className="flex gap-2 mt-2">
+                          {event.category === "show" && onPrepTimelineClick && (
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={() => onPrepTimelineClick(event)}
+                            >
+                              <ClockIcon className="h-4 w-4 mr-1" />
+                              Prep Timeline
+                            </Button>
+                          )}
+                          
+                          {onEditEvent && (
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              onClick={() => onEditEvent(event)}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          )}
+                          
+                          {onDeleteEvent && (
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="text-destructive hover:bg-destructive/10"
+                              onClick={() => onDeleteEvent(event)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </div>
                     
