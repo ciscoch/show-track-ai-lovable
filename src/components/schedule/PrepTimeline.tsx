@@ -35,12 +35,44 @@ const PrepTimeline = ({ event, animals, onSaveTimeline }: PrepTimelineProps) => 
       targetWeightGoal: Object.values(targetWeights)[0] // Just saving the first target for now
     };
     
-    onSaveTimeline(event.id, updatedTimeline);
+import { supabase } from "@/lib/supabaseClient";
+
+const handleSaveTimeline = async () => {
+  const updatedTimeline = {
+    ...timeline,
+    targetWeightGoal: Object.values(targetWeights)[0]
+  };
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { error } = await supabase
+    .from("show_plans")
+    .upsert(
+      {
+        user_id: user?.id,
+        event_id: event.id,
+        prep_timeline: updatedTimeline
+      },
+      { onConflict: "event_id" }
+    );
+
+  if (error) {
+    console.error("Failed to save timeline:", error);
+    toast({
+      title: "Error",
+      description: "Could not save your timeline.",
+      variant: "destructive"
+    });
+  } else {
     toast({
       title: "Timeline saved",
       description: "Your show preparation timeline has been updated"
     });
-  };
+  }
+};
+
 
   return (
     <div className="space-y-6">
