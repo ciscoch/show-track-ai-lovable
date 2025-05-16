@@ -1,3 +1,4 @@
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAppContext } from "@/contexts/AppContext";
 import { useNavigate } from "react-router-dom";
@@ -82,16 +83,17 @@ const Index = () => {
     <div className="container max-w-7xl mx-auto py-8 px-4">
       <PageHeader user={user} />
       
-      {/* Login button prominently displayed at the top for non-logged-in users */}
+      {/* Login button prominently displayed for non-logged-in users */}
       {!user && (
-        <div className="flex justify-center my-6">
-          <div 
-            onClick={handleLoginClick} 
-            className="cursor-pointer flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-4 rounded-md text-xl font-medium shadow-xl animate-pulse border-2 border-primary/20 transition-all hover:scale-105"
+        <div className="flex justify-center my-8">
+          <Button
+            onClick={handleLoginClick}
+            className="flex items-center gap-2 px-8 py-7 text-xl font-medium rounded-lg shadow-xl hover:shadow-2xl transition-all"
+            size="lg"
           >
-            <LogInIcon className="h-6 w-6" />
+            <LogInIcon className="h-5 w-5" />
             Login to Show Track
-          </div>
+          </Button>
         </div>
       )}
       
@@ -101,7 +103,6 @@ const Index = () => {
         </h2>
       </div>
       
-      {/* Making sure login CTA appears for non-users before navigation menu */}
       <MainNavigationMenu />
 
       <Tabs defaultValue="animals" className="w-full">
