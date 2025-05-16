@@ -13,11 +13,8 @@ import TipsTabContent from "./TipsTabContent";
 import DocumentsTabContent from "./DocumentsTabContent";
 import ReviewScheduleTabContent from "./ReviewScheduleTabContent";
 import { useJudgeInsights } from "./JudgeInsightsContext";
-import { criteriaSchema } from "./schemas/criteriaSchema";
-import { trendSchema } from "./schemas/trendSchema";
-import { tipSchema } from "./schemas/tipSchema";
-import { documentSchema } from "./schemas/documentSchema";
-import { reviewSchema } from "./schemas/reviewSchema";
+import { useInsightsManager } from "./hooks/useInsightsManager";
+import { speciesOptions } from "./constants";
 
 interface JudgeInsightsManagerContentProps {
   onClose: () => void;
@@ -26,111 +23,29 @@ interface JudgeInsightsManagerContentProps {
 const JudgeInsightsManagerContent = ({ onClose }: JudgeInsightsManagerContentProps) => {
   const { insightsData, selectedSpecies, setSelectedSpecies, updateInsightsData } = useJudgeInsights();
   const [activeTab, setActiveTab] = React.useState("criteria");
-  const [isEditMode, setIsEditMode] = React.useState(false);
-  const [editIndex, setEditIndex] = React.useState(-1);
   
-  const resetEditState = () => {
-    setIsEditMode(false);
-    setEditIndex(-1);
-  };
-  
-  // Handle species change
-  const handleSpeciesChange = (species: string) => {
-    setSelectedSpecies(species);
-    resetEditState();
-  };
-  
-  // Criteria handlers
-  const handleCriteriaSubmit = (data: any) => {
-    const newCriteria = [...insightsData.criteria];
-    if (isEditMode && editIndex >= 0) {
-      newCriteria[editIndex] = data;
-    } else {
-      newCriteria.push(data);
-    }
-    updateInsightsData({
-      ...insightsData,
-      criteria: newCriteria
-    });
-    resetEditState();
-  };
-  
-  const handleDeleteCriteria = (index: number) => {
-    const newCriteria = [...insightsData.criteria];
-    newCriteria.splice(index, 1);
-    updateInsightsData({
-      ...insightsData,
-      criteria: newCriteria
-    });
-  };
-  
-  // Trend handlers
-  const handleTrendSubmit = (data: any) => {
-    const { tags, ...trendData } = data;
-    const newTrends = [...insightsData.trends];
-    if (isEditMode && editIndex >= 0) {
-      newTrends[editIndex] = trendData;
-    } else {
-      newTrends.push(trendData);
-    }
-    updateInsightsData({
-      ...insightsData,
-      trends: newTrends
-    });
-    resetEditState();
-  };
-  
-  const handleDeleteTrend = (index: number) => {
-    const newTrends = [...insightsData.trends];
-    newTrends.splice(index, 1);
-    updateInsightsData({
-      ...insightsData,
-      trends: newTrends
-    });
-  };
-  
-  // Tip handlers
-  const handleTipSubmit = (data: any) => {
-    const newTips = [...insightsData.preparationTips];
-    if (isEditMode && editIndex >= 0) {
-      newTips[editIndex] = data;
-    } else {
-      newTips.push(data);
-    }
-    updateInsightsData({
-      ...insightsData,
-      preparationTips: newTips
-    });
-    resetEditState();
-  };
-  
-  const handleDeleteTip = (index: number) => {
-    const newTips = [...insightsData.preparationTips];
-    newTips.splice(index, 1);
-    updateInsightsData({
-      ...insightsData,
-      preparationTips: newTips
-    });
-  };
-  
-  // Document handler
-  const handleDocumentSubmit = (data: any) => {
-    console.log("Document submitted:", data);
-    toast.success("Document added successfully");
-  };
-  
-  // Review handler
-  const handleReviewSubmit = (data: any) => {
-    console.log("Review schedule submitted:", data);
-    toast.success("Review scheduled successfully");
-  };
-  
-  // Save all changes
-  const handleSaveChanges = () => {
-    console.log("Saving changes for", selectedSpecies, insightsData);
-    toast.success("Changes saved successfully");
-    onClose();
-  };
+  const { 
+    isEditMode, 
+    editIndex, 
+    resetEditState,
+    handleSpeciesChange,
+    handleCriteriaSubmit,
+    handleDeleteCriteria,
+    handleTrendSubmit,
+    handleDeleteTrend,
+    handleTipSubmit,
+    handleDeleteTip,
+    handleDocumentSubmit,
+    handleReviewSubmit,
+    handleSaveChanges,
+    setEditModeAndIndex
+  } = useInsightsManager({
+    insightsData,
+    selectedSpecies,
+    setSelectedSpecies,
+    updateInsightsData,
+    onClose
+  });
   
   return (
     <>
@@ -167,7 +82,7 @@ const JudgeInsightsManagerContent = ({ onClose }: JudgeInsightsManagerContentPro
               editIndex={editIndex}
               selectedSpecies={selectedSpecies}
               onSubmit={handleCriteriaSubmit}
-              onEdit={(index) => { setIsEditMode(true); setEditIndex(index); }}
+              onEdit={(index) => setEditModeAndIndex(true, index)}
               onDelete={handleDeleteCriteria}
               onCancel={resetEditState}
             />
@@ -181,7 +96,7 @@ const JudgeInsightsManagerContent = ({ onClose }: JudgeInsightsManagerContentPro
               editIndex={editIndex}
               selectedSpecies={selectedSpecies}
               onSubmit={handleTrendSubmit}
-              onEdit={(index) => { setIsEditMode(true); setEditIndex(index); }}
+              onEdit={(index) => setEditModeAndIndex(true, index)}
               onDelete={handleDeleteTrend}
               onCancel={resetEditState}
             />
@@ -195,7 +110,7 @@ const JudgeInsightsManagerContent = ({ onClose }: JudgeInsightsManagerContentPro
               editIndex={editIndex}
               selectedSpecies={selectedSpecies}
               onSubmit={handleTipSubmit}
-              onEdit={(index) => { setIsEditMode(true); setEditIndex(index); }}
+              onEdit={(index) => setEditModeAndIndex(true, index)}
               onDelete={handleDeleteTip}
               onCancel={resetEditState}
             />
@@ -227,14 +142,5 @@ const JudgeInsightsManagerContent = ({ onClose }: JudgeInsightsManagerContentPro
     </>
   );
 };
-
-// Species options
-export const speciesOptions = [
-  "Beef Cattle",
-  "Swine",
-  "Sheep",
-  "Goats",
-  "Horses"
-];
 
 export default JudgeInsightsManagerContent;
