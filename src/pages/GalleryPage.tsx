@@ -14,6 +14,7 @@ import { ImagePlus, FolderPlus, FilterIcon } from "lucide-react";
 import PhotoGallery from "@/components/PhotoGallery";
 import PremiumFeatureBanner from "@/components/PremiumFeatureBanner";
 import { Badge } from "@/components/ui/badge";
+import { PhotoUploadForm } from "@/components/gallery/PhotoUploadForm";
 
 // Mock data for the gallery
 interface Photo {
@@ -23,6 +24,10 @@ interface Photo {
   date: string;
   tags?: string[];
   title?: string;
+  caption?: string;
+  likes?: number;
+  comments?: any[];
+  likedByUser?: boolean;
 }
 
 const mockPhotos: Photo[] = [
@@ -77,16 +82,17 @@ const GalleryPage = () => {
   const [isAddPhotoOpen, setIsAddPhotoOpen] = useState(false);
   const [selectedAnimalId, setSelectedAnimalId] = useState<string>("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [photos, setPhotos] = useState<Photo[]>(mockPhotos);
   
   // Extract all unique tags from photos
   const allTags = Array.from(
     new Set(
-      mockPhotos.flatMap(photo => photo.tags || [])
+      photos.flatMap(photo => photo.tags || [])
     )
   );
   
   // Filter photos based on selected animal and tags
-  const filteredPhotos = mockPhotos.filter(photo => {
+  const filteredPhotos = photos.filter(photo => {
     const matchesAnimal = selectedAnimalId === "" || photo.animalId === selectedAnimalId;
     const matchesTags = selectedTags.length === 0 || 
       selectedTags.some(tag => photo.tags?.includes(tag));
@@ -102,7 +108,7 @@ const GalleryPage = () => {
   // Group photos by animal
   const photosByAnimal = animals.map(animal => ({
     animal,
-    photos: mockPhotos.filter(photo => photo.animalId === animal.id)
+    photos: photos.filter(photo => photo.animalId === animal.id)
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   }));
   
@@ -119,6 +125,12 @@ const GalleryPage = () => {
   const handleUpgrade = () => {
     // Redirect to subscription page
     window.location.href = '/subscription';
+  };
+
+  const handlePhotoUploadSuccess = () => {
+    setIsAddPhotoOpen(false);
+    // In a real app, we would fetch the updated photos
+    // For now, we simply close the dialog
   };
   
   return (
@@ -236,33 +248,11 @@ const GalleryPage = () => {
           <DialogHeader>
             <DialogTitle>Upload Photos</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
-            <div className="border-2 border-dashed rounded-lg p-8 text-center hover:bg-muted/50 cursor-pointer transition-colors">
-              <ImagePlus className="h-10 w-10 mx-auto mb-4 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground mb-1">Drag and drop photos here, or click to browse</p>
-              <p className="text-xs text-muted-foreground">Supports JPG, PNG, HEIF</p>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium mb-1 block">Select Animal</label>
-                <select className="w-full px-3 py-2 border rounded-md">
-                  {animals.map(animal => (
-                    <option key={animal.id} value={animal.id}>{animal.name}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="text-sm font-medium mb-1 block">Date</label>
-                <input type="date" className="w-full px-3 py-2 border rounded-md" />
-              </div>
-            </div>
-            
-            <div className="flex gap-2 justify-end">
-              <Button variant="outline" onClick={() => setIsAddPhotoOpen(false)}>Cancel</Button>
-              <Button>Upload</Button>
-            </div>
-          </div>
+          <PhotoUploadForm 
+            onSuccess={handlePhotoUploadSuccess}
+            onCancel={() => setIsAddPhotoOpen(false)}
+            selectedAnimalId={selectedAnimalId !== "" ? selectedAnimalId : undefined}
+          />
         </DialogContent>
       </Dialog>
     </MainLayout>
