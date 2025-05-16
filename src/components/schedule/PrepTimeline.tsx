@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { differenceInDays } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { ShowEvent, PrepTimeline as PrepTimelineType } from "@/types/schedule";
@@ -10,15 +10,13 @@ import WeightTargetsSection from "./timeline/WeightTargetsSection";
 import PracticeSessionsSection from "./timeline/PracticeSessionsSection";
 import ChecklistSection from "./timeline/ChecklistSection";
 import { generateDefaultTargetWeights, createDefaultTimeline } from "./timeline/timelineUtils";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase, isRealSupabaseConnection } from "@/lib/supabaseClient";
 
 interface PrepTimelineProps {
   event: ShowEvent;
   animals: Animal[];
   onSaveTimeline: (eventId: string, timeline: PrepTimelineType) => void;
 }
-
-const isUsingLocalFallback = !import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 const PrepTimeline = ({ event, animals, onSaveTimeline }: PrepTimelineProps) => {
   const [timeline, setTimeline] = useState<PrepTimelineType>(
@@ -31,6 +29,11 @@ const PrepTimeline = ({ event, animals, onSaveTimeline }: PrepTimelineProps) => 
 
   const [isSaving, setIsSaving] = useState(false);
   const daysUntilShow = Math.max(0, differenceInDays(event.date, new Date()));
+  const usingRealSupabase = isRealSupabaseConnection();
+
+  useEffect(() => {
+    console.log("PrepTimeline connection status:", usingRealSupabase ? "Using real Supabase connection" : "Using local fallback mode");
+  }, [usingRealSupabase]);
 
   const handleSaveTimeline = async () => {
     try {
@@ -40,7 +43,9 @@ const PrepTimeline = ({ event, animals, onSaveTimeline }: PrepTimelineProps) => 
         targetWeightGoal: Object.values(targetWeights)[0]
       };
 
-      if (isUsingLocalFallback) {
+      console.log("Attempting to save timeline:", updatedTimeline);
+      
+      if (!usingRealSupabase) {
         console.warn("⚠️ Running in local-only mode: not connected to Supabase.");
         console.log("Saved locally:", updatedTimeline);
         toast({
@@ -52,21 +57,25 @@ const PrepTimeline = ({ event, animals, onSaveTimeline }: PrepTimelineProps) => 
         return;
       }
 
+      console.log("Checking for authenticated user...");
       const {
         data: { user },
         error: userError,
       } = await supabase.auth.getUser();
 
       if (userError || !user) {
+        console.warn("No authenticated user found:", userError);
         toast({
           title: "Not logged in",
-          description: "You must be logged in to save your timeline.",
+          description: "You must be logged in to save your timeline to Supabase.",
           variant: "destructive",
         });
-        console.warn("No user detected.");
         setIsSaving(false);
         return;
       }
+
+      console.log("User authenticated:", user.id);
+      console.log("Saving to Supabase 'show_plans' table...");
 
       const { error } = await supabase
         .from("show_plans")
@@ -82,15 +91,15 @@ const PrepTimeline = ({ event, animals, onSaveTimeline }: PrepTimelineProps) => 
         console.error("Supabase Save Error:", error);
         toast({
           title: "Save Failed",
-          description: "Could not save your timeline to Supabase.",
+          description: `Could not save to Supabase: ${error.message}`,
           variant: "destructive",
         });
       } else {
+        console.log("Supabase save successful!");
         toast({
           title: "Timeline Saved",
-          description: "Your show preparation timeline was saved successfully.",
+          description: "Your show preparation timeline was saved successfully to Supabase.",
         });
-        console.log("Supabase save successful:", updatedTimeline);
         onSaveTimeline(event.id, updatedTimeline);
       }
     } catch (error) {
@@ -113,6 +122,14 @@ const PrepTimeline = ({ event, animals, onSaveTimeline }: PrepTimelineProps) => 
           {daysUntilShow} days until show
         </div>
       </div>
+
+      {!usingRealSupabase && (
+        <div className="bg-amber-50 border border-amber-200 p-3 rounded-md mb-4">
+          <p className="text-amber-800 text-sm">
+            <strong>Testing Mode:</strong> Using local storage only. Connect to Supabase to save data permanently.
+          </p>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <KeyDatesSection
