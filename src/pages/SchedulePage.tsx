@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useAppContext } from "@/contexts/AppContext";
 import MainLayout from "@/components/MainLayout";
@@ -8,7 +7,7 @@ import ScheduleListView from "@/components/schedule/ScheduleListView";
 import ScheduleControls from "@/components/schedule/ScheduleControls";
 import PrepTimeline from "@/components/schedule/PrepTimeline";
 import EventFormDialog from "@/components/schedule/EventFormDialog";
-import { useSchedule } from "@/hooks/useSchedule";
+import { useSchedule } from "@/hooks/schedule/useSchedule";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ShowEvent } from "@/types/schedule";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
