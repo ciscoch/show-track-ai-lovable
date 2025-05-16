@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export const useSchedule = () => {
   const [date, setDate] = useState<Date>(new Date());
-  const [view, setView] = useState<"calendar" | "list">("calendar");
+  const [view, setView] = useState<"calendar" | "list">("list"); // Set list as default
   const [events, setEvents] = useState<ShowEvent[]>(mockEvents);
   const [isSaving, setIsSaving] = useState(false);
   
@@ -25,6 +25,12 @@ export const useSchedule = () => {
   // Filter to upcoming events only
   const upcomingEvents = sortedEvents.filter(
     event => event.date >= new Date(new Date().setHours(0, 0, 0, 0))
+  );
+  
+  // Filter for today's events
+  const today = new Date();
+  const todayEvents = events.filter(
+    event => event.date.toDateString() === today.toDateString()
   );
   
   // Function to get the event badge color based on category
@@ -353,6 +359,7 @@ export const useSchedule = () => {
     setEvents,
     selectedDateEvents,
     upcomingEvents,
+    todayEvents,
     getCategoryColor,
     handleUpgrade,
     saveEvent,

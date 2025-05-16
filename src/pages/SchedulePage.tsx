@@ -23,6 +23,7 @@ const SchedulePage = () => {
     events,
     selectedDateEvents,
     upcomingEvents,
+    todayEvents,
     getCategoryColor,
     handleUpgrade,
     saveEvent,
@@ -101,6 +102,7 @@ const SchedulePage = () => {
             />
           ) : (
             <ScheduleListView
+              todayEvents={todayEvents}
               upcomingEvents={upcomingEvents}
               animals={animals}
               getCategoryColor={getCategoryColor}
