@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { TagIcon } from "lucide-react";
+import { TagIcon, TrendingUp } from "lucide-react";
 
 // Form validation schema
 const trendSchema = z.object({
@@ -21,6 +21,7 @@ const trendSchema = z.object({
 type Trend = {
   title: string;
   description: string;
+  tags?: string[];
 };
 
 interface TrendsTabContentProps {
@@ -60,7 +61,7 @@ const TrendsTabContent = ({
       trendForm.reset({
         title: trend.title,
         description: trend.description,
-        tags: "" // Tags would be populated if stored in the actual data
+        tags: trend.tags ? trend.tags.join(", ") : "" // Convert array to comma-separated string
       });
     }
   }, [isEditMode, editIndex, trends, trendForm]);
@@ -165,10 +166,19 @@ const TrendsTabContent = ({
                 </div>
                 <p className="text-sm text-muted-foreground mb-2">{trend.description}</p>
                 <div className="flex flex-wrap gap-1 mt-2">
-                  <Badge variant="outline" className="flex gap-1 items-center">
-                    <TagIcon className="h-3 w-3" />
-                    <span>Add tags</span>
-                  </Badge>
+                  {trend.tags && trend.tags.length > 0 ? (
+                    trend.tags.map((tag, tagIndex) => (
+                      <Badge key={tagIndex} variant="outline" className="flex gap-1 items-center">
+                        <TagIcon className="h-3 w-3" />
+                        <span>{tag.trim()}</span>
+                      </Badge>
+                    ))
+                  ) : (
+                    <Badge variant="outline" className="flex gap-1 items-center">
+                      <TagIcon className="h-3 w-3" />
+                      <span>Add tags</span>
+                    </Badge>
+                  )}
                 </div>
               </div>
             ))}

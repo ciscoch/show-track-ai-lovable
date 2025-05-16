@@ -4,6 +4,7 @@ import { Animal } from "@/types/models";
 import ShowTipsCard from "@/components/ShowTipsCard";
 import JudgeAnalysisCard from "@/components/JudgeAnalysisCard";
 import JudgeInsightsCard from "@/components/JudgeInsightsCard";
+import JudgeTrendAnalysis from "@/components/JudgeTrendAnalysis";
 import { Button } from "@/components/ui/button";
 import { FileTextIcon } from "lucide-react";
 import JudgeInsightsManager from "@/components/admin/JudgeInsightsManager";
@@ -41,6 +42,7 @@ const ShowmanshipTab = ({ animal }: ShowmanshipTabProps) => {
         <ShowTipsCard animal={animal} />
         <JudgeAnalysisCard animal={animal} />
         <JudgeInsightsCard animal={animal} />
+        <JudgeTrendAnalysis species={animal.species} />
       </div>
       
       {isAdmin && (
