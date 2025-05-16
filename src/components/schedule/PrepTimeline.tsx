@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { format, addDays, differenceInDays } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CalendarIcon, ClockIcon, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ShowEvent, PrepTimeline } from "@/types/schedule";
+import { ShowEvent, PrepTimeline as PrepTimelineType } from "@/types/schedule";
 import { Animal } from "@/types/models";
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from "@/hooks/use-toast";
@@ -17,12 +16,12 @@ import { toast } from "@/hooks/use-toast";
 interface PrepTimelineProps {
   event: ShowEvent;
   animals: Animal[];
-  onSaveTimeline: (eventId: string, timeline: PrepTimeline) => void;
+  onSaveTimeline: (eventId: string, timeline: PrepTimelineType) => void;
 }
 
 const PrepTimeline = ({ event, animals, onSaveTimeline }: PrepTimelineProps) => {
   // Initialize timeline state from event or with defaults
-  const [timeline, setTimeline] = useState<PrepTimeline>(
+  const [timeline, setTimeline] = useState<PrepTimelineType>(
     event.prepTimeline || {
       finalWeighIn: addDays(event.date, -1),
       hairTrimming: addDays(event.date, -2),
@@ -312,7 +311,7 @@ const PrepTimeline = ({ event, animals, onSaveTimeline }: PrepTimelineProps) => 
                       }}
                     />
                     <div className="text-xs text-muted-foreground">
-                      Current weight: {animal.currentWeight || "Unknown"} lbs
+                      Current weight: {animal.weight || "Unknown"} lbs
                     </div>
                   </div>
                 ) : null;
