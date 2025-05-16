@@ -26,10 +26,10 @@ const Navigation = ({ navigationItems, user }: NavigationProps) => {
         {navigationItems.map(item => {
           const Icon = item.icon;
           return (
-            <button
+            <div
               key={item.path}
               onClick={() => navigate(item.path)}
-              className={`flex items-center gap-2 px-4 py-2 transition-colors hover:text-primary ${
+              className={`flex items-center gap-2 px-4 py-2 transition-colors hover:text-primary cursor-pointer ${
                 location.pathname === item.path 
                   ? "border-b-2 border-primary text-primary font-medium" 
                   : "text-muted-foreground"
@@ -37,19 +37,18 @@ const Navigation = ({ navigationItems, user }: NavigationProps) => {
             >
               <Icon className="h-4 w-4" />
               <span>{item.label}</span>
-            </button>
+            </div>
           );
         })}
 
         {!user && (
-          <Button
-            variant="ghost"
+          <div
             onClick={handleLoginClick}
-            className="flex items-center gap-2 px-4 py-2 transition-colors hover:text-primary ml-auto"
+            className="flex items-center gap-2 px-4 py-2 transition-colors hover:text-primary ml-auto cursor-pointer text-primary font-medium"
           >
             <LogInIcon className="h-4 w-4" />
             <span>Login</span>
-          </Button>
+          </div>
         )}
       </div>
     </div>

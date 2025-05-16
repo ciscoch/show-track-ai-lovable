@@ -87,14 +87,13 @@ const MainLayout = ({
               </Button>
             </>
           ) : (
-            <Button 
-              variant="default" 
-              onClick={handleLoginClick}
-              className="flex items-center gap-2"
+            <div 
+              onClick={handleLoginClick} 
+              className="cursor-pointer flex items-center gap-2 text-primary font-medium hover:underline"
             >
               <LogInIcon className="h-4 w-4" />
               Login
-            </Button>
+            </div>
           )}
         </div>
       </div>

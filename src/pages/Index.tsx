@@ -1,4 +1,3 @@
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAppContext } from "@/contexts/AppContext";
 import { useNavigate } from "react-router-dom";
@@ -85,16 +84,14 @@ const Index = () => {
       
       {/* Login button prominently displayed at the top for non-logged-in users */}
       {!user && (
-        <div className="flex justify-center my-4">
-          <Button 
-            variant="default" 
-            onClick={handleLoginClick}
-            className="flex items-center gap-2 text-lg"
-            size="lg"
+        <div className="flex justify-center my-6">
+          <div 
+            onClick={handleLoginClick} 
+            className="cursor-pointer flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-md text-lg font-medium"
           >
             <LogInIcon className="h-5 w-5" />
             Login to Show Track
-          </Button>
+          </div>
         </div>
       )}
       
