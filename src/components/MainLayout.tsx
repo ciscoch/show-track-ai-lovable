@@ -14,8 +14,7 @@ import {
   HomeIcon, 
   SettingsIcon, 
   WeightIcon,
-  UsersIcon,
-  LogInIcon
+  UsersIcon
 } from "lucide-react";
 import Navigation from "@/components/Navigation";
 
@@ -46,10 +45,6 @@ const MainLayout = ({
     { path: "/friends", label: "Friends", icon: UsersIcon },
     { path: "/settings", label: "Settings", icon: SettingsIcon }
   ];
-  
-  const handleLoginClick = () => {
-    navigate('/login');
-  };
   
   return (
     <div className="container max-w-7xl mx-auto py-8 px-4">
@@ -89,8 +84,10 @@ const MainLayout = ({
               </Button>
             </>
           ) : (
-<LoginButton user={user} className="shadow-md hover:shadow-lg transition-all" />
-
+            <LoginButton 
+              user={user} 
+              className="shadow-md hover:shadow-lg transition-all" 
+            />
           )}
         </div>
       </div>

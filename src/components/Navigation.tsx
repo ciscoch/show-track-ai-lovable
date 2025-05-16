@@ -1,7 +1,7 @@
 
 import { useLocation, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { LogInIcon } from "lucide-react";
+import LoginButton from "@/components/LoginButton";
 
 interface NavigationProps {
   navigationItems: {
@@ -15,10 +15,6 @@ interface NavigationProps {
 const Navigation = ({ navigationItems, user }: NavigationProps) => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  const handleLoginClick = () => {
-    navigate('/login');
-  };
 
   return (
     <div className="mb-8 border-b overflow-x-auto">
@@ -45,14 +41,10 @@ const Navigation = ({ navigationItems, user }: NavigationProps) => {
 
         {!user && (
           <div className="ml-4">
-            <Button
-              onClick={handleLoginClick}
-              className="flex items-center gap-2 shadow-md hover:shadow-lg transition-all"
-              size="sm"
-            >
-              <LogInIcon className="h-4 w-4" />
-              <span>Login</span>
-            </Button>
+            <LoginButton 
+              user={user}
+              className="shadow-md hover:shadow-lg transition-all"
+            />
           </div>
         )}
       </div>

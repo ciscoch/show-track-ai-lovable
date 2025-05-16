@@ -1,5 +1,7 @@
+
 import { useNavigate } from "react-router-dom";
 import { LogInIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface LoginButtonProps {
   user: any | null;
@@ -7,7 +9,7 @@ interface LoginButtonProps {
   hideOnMobileAfterLogin?: boolean;
 }
 
-export const LoginButton = ({
+const LoginButton = ({
   user,
   className = "",
   hideOnMobileAfterLogin = true,
@@ -20,16 +22,15 @@ export const LoginButton = ({
   }
 
   return (
-    <div
+    <Button
       onClick={() => navigate("/login")}
-      role="button"
-      tabIndex={0}
-      aria-label="Login"
-      className={\`flex items-center gap-2 px-4 py-2 cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90 rounded-md shadow-md hover:shadow-lg transition-all \${className}\`}
+      className={`flex items-center gap-2 ${className}`}
+      variant="default"
+      size="sm"
     >
       <LogInIcon className="h-4 w-4" />
       <span>Login</span>
-    </div>
+    </Button>
   );
 };
 
