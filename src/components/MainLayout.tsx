@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAppContext } from "@/contexts/AppContext";
 import { Badge } from "@/components/ui/badge";
+import LoginButton from "@/components/LoginButton";
+
 import { 
   ArrowLeftIcon, 
   BookIcon, 
@@ -87,14 +89,8 @@ const MainLayout = ({
               </Button>
             </>
           ) : (
-            <Button 
-              variant="default" 
-              className="shadow-md hover:shadow-lg transition-all" 
-              onClick={handleLoginClick}
-            >
-              <LogInIcon className="h-4 w-4 mr-2" />
-              Login
-            </Button>
+<LoginButton user={user} className="shadow-md hover:shadow-lg transition-all" />
+
           )}
         </div>
       </div>
