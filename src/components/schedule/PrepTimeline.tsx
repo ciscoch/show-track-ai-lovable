@@ -31,37 +31,53 @@ const PrepTimeline = ({ event, animals, onSaveTimeline }: PrepTimelineProps) => 
   const daysUntilShow = Math.max(0, differenceInDays(event.date, new Date()));
 
   const handleSaveTimeline = async () => {
-    const updatedTimeline = {
-      ...timeline,
-      targetWeightGoal: Object.values(targetWeights)[0]
-    };
+    try {
+      const updatedTimeline = {
+        ...timeline,
+        targetWeightGoal: Object.values(targetWeights)[0]
+      };
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-    const { error } = await supabase
-      .from("show_plans")
-      .upsert(
-        {
-          user_id: user?.id,
-          event_id: event.id,
-          prep_timeline: updatedTimeline
-        },
-        { onConflict: "event_id" }
-      );
+      if (user) {
+        // Save to Supabase if the user is authenticated
+        const { error } = await supabase
+          .from("show_plans")
+          .upsert(
+            {
+              user_id: user.id,
+              event_id: event.id,
+              prep_timeline: updatedTimeline
+            },
+            { onConflict: "event_id" }
+          );
 
-    if (error) {
-      console.error("Failed to save timeline:", error);
+        if (error) {
+          console.error("Failed to save timeline:", error);
+          toast({
+            title: "Error",
+            description: "Could not save your timeline.",
+            variant: "destructive"
+          });
+          return;
+        }
+      }
+      
+      // Always call the parent handler to update local state
+      onSaveTimeline(event.id, updatedTimeline);
+      
+      toast({
+        title: "Timeline saved",
+        description: "Your show preparation timeline has been updated"
+      });
+    } catch (error) {
+      console.error("Error saving timeline:", error);
       toast({
         title: "Error",
         description: "Could not save your timeline.",
         variant: "destructive"
-      });
-    } else {
-      toast({
-        title: "Timeline saved",
-        description: "Your show preparation timeline has been updated"
       });
     }
   };
