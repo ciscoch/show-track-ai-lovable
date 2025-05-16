@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
-import EmailVerificationModal from "@/components/settings/EmailVerificationModal";
 import SocialLoginButton from "@/components/auth/SocialLoginButton";
 
 // Schema for form validation
@@ -32,8 +31,6 @@ type SignupFormValues = z.infer<typeof signupSchema>;
 
 const SignupPage = () => {
   const navigate = useNavigate();
-  const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
-  const [pendingEmail, setPendingEmail] = useState("");
 
   const form = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
@@ -46,18 +43,11 @@ const SignupPage = () => {
   });
 
   const onSubmit = async (formData: SignupFormValues) => {
-    setPendingEmail(formData.email);
-    setIsVerificationModalOpen(true);
-  };
-
-  const handleEmailVerified = () => {
-    setIsVerificationModalOpen(false);
-    
     // In a real app, you would submit the data to your backend here
     // Using mock data since we don't have an actual backend
     const mockUserId = uuidv4();
     
-    // Simulate signup success
+    // Simulate signup success - skipping email verification
     toast({
       title: "Account created successfully",
       description: "Welcome to Show Track!"
@@ -169,13 +159,6 @@ const SignupPage = () => {
           </CardFooter>
         </Card>
       </div>
-
-      <EmailVerificationModal
-        email={pendingEmail}
-        open={isVerificationModalOpen}
-        onClose={() => setIsVerificationModalOpen(false)}
-        onVerified={handleEmailVerified}
-      />
     </MainLayout>
   );
 };
