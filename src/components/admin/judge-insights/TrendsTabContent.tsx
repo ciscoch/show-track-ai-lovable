@@ -8,15 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { TagIcon } from "lucide-react";
+import { trendSchema } from "./schemas/trendSchema";
 import * as z from "zod";
-import { TagIcon, TrendingUp } from "lucide-react";
-
-// Form validation schema
-const trendSchema = z.object({
-  title: z.string().min(3, "Title must be at least 3 characters"),
-  description: z.string().min(10, "Description must be at least 10 characters"),
-  tags: z.string().optional()
-});
 
 type Trend = {
   title: string;
