@@ -83,15 +83,17 @@ const Index = () => {
     <div className="container max-w-7xl mx-auto py-8 px-4">
       <PageHeader user={user} />
       
+      {/* Login button prominently displayed at the top for non-logged-in users */}
       {!user && (
-        <div className="flex justify-end mb-4">
+        <div className="flex justify-center my-4">
           <Button 
             variant="default" 
             onClick={handleLoginClick}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 text-lg"
+            size="lg"
           >
-            <LogInIcon className="h-4 w-4" />
-            Login
+            <LogInIcon className="h-5 w-5" />
+            Login to Show Track
           </Button>
         </div>
       )}
