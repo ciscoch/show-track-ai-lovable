@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useAppContext } from "@/contexts/AppContext";
 import MainLayout from "@/components/MainLayout";
+import { useFeedingRemindersCore } from "@/hooks/feeding";
 
 // Import refactored components
 import { WeatherFeatureSection } from "@/components/feeding/WeatherFeatureSection";
@@ -20,27 +21,13 @@ const FeedReminderPage = () => {
   } = useAppContext();
   
   const [selectedAnimalId, setSelectedAnimalId] = useState<string>("all");
-  const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   
-  // Check if the user has a premium subscription (pro or elite)
-  const hasWeatherAccess = user?.subscriptionLevel === 'pro' || user?.subscriptionLevel === 'elite';
-
-  // Request geolocation on component mount (for location-aware features)
-  useEffect(() => {
-    if (navigator.geolocation && hasWeatherAccess) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
-          });
-        },
-        (error) => {
-          console.error("Geolocation error:", error);
-        }
-      );
-    }
-  }, [hasWeatherAccess]);
+  // Use our new refactored hook
+  const { location, hasWeatherAccess } = useFeedingRemindersCore({ 
+    feedingSchedules, 
+    animals, 
+    user 
+  });
 
   // When an animal is selected, update selectedAnimalId
   useEffect(() => {
