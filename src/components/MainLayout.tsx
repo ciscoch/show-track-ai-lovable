@@ -118,17 +118,18 @@ const MainLayout = ({
             ))}
 
             {!user && (
-              <div 
-                className={`flex items-center gap-2 px-4 py-2 transition-colors hover:text-primary ml-auto cursor-pointer ${
+              <Button
+                variant="ghost"
+                onClick={handleLoginClick}
+                className={`flex items-center gap-2 px-4 py-2 transition-colors hover:text-primary ml-auto ${
                   location.pathname === "/login"
-                    ? "border-b-2 border-primary text-primary font-medium"
+                    ? "text-primary font-medium" 
                     : "text-muted-foreground"
                 }`}
-                onClick={handleLoginClick}
               >
                 <LogInIcon className="h-4 w-4" />
                 <span>Login</span>
-              </div>
+              </Button>
             )}
           </div>
         </div>
