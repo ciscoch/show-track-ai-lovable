@@ -2,11 +2,16 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Avatar } from "@/components/ui/avatar";
+import { ArrowRight } from "lucide-react";
 
 interface UserUpdateCardProps {
   userName: string;
+  userId?: string;
+  userImage?: string;
   updateType: "weight" | "journal" | "photo" | "expense";
   animalName: string;
+  animalId?: string;
   date: string;
   details: string;
   onClick: () => void;
@@ -14,8 +19,11 @@ interface UserUpdateCardProps {
 
 const UserUpdateCard = ({
   userName,
+  userId,
+  userImage,
   updateType,
   animalName,
+  animalId,
   date,
   details,
   onClick
@@ -54,8 +62,13 @@ const UserUpdateCard = ({
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardContent className="pt-6">
-        <div className="flex justify-between items-start mb-2">
-          <div className="font-medium">{userName}</div>
+        <div className="flex justify-between items-start mb-3">
+          <div className="flex items-center gap-2">
+            <Avatar className="w-8 h-8 bg-primary/10 text-primary">
+              <span className="text-xs font-medium">{userName.charAt(0)}</span>
+            </Avatar>
+            <div className="font-medium">{userName}</div>
+          </div>
           <Badge className={getUpdateColor()}>
             {getUpdateLabel()}
           </Badge>
@@ -66,7 +79,7 @@ const UserUpdateCard = ({
             <span className="font-semibold">{animalName}</span>
             <span className="text-muted-foreground"> - {date}</span>
           </div>
-          <p className="text-sm">{details}</p>
+          <p className="text-sm line-clamp-2">{details}</p>
         </div>
       </CardContent>
       
@@ -74,10 +87,11 @@ const UserUpdateCard = ({
         <Button 
           variant="outline" 
           size="sm" 
-          className="w-full"
+          className="w-full flex justify-between items-center"
           onClick={onClick}
         >
-          View Details
+          <span>View Details</span>
+          <ArrowRight className="h-4 w-4" />
         </Button>
       </CardFooter>
     </Card>

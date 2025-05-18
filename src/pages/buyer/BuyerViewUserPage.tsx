@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,12 @@ import GalleryPreview from "@/components/buyer/GalleryPreview";
 const BuyerViewUserPage = () => {
   const { userId, inviteCode } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { animals, journals, userSubscription } = useAppContext();
+  
+  // Get active tab from navigation state if available
+  const initialTab = location.state?.activeTab || "updates";
+  const [activeTab, setActiveTab] = useState(initialTab);
   
   const [userData, setUserData] = useState({
     id: userId || "user1",
@@ -36,7 +41,20 @@ const BuyerViewUserPage = () => {
       // In a real app, we would validate the invite code and get the user data
       console.log("Accessing via invite code:", inviteCode);
     }
-  }, [navigate, inviteCode]);
+    
+    // Fetch user data based on userId
+    // In a real app, this would be an API call
+    if (userId === "user2") {
+      setUserData({
+        id: userId,
+        name: "Sarah Miller",
+        email: "sarah@example.com",
+        location: "Oklahoma",
+        bio: "Dedicated to raising quality show animals",
+        lastActive: "2025-05-15"
+      });
+    }
+  }, [navigate, inviteCode, userId]);
 
   return (
     <BuyerLayout title={userData.name}>
@@ -120,7 +138,7 @@ const BuyerViewUserPage = () => {
           </div>
           
           <div className="md:col-span-2">
-            <Tabs defaultValue="updates" className="w-full">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="updates">Recent Updates</TabsTrigger>
                 <TabsTrigger value="journal">Journal Entries</TabsTrigger>

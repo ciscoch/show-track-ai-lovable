@@ -5,9 +5,18 @@ import { Card } from "@/components/ui/card";
 import LoginButton from "@/components/LoginButton";
 import { useAppContext } from "@/contexts/AppContext";
 import NavigationMenu from "@/components/NavigationMenu";
+import { LucideIcon } from "lucide-react";
 
-const Navigation = () => {
-  const { user } = useAppContext();
+interface NavigationProps {
+  navigationItems?: {
+    path: string;
+    label: string;
+    icon: LucideIcon;
+  }[];
+  user?: any;
+}
+
+const Navigation = ({ navigationItems = [], user }: NavigationProps) => {
   const location = useLocation();
 
   // Check if current route is part of the buyer section

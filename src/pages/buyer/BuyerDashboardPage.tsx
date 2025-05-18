@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { User, Users, Bell, Search, LogOut } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BuyerLayout from "@/components/buyer/BuyerLayout";
-import UserUpdateCard from "@/components/buyer/UserUpdateCard";
+import UserActivityFeed from "@/components/buyer/UserActivityFeed";
 import ConnectUserDialog from "@/components/buyer/ConnectUserDialog";
 import { useAppContext } from "@/contexts/AppContext";
 
@@ -16,6 +17,7 @@ const BuyerDashboardPage = () => {
   const { animals, journals, userSubscription } = useAppContext();
   const [searchTerm, setSearchTerm] = useState("");
   const [isConnectDialogOpen, setIsConnectDialogOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("users");
 
   // Demo data for connected users
   const [connectedUsers, setConnectedUsers] = useState([
@@ -38,6 +40,60 @@ const BuyerDashboardPage = () => {
       image: "/placeholder.svg"
     }
   ]);
+  
+  // Demo data for recent updates
+  const recentUpdates = [
+    {
+      id: "update1",
+      userId: "user1",
+      userName: "John Smith",
+      updateType: "weight" as const,
+      animalName: "Blue Ribbon",
+      animalId: "1",
+      date: "2025-05-15",
+      details: "Blue Ribbon gained 2.5 lbs since last week. Current weight: 1250 lbs."
+    },
+    {
+      id: "update2",
+      userId: "user2",
+      userName: "Sarah Miller",
+      updateType: "journal" as const,
+      animalName: "Champion",
+      animalId: "2",
+      date: "2025-05-15",
+      details: "Added new journal entry about feeding routine. The new feed mixture is working well."
+    },
+    {
+      id: "update3",
+      userId: "user1",
+      userName: "John Smith",
+      updateType: "photo" as const,
+      animalName: "Blue Ribbon",
+      animalId: "1",
+      date: "2025-05-14",
+      details: "Added 3 new photos showing muscle development and posture improvements."
+    },
+    {
+      id: "update4",
+      userId: "user2",
+      userName: "Sarah Miller",
+      updateType: "weight" as const,
+      animalName: "Star",
+      animalId: "3",
+      date: "2025-05-13",
+      details: "Star gained 1.8 lbs this week. Current weight: 225 lbs."
+    },
+    {
+      id: "update5",
+      userId: "user1",
+      userName: "John Smith",
+      updateType: "expense" as const,
+      animalName: "Blue Ribbon",
+      animalId: "1",
+      date: "2025-05-12",
+      details: "Added new expense for premium feed: $85.50"
+    }
+  ];
 
   // Check if buyer is logged in
   useEffect(() => {
@@ -118,79 +174,59 @@ const BuyerDashboardPage = () => {
           />
         </div>
 
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Recent Updates</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <UserUpdateCard 
-              userName="John Smith"
-              updateType="weight"
-              animalName="Blue Ribbon"
-              date="2025-05-15"
-              details="+2.5 lbs since last week"
-              onClick={() => navigate("/buyer/user/user1")}
-            />
-            <UserUpdateCard 
-              userName="Sarah Miller"
-              updateType="journal"
-              animalName="Champion"
-              date="2025-05-15"
-              details="Added new journal entry about feeding routine"
-              onClick={() => navigate("/buyer/user/user2")}
-            />
-            <UserUpdateCard 
-              userName="John Smith"
-              updateType="photo"
-              animalName="Blue Ribbon"
-              date="2025-05-14"
-              details="Added 3 new photos"
-              onClick={() => navigate("/buyer/user/user1")}
-            />
-          </div>
-        </div>
-
-        <div>
-          <h2 className="text-xl font-semibold mb-4">Connected Users</h2>
-          {filteredUsers.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredUsers.map(user => (
-                <Card key={user.id} className="hover:shadow-md transition-shadow">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="flex items-center gap-2">
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <User className="h-5 w-5 text-primary" />
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
+          <TabsList className="mb-4">
+            <TabsTrigger value="updates">Recent Updates</TabsTrigger>
+            <TabsTrigger value="users">Connected Users</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="updates">
+            <UserActivityFeed updates={recentUpdates} />
+          </TabsContent>
+          
+          <TabsContent value="users">
+            {filteredUsers.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredUsers.map(user => (
+                  <Card key={user.id} className="hover:shadow-md transition-shadow">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="flex items-center gap-2">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <User className="h-5 w-5 text-primary" />
+                        </div>
+                        {user.name}
+                      </CardTitle>
+                      <CardDescription>{user.email}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="pb-2">
+                      <div className="flex justify-between text-sm">
+                        <div>
+                          <span className="text-muted-foreground">Animals:</span> {user.animalCount}
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Last update:</span> {user.lastUpdate}
+                        </div>
                       </div>
-                      {user.name}
-                    </CardTitle>
-                    <CardDescription>{user.email}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="pb-2">
-                    <div className="flex justify-between text-sm">
-                      <div>
-                        <span className="text-muted-foreground">Animals:</span> {user.animalCount}
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">Last update:</span> {user.lastUpdate}
-                      </div>
-                    </div>
-                  </CardContent>
-                  <CardFooter>
-                    <Button 
-                      className="w-full"
-                      onClick={() => navigate(`/buyer/user/${user.id}`)}
-                    >
-                      View Details
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center p-8 border rounded-lg border-dashed">
-              <p className="text-muted-foreground mb-2">No users found.</p>
-              <Button onClick={() => setIsConnectDialogOpen(true)}>Connect a User</Button>
-            </div>
-          )}
-        </div>
+                    </CardContent>
+                    <CardFooter>
+                      <Button 
+                        className="w-full"
+                        onClick={() => navigate(`/buyer/user/${user.id}`)}
+                      >
+                        View Details
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center p-8 border rounded-lg border-dashed">
+                <p className="text-muted-foreground mb-2">No users found.</p>
+                <Button onClick={() => setIsConnectDialogOpen(true)}>Connect a User</Button>
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
       </div>
 
       <ConnectUserDialog
