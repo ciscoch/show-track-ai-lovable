@@ -23,7 +23,14 @@ interface MainLayoutProps {
   title: string;
   showBackButton?: boolean;
   hideNavigation?: boolean;
+  user?: any;
+  navigationItems?: {
+    path: string;
+    label: string;
+    icon: LucideIcon;
+  }[];
 }
+
 
 const MainLayout = ({ 
   children, 
