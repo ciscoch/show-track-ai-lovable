@@ -1,22 +1,9 @@
-
+import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useAppContext } from "@/contexts/AppContext";
 import { Badge } from "@/components/ui/badge";
-import LoginButton from "@/components/LoginButton";
-
-import { 
-  ArrowLeftIcon, 
-  BookIcon, 
-  CalendarIcon, 
-  ChartBarIcon, 
-  GalleryVerticalIcon, 
-  HomeIcon, 
-  SettingsIcon, 
-  WeightIcon,
-  UsersIcon
-} from "lucide-react";
 import Navigation from "@/components/Navigation";
+import { LucideIcon } from "lucide-react";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -31,78 +18,69 @@ interface MainLayoutProps {
   }[];
 }
 
-
-const MainLayout = ({ 
-  children, 
-  title, 
-  showBackButton = true, 
-  hideNavigation = false
+const MainLayout = ({
+  children,
+  title,
+  showBackButton = true,
+  hideNavigation = false,
+  user,
+  navigationItems = []
 }: MainLayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAppContext();
-  
-  const navigationItems = [
-    { path: "/", label: "Home", icon: HomeIcon },
-    { path: "/weights", label: "Weights", icon: WeightIcon },
-    { path: "/journal", label: "Journal", icon: BookIcon },
-    { path: "/gallery", label: "Gallery", icon: GalleryVerticalIcon },
-    { path: "/expenses", label: "Expenses", icon: ChartBarIcon },
-    { path: "/schedule", label: "Schedule", icon: CalendarIcon },
-    { path: "/friends", label: "Friends", icon: UsersIcon },
-    { path: "/settings", label: "Settings", icon: SettingsIcon }
-  ];
-  
+
+  const handleLoginClick = () => navigate("/login");
+
+  const isBuyer = user?.role === "buyer";
+
   return (
     <div className="container max-w-7xl mx-auto py-8 px-4">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div className="flex items-center gap-4">
           {showBackButton && (
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               onClick={() => navigate(-1)}
               className="flex items-center gap-1"
             >
-              <ArrowLeftIcon className="h-4 w-4" />
-              <span className="sr-only md:not-sr-only">Back</span>
+              ← <span className="sr-only md:not-sr-only">Back</span>
             </Button>
           )}
-          
-          <div>
-            <h1 className="text-3xl font-bold">{title}</h1>
-          </div>
+
+          <h1 className="text-3xl font-bold">{title}</h1>
         </div>
-        
+
         <div className="flex items-center gap-4">
           {user ? (
             <>
-              <Badge className={`py-1 px-3 text-xs ${
-                user.subscriptionLevel === 'elite' 
-                  ? 'bg-primary' 
-                  : user.subscriptionLevel === 'pro' 
-                    ? 'bg-accent' 
-                    : 'bg-gray-600'
-              }`}>
-                {user.subscriptionLevel.charAt(0).toUpperCase() + user.subscriptionLevel.slice(1)} Plan
-              </Badge>
-              
-              <Button variant="outline" onClick={() => navigate('/subscription')}>
-                Manage Subscription
-              </Button>
+              {user.subscription_tier && (
+                <Badge className="py-1 px-3 text-xs bg-primary text-white">
+                  {user.subscription_tier.charAt(0).toUpperCase() + user.subscription_tier.slice(1)} Plan
+                </Badge>
+              )}
+
+              {!isBuyer && (
+                <Button variant="outline" onClick={() => navigate("/subscription")}>
+                  Manage Subscription
+                </Button>
+              )}
             </>
           ) : (
-            <LoginButton 
-              user={user} 
-              className="shadow-md hover:shadow-lg transition-all" 
-            />
+            <Button
+              variant="default"
+              className="shadow-md hover:shadow-lg transition-all"
+              onClick={handleLoginClick}
+            >
+              Login
+            </Button>
           )}
         </div>
       </div>
-      
-      {!hideNavigation && (
+
+      {!hideNavigation && navigationItems.length > 0 && (
         <Navigation navigationItems={navigationItems} user={user} />
       )}
-      
+
       <main>{children}</main>
     </div>
   );
