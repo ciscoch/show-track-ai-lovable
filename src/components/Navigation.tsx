@@ -1,54 +1,50 @@
 
-import { useLocation, useNavigate } from "react-router-dom";
-import { LogInIcon } from "lucide-react";
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Card } from "@/components/ui/card";
 import LoginButton from "@/components/LoginButton";
+import { useAppContext } from "@/contexts/AppContext";
+import NavigationMenu from "@/components/NavigationMenu";
 
-interface NavigationProps {
-  navigationItems: {
-    path: string;
-    label: string;
-    icon: React.ElementType;
-  }[];
-  user: any | null;
-}
-
-const Navigation = ({ navigationItems, user }: NavigationProps) => {
-  const navigate = useNavigate();
+const Navigation = () => {
+  const { user } = useAppContext();
   const location = useLocation();
 
+  // Check if current route is part of the buyer section
+  const isBuyerRoute = location.pathname.startsWith("/buyer");
+
   return (
-    <div className="mb-8 border-b overflow-x-auto">
-      <div className="flex justify-between items-center w-full min-w-max">
-        <div className="flex space-x-1 items-center">
-          {navigationItems.map(item => {
-            const Icon = item.icon;
-            return (
-              <div
-                key={item.path}
-                onClick={() => navigate(item.path)}
-                className={`flex items-center gap-2 px-4 py-2 transition-colors hover:text-primary cursor-pointer ${
-                  location.pathname === item.path 
-                    ? "border-b-2 border-primary text-primary font-medium" 
-                    : "text-muted-foreground"
-                }`}
-              >
-                <Icon className="h-4 w-4" />
-                <span>{item.label}</span>
-              </div>
-            );
-          })}
+    <Card className="rounded-none shadow-sm border-b">
+      <div className="container flex h-14 max-w-screen-2xl items-center">
+        <div className="mr-4 hidden md:flex">
+          <Link to="/" className="mr-6 flex items-center space-x-2">
+            <span className="hidden font-bold sm:inline-block">
+              Stock Show Manager
+            </span>
+          </Link>
+          <NavigationMenu />
         </div>
 
-        {!user && (
-          <div className="ml-4">
-            <LoginButton 
-              user={user}
-              className="shadow-md hover:shadow-lg transition-all"
-            />
+        <div className="flex flex-1 items-center space-x-2 justify-between md:justify-end">
+          <div className="w-full flex-1 md:w-auto md:flex-none block md:hidden">
+            <NavigationMenu />
           </div>
-        )}
+
+          <div className="flex items-center gap-x-2">
+            <LoginButton user={user} />
+
+            <div className="hidden sm:block mx-2">
+              <Link 
+                to={isBuyerRoute ? "/" : "/buyer/login"} 
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {isBuyerRoute ? "Producer View" : "Buyer Portal"}
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </Card>
   );
 };
 

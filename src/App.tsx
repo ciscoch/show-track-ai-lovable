@@ -17,6 +17,10 @@ import SignupPage from "@/pages/SignupPage";
 import LoginPage from "@/pages/LoginPage";
 import FriendsPage from "@/pages/FriendsPage";
 import UploadsPage from "@/pages/UploadsPage";
+import BuyerLoginPage from "@/pages/buyer/BuyerLoginPage";
+import BuyerDashboardPage from "@/pages/buyer/BuyerDashboardPage";
+import BuyerViewUserPage from "@/pages/buyer/BuyerViewUserPage";
+import BuyerViewAnimalPage from "@/pages/buyer/BuyerViewAnimalPage";
 
 function App() {
   return (
@@ -37,6 +41,14 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/uploads" element={<UploadsPage />} />
+        
+        {/* Buyer Routes */}
+        <Route path="/buyer/login" element={<BuyerLoginPage />} />
+        <Route path="/buyer/dashboard" element={<BuyerDashboardPage />} />
+        <Route path="/buyer/user/:userId" element={<BuyerViewUserPage />} />
+        <Route path="/buyer/animal/:animalId" element={<BuyerViewAnimalPage />} />
+        <Route path="/connect/:inviteCode" element={<BuyerViewUserPage />} />
+        
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster />
