@@ -25,7 +25,7 @@ const AnimalHeader = ({ animal }: AnimalHeaderProps) => {
   };
   
   const handleBack = () => {
-    navigate('/');
+    navigate('/dashboard');
   };
 
   const startEditingName = () => {

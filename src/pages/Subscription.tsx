@@ -93,7 +93,7 @@ const Subscription = () => {
   };
   
   const handleBack = () => {
-    navigate('/');
+    navigate('/dashboard');
   };
   
   return (

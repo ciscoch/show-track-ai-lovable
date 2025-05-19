@@ -28,7 +28,7 @@ const AnimalDetails = () => {
   useEffect(() => {
     if (!animal) {
       // Animal not found, redirect to main page
-      navigate('/');
+      navigate('/dashboard');
       return;
     }
     

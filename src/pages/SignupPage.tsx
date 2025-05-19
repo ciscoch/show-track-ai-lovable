@@ -54,7 +54,7 @@ const SignupPage = () => {
     });
     
     // Navigate to home after successful signup
-    navigate("/");
+    navigate("/dashboard");
   };
 
   return (
