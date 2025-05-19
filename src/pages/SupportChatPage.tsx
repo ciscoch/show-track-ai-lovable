@@ -1,8 +1,10 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import MainLayout from "@/components/MainLayout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useToast } from "@/components/ui/use-toast";
 
 interface Message {
   role: "user" | "assistant";
@@ -16,6 +18,21 @@ const SupportChatPage = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [apiKeyAvailable, setApiKeyAvailable] = useState(true);
+  const { toast } = useToast();
+
+  // Check if API key is available on component mount
+  useEffect(() => {
+    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    if (!apiKey || apiKey === "YOUR_OPENAI_API_KEY") {
+      setApiKeyAvailable(false);
+      toast({
+        title: "API Key Missing",
+        description: "OpenAI API key is not configured. Please add it to your environment variables.",
+        variant: "destructive",
+      });
+    }
+  }, [toast]);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -23,6 +40,19 @@ const SupportChatPage = () => {
     setMessages(prev => [...prev, userMessage]);
     setInput("");
     setLoading(true);
+
+    // If API key is not available, show a mock response
+    if (!apiKeyAvailable) {
+      setTimeout(() => {
+        const mockResponse: Message = {
+          role: "assistant",
+          content: "I'm sorry, but the chat service is currently unavailable. Please check back later or contact support for assistance."
+        };
+        setMessages(prev => [...prev, mockResponse]);
+        setLoading(false);
+      }, 1000);
+      return;
+    }
 
     try {
       const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -42,6 +72,12 @@ const SupportChatPage = () => {
       });
 
       const data = await response.json();
+      
+      // Check for API errors
+      if (data.error) {
+        throw new Error(data.error.message || "Error communicating with OpenAI");
+      }
+
       const assistantMessage: Message = {
         role: "assistant",
         content: data.choices?.[0]?.message?.content?.trim() ||
@@ -49,10 +85,26 @@ const SupportChatPage = () => {
       };
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
+      console.error("Chat error:", error);
+      let errorMessage = "An error occurred. Please try again.";
+      
+      if (error instanceof Error) {
+        if (error.message.includes("API key")) {
+          errorMessage = "Invalid API key. Please check your OpenAI API key configuration.";
+          setApiKeyAvailable(false);
+        }
+      }
+      
       setMessages(prev => [
         ...prev,
-        { role: "assistant", content: "An error occurred. Please try again." },
+        { role: "assistant", content: errorMessage },
       ]);
+      
+      toast({
+        title: "Chat Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -62,6 +114,11 @@ const SupportChatPage = () => {
     <MainLayout title="Help Chat" showBackButton>
       <div className="space-y-4">
         <div className="border rounded-md p-4 h-[60vh] overflow-y-auto space-y-2">
+          {messages.length === 0 && (
+            <div className="flex items-center justify-center h-full text-muted-foreground">
+              <p>Ask a question about using ShowTrack AI</p>
+            </div>
+          )}
           {messages.map((m, idx) => (
             <div
               key={idx}
@@ -91,6 +148,13 @@ const SupportChatPage = () => {
             {loading ? "Sending..." : "Send"}
           </Button>
         </div>
+        {!apiKeyAvailable && (
+          <div className="text-sm text-amber-600 bg-amber-50 p-3 rounded-md border border-amber-200">
+            <strong>Note:</strong> The OpenAI API key is not configured. For this feature to work, you need to add your 
+            API key to the environment variables. Create a <code>.env</code> file in the project root with 
+            <code>VITE_OPENAI_API_KEY=your_api_key_here</code>.
+          </div>
+        )}
       </div>
     </MainLayout>
   );
