@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -27,7 +26,7 @@ export const useDashboardState = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [isConnectDialogOpen, setIsConnectDialogOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("users");
+  const [activeTab, setActiveTab] = useState("updates");
 
   // Demo data for connected users
   const [connectedUsers, setConnectedUsers] = useState<ConnectedUser[]>([
