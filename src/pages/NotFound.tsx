@@ -25,3 +25,25 @@ const NotFound = () => {
 };
 
 export default NotFound;
+
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+
+const NotFound = () => {
+  const navigate = useNavigate();
+
+  return (
+    <div className="h-full flex flex-col justify-center items-center text-center p-6">
+      <h1 className="text-3xl font-bold text-destructive">Link Not Found</h1>
+      <p className="mt-2 text-muted-foreground">
+        The buyer link you followed is invalid, expired, or no longer available.
+      </p>
+      <Button className="mt-4" onClick={() => navigate("/")}>
+        Return to Home
+      </Button>
+    </div>
+  );
+};
+
+export default NotFound;
