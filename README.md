@@ -82,3 +82,13 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+
+## Environment variables
+
+Create an `env` file in the project root with these entries:
+```
+VITE_SUPABASE_URL=<your supabase url>
+VITE_SUPABASE_ANON_KEY=<your supabase anon key>
+VITE_OPENAI_API_KEY=<your openai api key>
+```
+The included `env` file uses placeholder values.
