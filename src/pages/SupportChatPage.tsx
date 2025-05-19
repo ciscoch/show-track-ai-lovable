@@ -24,7 +24,7 @@ const SupportChatPage = () => {
   // Check if API key is available on component mount
   useEffect(() => {
     const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-    if (!apiKey || apiKey === "YOUR_OPENAI_API_KEY") {
+    if (!apiKey || apiKey === "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") {
       setApiKeyAvailable(false);
       toast({
         title: "API Key Missing",
