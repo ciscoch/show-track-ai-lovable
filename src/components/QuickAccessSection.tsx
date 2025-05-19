@@ -1,7 +1,7 @@
 
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { GalleryVerticalIcon, WeightIcon, BookIcon, ChartBarIcon, AlarmClockIcon } from "lucide-react";
+import { GalleryVerticalIcon, WeightIcon, BookIcon, ChartBarIcon, AlarmClockIcon, MessageCircleIcon } from "lucide-react";
 
 const QuickAccessSection = () => {
   const navigate = useNavigate();
@@ -77,6 +77,20 @@ const QuickAccessSection = () => {
           <CardContent>
             <p className="text-sm text-muted-foreground">
               Set up feeding schedule reminders for all animals
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="hover:border-primary cursor-pointer" onClick={() => navigate('/help')}>
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-2">
+              <MessageCircleIcon className="h-5 w-5 text-primary" />
+              <span>Help Chat</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Ask questions about using the app
             </p>
           </CardContent>
         </Card>
