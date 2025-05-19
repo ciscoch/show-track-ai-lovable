@@ -60,6 +60,17 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
+## Environment variables
+
+Create an `.env` file at the project root with the following keys:
+
+```sh
+VITE_SUPABASE_URL=<your supabase url>
+VITE_SUPABASE_ANON_KEY=<your supabase anon key>
+VITE_OPENAI_API_KEY=<your OpenAI API key>
+```
+
+
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/ce7c82f5-877e-44f1-8152-03e9fb646c17) and click on Share -> Publish.
