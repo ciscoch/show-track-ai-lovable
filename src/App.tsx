@@ -24,8 +24,6 @@ import BuyerViewUserPage from "@/pages/buyer/BuyerViewUserPage";
 import BuyerViewAnimalPage from "@/pages/buyer/BuyerViewAnimalPage";
 import BuyerLinkRedirect from "@/pages/buyer/BuyerLinkRedirect";
 
-<Route path="/buyer-link/:token" element={<BuyerLinkRedirect />} />
-
 function App() {
   return (
     <>
@@ -46,7 +44,8 @@ function App() {
         <Route path="/signup/exhibitor" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/uploads" element={<UploadsPage />} />
-        
+        <Route path="/buyer-link/:token" element={<BuyerLinkRedirect />} />
+
         {/* Buyer Routes */}
         <Route path="/buyer/login" element={<BuyerLoginPage />} />
         <Route path="/buyer/dashboard" element={<BuyerDashboardPage />} />
