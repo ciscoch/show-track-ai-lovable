@@ -42,7 +42,7 @@ const LoginPage = () => {
     });
     
     // Navigate to home after successful login
-    navigate("/");
+    navigate("/dashboard");
   };
 
   return (

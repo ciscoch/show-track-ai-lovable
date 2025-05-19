@@ -26,7 +26,7 @@ const Navigation = ({ navigationItems = [], user }: NavigationProps) => {
     <Card className="rounded-none shadow-sm border-b">
       <div className="container flex h-14 max-w-screen-2xl items-center">
         <div className="mr-4 hidden md:flex">
-          <Link to="/" className="mr-6 flex items-center space-x-2">
+          <Link to="/dashboard" className="mr-6 flex items-center space-x-2">
             <span className="hidden font-bold sm:inline-block">
               Stock Show Manager
             </span>
@@ -43,8 +43,8 @@ const Navigation = ({ navigationItems = [], user }: NavigationProps) => {
             <LoginButton user={user} />
 
             <div className="hidden sm:block mx-2">
-              <Link 
-                to={isBuyerRoute ? "/" : "/buyer/login"} 
+              <Link
+                to={isBuyerRoute ? "/dashboard" : "/buyer/login"}
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 {isBuyerRoute ? "Producer View" : "Buyer Portal"}

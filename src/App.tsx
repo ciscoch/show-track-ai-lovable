@@ -28,7 +28,8 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Index />} />
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/dashboard" element={<Index />} />
         <Route path="/animal/:animalId" element={<AnimalDetails />} />
         <Route path="/add-animal" element={<AddAnimal />} />
         <Route path="/subscription" element={<Subscription />} />

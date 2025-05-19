@@ -52,11 +52,11 @@ const AddAnimal = () => {
     addAnimal(newAnimal);
     
     // Navigate back to animal list
-    navigate('/');
+    navigate('/dashboard');
   };
   
   const handleBack = () => {
-    navigate('/');
+    navigate('/dashboard');
   };
   
   // Helper function to get breeds based on selected species
