@@ -23,6 +23,10 @@ import BuyerDashboardPage from "@/pages/buyer/BuyerDashboardPage";
 import BuyerViewUserPage from "@/pages/buyer/BuyerViewUserPage";
 import BuyerViewAnimalPage from "@/pages/buyer/BuyerViewAnimalPage";
 import BuyerLinkRedirect from "@/pages/buyer/BuyerLinkRedirect";
+import NotFound from "@/pages/NotFound";
+
+<Route path="/not-found" element={<NotFound />} />
+
 
 function App() {
   return (
