@@ -1,3 +1,4 @@
+
 import { supabase } from "@/lib/supabaseClient";
 import { nanoid } from "nanoid";
 import QRCode from "qrcode";
@@ -25,7 +26,7 @@ export async function generateBuyerLink(userId: string, buyerId: string): Promis
       return null;
     }
 
-    const url = \`\${window.location.origin}/buyer-link/\${token}\`;
+    const url = `${window.location.origin}/buyer-link/${token}`;
     const qr = await QRCode.toDataURL(url);
     return { url, qr };
   } catch (err) {
