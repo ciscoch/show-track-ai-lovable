@@ -87,7 +87,11 @@ const WeatherAlerts = ({ alerts, products }: WeatherAlertsProps) => {
                     <Button
                       size="sm"
                       className="h-7 text-xs"
-                      onClick={() => window.open(product.affiliateUrl, '_blank')}
+                      onClick={() => {
+                        if (typeof window !== "undefined") {
+                          window.open(product.affiliateUrl, '_blank');
+                        }
+                      }}
                     >
                       <ExternalLink className="h-3 w-3 mr-1" />
                       View on Amazon

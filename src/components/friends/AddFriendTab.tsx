@@ -33,7 +33,9 @@ const AddFriendTab = () => {
   };
   
   const handleSocialShare = (platform: string) => {
-    const url = window.location.origin + "/friends?invite=" + generateId();
+    const url = typeof window !== "undefined"
+      ? window.location.origin + "/friends?invite=" + generateId()
+      : "";
     
     // In a real app, this would use the Web Share API or platform-specific sharing
     toast({
@@ -42,7 +44,9 @@ const AddFriendTab = () => {
     });
     
     // Copy to clipboard
-    navigator.clipboard.writeText(url);
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(url);
+    }
   };
   
   return (

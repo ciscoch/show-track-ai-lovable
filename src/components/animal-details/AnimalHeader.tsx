@@ -53,6 +53,7 @@ const AnimalHeader = ({ animal }: AnimalHeaderProps) => {
   const handleImageUpload = async (file: File) => {
     try {
       // Create a data URL from the file
+      if (typeof window === "undefined") return;
       const reader = new FileReader();
       
       const imageUrl = await new Promise<string>((resolve, reject) => {

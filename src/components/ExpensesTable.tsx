@@ -33,7 +33,7 @@ const ExpensesTable = ({ expenses, animalId }: ExpensesTableProps) => {
   };
 
   const handleDelete = (id: string) => {
-    if (window.confirm("Are you sure you want to delete this expense?")) {
+    if (typeof window !== "undefined" && window.confirm("Are you sure you want to delete this expense?")) {
       deleteExpenseEntry(id);
     }
   };
