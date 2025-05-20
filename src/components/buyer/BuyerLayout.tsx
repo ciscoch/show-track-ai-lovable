@@ -6,9 +6,10 @@ import { Bell, Home, User, LogOut } from "lucide-react";
 interface BuyerLayoutProps {
   children: React.ReactNode;
   title?: string;
+  notificationBell?: React.ReactNode;
 }
 
-const BuyerLayout = ({ children, title }: BuyerLayoutProps) => {
+const BuyerLayout = ({ children, title, notificationBell }: BuyerLayoutProps) => {
   const navigate = useNavigate();
   
   const handleLogout = () => {
@@ -43,14 +44,13 @@ const BuyerLayout = ({ children, title }: BuyerLayoutProps) => {
               <Home className="h-5 w-5" />
             </Button>
             
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => {}} // Notification function would go here
-              aria-label="Notifications"
-            >
-              <Bell className="h-5 w-5" />
-            </Button>
+            {notificationBell ? (
+              notificationBell
+            ) : (
+              <Button variant="ghost" size="icon" aria-label="Notifications">
+                <Bell className="h-5 w-5" />
+              </Button>
+            )}
             
             <span className="hidden md:inline-block text-sm text-muted-foreground">
               {buyerEmail}

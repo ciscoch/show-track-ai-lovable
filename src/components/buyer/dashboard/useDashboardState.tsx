@@ -20,6 +20,7 @@ interface Update {
   animalId: string;
   date: string;
   details: string;
+  read?: boolean;
 }
 
 export const useDashboardState = () => {
@@ -51,7 +52,7 @@ export const useDashboardState = () => {
   ]);
   
   // Demo data for recent updates
-  const recentUpdates: Update[] = [
+  const [recentUpdates, setRecentUpdates] = useState<Update[]>([
     {
       id: "update1",
       userId: "user1",
@@ -60,7 +61,8 @@ export const useDashboardState = () => {
       animalName: "Blue Ribbon",
       animalId: "1",
       date: "2025-05-15",
-      details: "Blue Ribbon gained 2.5 lbs since last week. Current weight: 1250 lbs."
+      details: "Blue Ribbon gained 2.5 lbs since last week. Current weight: 1250 lbs.",
+      read: false
     },
     {
       id: "update2",
@@ -70,7 +72,8 @@ export const useDashboardState = () => {
       animalName: "Champion",
       animalId: "2",
       date: "2025-05-15",
-      details: "Added new journal entry about feeding routine. The new feed mixture is working well."
+      details: "Added new journal entry about feeding routine. The new feed mixture is working well.",
+      read: false
     },
     {
       id: "update3",
@@ -80,7 +83,8 @@ export const useDashboardState = () => {
       animalName: "Blue Ribbon",
       animalId: "1",
       date: "2025-05-14",
-      details: "Added 3 new photos showing muscle development and posture improvements."
+      details: "Added 3 new photos showing muscle development and posture improvements.",
+      read: false
     },
     {
       id: "update4",
@@ -90,7 +94,8 @@ export const useDashboardState = () => {
       animalName: "Star",
       animalId: "3",
       date: "2025-05-13",
-      details: "Star gained 1.8 lbs this week. Current weight: 225 lbs."
+      details: "Star gained 1.8 lbs this week. Current weight: 225 lbs.",
+      read: false
     },
     {
       id: "update5",
@@ -100,9 +105,10 @@ export const useDashboardState = () => {
       animalName: "Blue Ribbon",
       animalId: "1",
       date: "2025-05-12",
-      details: "Added new expense for premium feed: $85.50"
+      details: "Added new expense for premium feed: $85.50",
+      read: false
     }
-  ];
+  ]);
 
   // Check if buyer is logged in
   useEffect(() => {
@@ -134,6 +140,14 @@ export const useDashboardState = () => {
     setIsConnectDialogOpen(false);
   };
 
+  const markUpdateRead = (id: string) => {
+    setRecentUpdates(updates => updates.map(u => u.id === id ? { ...u, read: true } : u));
+  };
+
+  const markAllUpdatesRead = () => {
+    setRecentUpdates(updates => updates.map(u => ({ ...u, read: true })));
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("buyerLoggedIn");
     localStorage.removeItem("buyerEmail");
@@ -149,6 +163,8 @@ export const useDashboardState = () => {
     setActiveTab,
     filteredUsers,
     recentUpdates,
+    markUpdateRead,
+    markAllUpdatesRead,
     handleConnectUser,
     handleLogout
   };

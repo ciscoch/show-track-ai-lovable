@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
 import { ArrowRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface UserUpdateCardProps {
   userName: string;
@@ -14,6 +15,7 @@ interface UserUpdateCardProps {
   animalId?: string;
   date: string;
   details: string;
+  read?: boolean;
   onClick: () => void;
 }
 
@@ -26,6 +28,7 @@ const UserUpdateCard = ({
   animalId,
   date,
   details,
+  read,
   onClick
 }: UserUpdateCardProps) => {
   // Get appropriate color for update type
@@ -60,7 +63,7 @@ const UserUpdateCard = ({
   };
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
+    <Card className={cn("hover:shadow-md transition-shadow", !read && "bg-muted")}>
       <CardContent className="pt-6">
         <div className="flex justify-between items-start mb-3">
           <div className="flex items-center gap-2">

@@ -4,6 +4,7 @@ import ConnectUserDialog from "@/components/buyer/ConnectUserDialog";
 import DashboardHeader from "@/components/buyer/dashboard/DashboardHeader";
 import SearchBar from "@/components/buyer/dashboard/SearchBar";
 import DashboardTabs from "@/components/buyer/dashboard/DashboardTabs";
+import NotificationBell from "@/components/buyer/dashboard/NotificationBell";
 import { useDashboardState } from "@/components/buyer/dashboard/useDashboardState";
 
 const BuyerDashboardPage = () => {
@@ -16,6 +17,8 @@ const BuyerDashboardPage = () => {
     setActiveTab,
     filteredUsers,
     recentUpdates,
+    markUpdateRead,
+    markAllUpdatesRead,
     handleConnectUser,
     handleLogout
   } = useDashboardState();
@@ -23,7 +26,16 @@ const BuyerDashboardPage = () => {
   const userEmail = localStorage.getItem("buyerEmail");
 
   return (
-    <BuyerLayout title="Buyer Dashboard">
+    <BuyerLayout
+      title="Buyer Dashboard"
+      notificationBell={
+        <NotificationBell
+          updates={recentUpdates}
+          onMarkRead={markUpdateRead}
+          onMarkAllRead={markAllUpdatesRead}
+        />
+      }
+    >
       <div className="container mx-auto py-8 px-4">
         <DashboardHeader 
           userEmail={userEmail} 
@@ -40,6 +52,7 @@ const BuyerDashboardPage = () => {
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           recentUpdates={recentUpdates}
+          onMarkRead={markUpdateRead}
           filteredUsers={filteredUsers}
           onConnectUser={() => setIsConnectDialogOpen(true)}
         />
