@@ -6,6 +6,7 @@ import LoginButton from "@/components/LoginButton";
 import { useAppContext } from "@/contexts/AppContext";
 import NavigationMenu from "@/components/NavigationMenu";
 import { LucideIcon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface NavigationProps {
   navigationItems?: {
@@ -18,6 +19,7 @@ interface NavigationProps {
 
 const Navigation = ({ navigationItems = [], user }: NavigationProps) => {
   const location = useLocation();
+  const { userSubscription } = useAppContext();
 
   // Check if current route is part of the buyer section
   const isBuyerRoute = location.pathname.startsWith("/buyer");
@@ -40,6 +42,18 @@ const Navigation = ({ navigationItems = [], user }: NavigationProps) => {
           </div>
 
           <div className="flex items-center gap-x-2">
+            {!isBuyerRoute && userSubscription && (
+              <Badge className={`py-1 px-2 ${
+                userSubscription.level === 'elite' 
+                  ? 'bg-primary' 
+                  : userSubscription.level === 'pro' 
+                    ? 'bg-accent' 
+                    : 'bg-gray-600'
+              }`}>
+                {userSubscription.level.charAt(0).toUpperCase() + userSubscription.level.slice(1)} Plan
+              </Badge>
+            )}
+            
             <LoginButton user={user} />
 
             <div className="hidden sm:block mx-2">

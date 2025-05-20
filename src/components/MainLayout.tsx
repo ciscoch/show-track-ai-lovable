@@ -1,9 +1,11 @@
+
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Navigation from "@/components/Navigation";
 import { LucideIcon } from "lucide-react";
+import { useAppContext } from "@/contexts/AppContext";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -28,6 +30,7 @@ const MainLayout = ({
 }: MainLayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { userSubscription } = useAppContext();
 
   const handleLoginClick = () => navigate("/login");
 
@@ -53,9 +56,15 @@ const MainLayout = ({
         <div className="flex items-center gap-4">
           {user ? (
             <>
-              {user.subscription_tier && (
-                <Badge className="py-1 px-3 text-xs bg-primary text-white">
-                  {user.subscription_tier.charAt(0).toUpperCase() + user.subscription_tier.slice(1)} Plan
+              {userSubscription && !isBuyer && (
+                <Badge className={`py-1 px-3 text-xs ${
+                  userSubscription.level === 'elite' 
+                    ? 'bg-primary' 
+                    : userSubscription.level === 'pro' 
+                      ? 'bg-accent' 
+                      : 'bg-gray-600'
+                }`}>
+                  {userSubscription.level.charAt(0).toUpperCase() + userSubscription.level.slice(1)} Plan
                 </Badge>
               )}
 

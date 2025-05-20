@@ -3,6 +3,7 @@ import { User } from "@/types/models";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
+import { useAppContext } from "@/contexts/AppContext";
 
 type PageHeaderProps = {
   user: User | null;
@@ -10,6 +11,7 @@ type PageHeaderProps = {
 
 const PageHeader = ({ user }: PageHeaderProps) => {
   const navigate = useNavigate();
+  const { userSubscription } = useAppContext();
 
   if (!user) return null;
 
@@ -32,13 +34,13 @@ const PageHeader = ({ user }: PageHeaderProps) => {
       
       <div className="flex items-center gap-4">
         <Badge className={`py-1 px-3 text-xs ${
-          user.subscriptionLevel === 'elite' 
+          userSubscription.level === 'elite' 
             ? 'bg-primary' 
-            : user.subscriptionLevel === 'pro' 
+            : userSubscription.level === 'pro' 
               ? 'bg-accent' 
               : 'bg-gray-600'
         }`}>
-          {user.subscriptionLevel.charAt(0).toUpperCase() + user.subscriptionLevel.slice(1)} Plan
+          {userSubscription.level.charAt(0).toUpperCase() + userSubscription.level.slice(1)} Plan
         </Badge>
         
         <Button variant="outline" onClick={() => navigate('/subscription')}>
