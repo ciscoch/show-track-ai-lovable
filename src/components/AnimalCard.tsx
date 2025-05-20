@@ -1,7 +1,9 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import AnimalCard from "@/components/animals/AnimalCard";
+
+// This component is defined here and should not import itself. Importing the
+// same file via an alias can lead to "defined multiple times" errors.
 
 interface AnimalCardProps {
   animal: {
