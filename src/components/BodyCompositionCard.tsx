@@ -7,6 +7,7 @@ import PremiumFeatureBanner from "./PremiumFeatureBanner";
 import { useAppContext } from "@/contexts/AppContext";
 import { Camera, Box, Upload, LineChart } from "lucide-react";
 import { useState } from "react";
+import { navigate } from "@/platform/navigation";
 
 type BodyCompositionCardProps = {
   animal: Animal;
@@ -19,7 +20,7 @@ const BodyCompositionCard = ({ animal }: BodyCompositionCardProps) => {
   
   const handleNavigateToSubscriptions = () => {
     // In a real app, navigate to subscription page
-    window.location.href = '/subscription';
+    navigate('/subscription');
   };
   
   if (!isPremium) {

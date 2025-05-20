@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { navigate } from "@/platform/navigation";
 import { useAppContext } from "@/contexts/AppContext";
 import MainLayout from "@/components/MainLayout";
 import ExpensesTable from "@/components/ExpensesTable";
@@ -69,7 +70,7 @@ const ExpensesPage = () => {
   
   const handleUpgrade = () => {
     // Redirect to subscription page
-    window.location.href = '/subscription';
+    navigate('/subscription');
   };
   
   return (

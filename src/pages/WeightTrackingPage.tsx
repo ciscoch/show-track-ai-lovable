@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { navigate } from "@/platform/navigation";
 import { useAppContext } from "@/contexts/AppContext";
 import MainLayout from "@/components/MainLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -78,7 +79,7 @@ const WeightTrackingPage = () => {
   
   const handleUpgrade = () => {
     // Redirect to subscription page
-    window.location.href = '/subscription';
+    navigate('/subscription');
   };
 
   const handlePhotoUpload = async (file: File) => {

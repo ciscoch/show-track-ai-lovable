@@ -4,6 +4,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { User, SubscriptionLevel } from "@/types/models";
+import { navigate } from "@/platform/navigation";
 
 interface SubscriptionTabProps {
   user: User | null;
@@ -51,7 +52,7 @@ const SubscriptionTab = ({ user, userSubscription }: SubscriptionTabProps) => {
       </CardContent>
       
       <CardFooter className="flex justify-end">
-        <Button onClick={() => window.location.href = '/subscription'}>
+        <Button onClick={() => navigate('/subscription')}>
           {user?.subscriptionLevel === 'free' ? "Upgrade Now" : "Manage Subscription"}
         </Button>
       </CardFooter>

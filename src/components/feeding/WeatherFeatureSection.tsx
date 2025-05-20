@@ -6,6 +6,7 @@ import PremiumFeatureBanner from "@/components/PremiumFeatureBanner";
 import { LocationStatus } from "@/components/feeding/LocationStatus";
 import WeatherAlerts from "@/components/weather/WeatherAlerts";
 import { useNavigate } from "react-router-dom";
+import { getCurrentPosition } from "@/platform/geolocation";
 
 interface WeatherFeatureProps {
   hasWeatherAccess: boolean;
@@ -22,9 +23,9 @@ export const WeatherFeatureSection = ({ hasWeatherAccess, user }: WeatherFeature
 
   // Request geolocation on component mount
   useEffect(() => {
-    if (navigator.geolocation && hasWeatherAccess) {
+    if (hasWeatherAccess) {
       setIsLoadingWeather(true);
-      navigator.geolocation.getCurrentPosition(
+      getCurrentPosition(
         (position) => {
           setLocation({
             latitude: position.coords.latitude,

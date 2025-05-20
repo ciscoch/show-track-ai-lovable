@@ -4,6 +4,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { getItem } from "@/platform/storage";
 import BuyerLayout from "@/components/buyer/BuyerLayout";
 import { useAppContext } from "@/contexts/AppContext";
 import AnimalListCard from "@/components/buyer/AnimalListCard";
@@ -34,7 +35,7 @@ const BuyerViewUserPage = () => {
 
   // Check if buyer is logged in
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem("buyerLoggedIn") === "true";
+    const isLoggedIn = getItem("buyerLoggedIn") === "true";
     if (!isLoggedIn && !inviteCode) {
       navigate("/buyer/login");
     }

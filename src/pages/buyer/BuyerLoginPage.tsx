@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Eye, EyeOff } from "lucide-react";
+import { setItem } from "@/platform/storage";
 
 // Schema for form validation
 const loginSchema = z.object({
@@ -40,9 +41,9 @@ const BuyerLoginPage = () => {
       description: "Welcome to the Buyer Dashboard!"
     });
     
-    // Store some buyer info in localStorage for demo purposes
-    localStorage.setItem("buyerLoggedIn", "true");
-    localStorage.setItem("buyerEmail", data.email);
+    // Store some buyer info in local storage for demo purposes
+    setItem("buyerLoggedIn", "true");
+    setItem("buyerEmail", data.email);
     
     // Navigate to dashboard after successful login
     navigate("/buyer/dashboard");

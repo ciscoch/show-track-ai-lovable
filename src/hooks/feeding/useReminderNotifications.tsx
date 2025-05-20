@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { FeedingSchedule, Animal } from '@/types/models';
 import { toast } from "@/hooks/use-toast";
 import { formatTime } from "@/utils/timeUtils";
+import { getItem, setItem } from "@/platform/storage";
 
 interface UseReminderNotificationsProps {
   feedingSchedules: FeedingSchedule[];
@@ -47,7 +48,7 @@ export const useReminderNotifications = ({
             
             // Only show reminder if we haven't already shown one in the last 15 minutes
             const storageKey = `reminder-shown-${schedule.id}-${time.id}`;
-            const lastReminderShown = localStorage.getItem(storageKey);
+            const lastReminderShown = getItem(storageKey);
             
             if (!lastReminderShown || (Date.now() - parseInt(lastReminderShown)) > 15 * 60 * 1000) {
               toast({
@@ -57,7 +58,7 @@ export const useReminderNotifications = ({
               });
               
               // Store the time we showed this reminder
-              localStorage.setItem(storageKey, Date.now().toString());
+              setItem(storageKey, Date.now().toString());
             }
           }
         });

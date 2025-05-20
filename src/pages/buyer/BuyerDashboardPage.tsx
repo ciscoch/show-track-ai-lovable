@@ -6,6 +6,7 @@ import SearchBar from "@/components/buyer/dashboard/SearchBar";
 import DashboardTabs from "@/components/buyer/dashboard/DashboardTabs";
 import NotificationBell from "@/components/buyer/dashboard/NotificationBell";
 import { useDashboardState } from "@/components/buyer/dashboard/useDashboardState";
+import { getItem } from "@/platform/storage";
 
 const BuyerDashboardPage = () => {
   const {
@@ -23,7 +24,7 @@ const BuyerDashboardPage = () => {
     handleLogout
   } = useDashboardState();
 
-  const userEmail = localStorage.getItem("buyerEmail");
+  const userEmail = getItem("buyerEmail");
 
   return (
     <BuyerLayout
