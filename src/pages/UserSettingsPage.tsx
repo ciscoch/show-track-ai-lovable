@@ -12,7 +12,7 @@ const UserSettingsPage = () => {
   const { user, userSubscription } = useAppContext();
   
   return (
-    <MainLayout title="User Settings">
+    <MainLayout title="User Settings" user={user}>
       <Tabs defaultValue="profile">
         <TabsList>
           <TabsTrigger value="profile">Profile</TabsTrigger>

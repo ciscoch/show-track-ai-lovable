@@ -37,7 +37,7 @@ const FeedReminderPage = () => {
   }, [selectedAnimalId]);
 
   return (
-    <MainLayout title="Feed Reminders">
+    <MainLayout title="Feed Reminders" user={user}>
       <div className="space-y-8">
         {/* Header with animal selector */}
         <FeedReminderHeader 

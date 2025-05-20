@@ -2,9 +2,11 @@
 import { useNavigate } from "react-router-dom";
 import MainLayout from "@/components/MainLayout";
 import { Button } from "@/components/ui/button";
+import { useAppContext } from "@/contexts/AppContext";
 
 const AccountTypePage = () => {
   const navigate = useNavigate();
+  const { user } = useAppContext();
 
   const handleSelect = (type: string) => {
     if (type === "buyer") {
@@ -17,7 +19,7 @@ const AccountTypePage = () => {
   };
 
   return (
-    <MainLayout title="Create Account">
+    <MainLayout title="Create Account" user={user}>
       <div className="flex flex-col items-center py-8 space-y-6">
         <h1 className="text-2xl font-bold">Select Account Type</h1>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-md">

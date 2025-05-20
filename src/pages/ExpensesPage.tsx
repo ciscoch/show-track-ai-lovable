@@ -17,7 +17,7 @@ import AddExpenseForm from "@/components/AddExpenseForm";
 import { ChartBarIcon, ChevronDownIcon, DownloadIcon, FilterIcon } from "lucide-react";
 
 const ExpensesPage = () => {
-  const { animals, expenses, userSubscription } = useAppContext();
+  const { animals, expenses, userSubscription, user } = useAppContext();
   const [isAddExpenseOpen, setIsAddExpenseOpen] = useState(false);
   const [selectedAnimalId, setSelectedAnimalId] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
@@ -73,7 +73,7 @@ const ExpensesPage = () => {
   };
   
   return (
-    <MainLayout title="Expenses Tracker">
+    <MainLayout title="Expenses Tracker" user={user}>
       <div className="flex flex-col md:flex-row justify-between mb-6 gap-4">
         <div className="flex flex-wrap gap-4">
           <select

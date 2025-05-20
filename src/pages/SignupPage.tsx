@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "@/hooks/use-toast";
 import MainLayout from "@/components/MainLayout";
+import { useAppContext } from "@/contexts/AppContext";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,6 +32,7 @@ type SignupFormValues = z.infer<typeof signupSchema>;
 
 const SignupPage = () => {
   const navigate = useNavigate();
+  const { user } = useAppContext();
 
   const form = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
@@ -58,7 +60,7 @@ const SignupPage = () => {
   };
 
   return (
-    <MainLayout title="Sign Up">
+    <MainLayout title="Sign Up" user={user}>
       <div className="flex justify-center items-center py-8">
         <Card className="w-full max-w-md">
           <CardHeader>

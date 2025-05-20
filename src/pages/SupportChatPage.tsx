@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
 import MainLayout from "@/components/MainLayout";
+import { useAppContext } from "@/contexts/AppContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -20,6 +21,7 @@ const SupportChatPage = () => {
   const [loading, setLoading] = useState(false);
   const [apiKeyAvailable, setApiKeyAvailable] = useState(true);
   const { toast } = useToast();
+  const { user } = useAppContext();
 
   // Check if API key is available on component mount
   useEffect(() => {
@@ -111,7 +113,7 @@ const SupportChatPage = () => {
   };
 
   return (
-    <MainLayout title="Help Chat" showBackButton>
+    <MainLayout title="Help Chat" showBackButton user={user}>
       <div className="space-y-4">
         <div className="border rounded-md p-4 h-[60vh] overflow-y-auto space-y-2">
           {messages.length === 0 && (

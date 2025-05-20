@@ -1,6 +1,7 @@
 
 import React, { useState, useRef } from "react";
 import MainLayout from "@/components/MainLayout";
+import { useAppContext } from "@/contexts/AppContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,6 +14,7 @@ const UploadsPage = () => {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const { user } = useAppContext();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -57,7 +59,7 @@ const UploadsPage = () => {
   };
 
   return (
-    <MainLayout title="File Uploads">
+    <MainLayout title="File Uploads" user={user}>
       <div className="mb-6">
         <p className="text-muted-foreground">
           Note: This is a simulation of file uploads. In an actual deployment, 
