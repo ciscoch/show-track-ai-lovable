@@ -10,6 +10,12 @@ export interface Animal {
   showAnimal: boolean;
   purpose: "breeding" | "show" | "market" | "pet" | "other";
   weight: number;
+
+  // Optional organization reference
+  organization?: {
+    id: string;
+    name: string;
+  };
   
   // Additional fields used in existing components
   tagNumber?: string;
@@ -145,6 +151,12 @@ export interface FeedingSchedule {
   reminderEnabled: boolean;
   reminderMinutesBefore: number;
   createdAt: string;
+}
+
+// Supabase organization type
+export interface Organization {
+  id: string;
+  name: string;
 }
 
 // Alias for backward compatibility

@@ -92,3 +92,8 @@ VITE_SUPABASE_ANON_KEY=<your supabase anon key>
 VITE_OPENAI_API_KEY=<your openai api key>
 ```
 The included `env` file uses placeholder values.
+
+## Keyboard tips
+
+When selecting an organization on the Add Animal page, open the dropdown and
+start typing the first letter of the organization's name to jump directly to it.
