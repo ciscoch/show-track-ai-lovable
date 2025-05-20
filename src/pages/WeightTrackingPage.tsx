@@ -5,6 +5,9 @@ import MainLayout from "@/components/MainLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import ImageUploadButton from "@/components/ImageUploadButton";
+import { analyzeAnimalPhoto } from "@/services/huggingfaceService";
+import { toast } from "@/hooks/use-toast";
 import {
   Dialog,
   DialogContent,
@@ -19,6 +22,8 @@ const WeightTrackingPage = () => {
   const { animals, weights, userSubscription, user } = useAppContext();
   const [selectedAnimalId, setSelectedAnimalId] = useState<string>(animals[0]?.id || "");
   const [isAddWeightOpen, setIsAddWeightOpen] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState<string | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   
   const animalWeights = weights.filter(w => w.animalId === selectedAnimalId)
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
@@ -74,6 +79,28 @@ const WeightTrackingPage = () => {
   const handleUpgrade = () => {
     // Redirect to subscription page
     window.location.href = '/subscription';
+  };
+
+  const handlePhotoUpload = async (file: File) => {
+    setIsAnalyzing(true);
+    setAnalysisResult(null);
+    try {
+      const result = await analyzeAnimalPhoto(file);
+      const message =
+        typeof result.weight === 'number'
+          ? `Estimated weight: ${result.weight} lbs`
+          : result.message || 'Analysis complete';
+      setAnalysisResult(message);
+    } catch (error) {
+      console.error('Analysis failed:', error);
+      toast({
+        title: 'Analysis failed',
+        description: 'There was an error analyzing the image',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   // Check if user has Pro or Elite access
@@ -281,9 +308,14 @@ const WeightTrackingPage = () => {
                   <p>Upload photos of your animal for AI-powered weight estimation and body composition analysis.</p>
                   
                   <div className="border-2 border-dashed rounded-lg p-8 text-center">
-                    <Button className="mb-4">
-                      Upload Photo for Analysis
-                    </Button>
+                    <ImageUploadButton onImageSelected={handlePhotoUpload} className="mb-4">
+                      <Button disabled={isAnalyzing} className="mb-4">
+                        {isAnalyzing ? 'Analyzing...' : 'Upload Photo for Analysis'}
+                      </Button>
+                    </ImageUploadButton>
+                    {analysisResult && (
+                      <p className="text-sm mb-2">{analysisResult}</p>
+                    )}
                     <p className="text-sm text-muted-foreground">
                       For best results, take photos from the side, front, and top angle with good lighting.
                     </p>
@@ -291,9 +323,13 @@ const WeightTrackingPage = () => {
                   
                   <div>
                     <h3 className="font-medium mb-2">Recent Analyses</h3>
-                    <p className="text-sm text-muted-foreground">
-                      No analyses yet. Upload a photo to get started.
-                    </p>
+                    {analysisResult ? (
+                      <p className="text-sm text-muted-foreground">{analysisResult}</p>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        No analyses yet. Upload a photo to get started.
+                      </p>
+                    )}
                   </div>
                 </div>
               </CardContent>
