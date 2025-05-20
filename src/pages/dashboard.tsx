@@ -1,7 +1,8 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabaseClient";
-import AnimalCard from "@/components/animals/AnimalCard";
+import AnimalCard from "@/components/AnimalCard";  // Updated import path
 
 const Dashboard = () => {
   const [animals, setAnimals] = useState([]);
@@ -32,7 +33,7 @@ const Dashboard = () => {
           <AnimalCard
             key={animal.id}
             animal={animal}
-            onClick={() => navigate(\`/animal/\${animal.id}\`)}
+            onClick={() => navigate(`/animal/${animal.id}`)}
           />
         ))}
       </div>
