@@ -24,9 +24,6 @@ import BuyerDashboardPage from "@/pages/buyer/BuyerDashboardPage";
 import BuyerViewUserPage from "@/pages/buyer/BuyerViewUserPage";
 import BuyerViewAnimalPage from "@/pages/buyer/BuyerViewAnimalPage";
 import BuyerLinkRedirect from "@/pages/buyer/BuyerLinkRedirect";
-import Dashboard from "@/pages/Dashboard";
-
-<Route path="/dashboard" element={<Dashboard />} />
 
 function App() {
   return (
