@@ -1,10 +1,11 @@
-import { Animal, WeightEntry, JournalEntry, Expense, User, SubscriptionLevel, FeedingSchedule } from "@/types/models";
+
+import { Animal, WeightEntry, JournalEntry, Expense, User, SubscriptionLevel, FeedingSchedule, FeedingTime } from "@/types/models";
 
 // Mock data for animals
 export const mockAnimals: Animal[] = [
-  { id: "1", name: "Blue Ribbon", species: "cattle", breed: "Angus", dob: "2020-05-15", weight: 1200, image: "/placeholder.svg" },
-  { id: "2", name: "Champion", species: "goat", breed: "Boer", dob: "2021-03-20", weight: 150, image: "/placeholder.svg" },
-  { id: "3", name: "Star", species: "sheep", breed: "Dorset", dob: "2022-01-10", weight: 180, image: "/placeholder.svg" },
+  { id: "1", name: "Blue Ribbon", species: "cattle", breed: "Angus", gender: "male", birthdate: "2020-05-15", weight: 1200, image: "/placeholder.svg", description: "Champion Angus bull", showAnimal: true, purpose: "show" },
+  { id: "2", name: "Champion", species: "goat", breed: "Boer", gender: "female", birthdate: "2021-03-20", weight: 150, image: "/placeholder.svg", description: "Prize-winning Boer goat", showAnimal: true, purpose: "breeding" },
+  { id: "3", name: "Star", species: "sheep", breed: "Dorset", gender: "female", birthdate: "2022-01-10", weight: 180, image: "/placeholder.svg", description: "Excellent Dorset ewe", showAnimal: true, purpose: "market" },
 ];
 
 // Mock data for weight entries
@@ -22,16 +23,16 @@ export const mockWeights: WeightEntry[] = [
 
 // Mock data for journal entries
 export const mockJournals: JournalEntry[] = [
-  { id: "1", animalId: "1", date: "2023-05-10", entry: "Started new feeding routine today." },
-  { id: "2", animalId: "2", date: "2023-05-10", entry: "Champion is looking great!" },
-  { id: "3", animalId: "3", date: "2023-05-10", entry: "Star is ready for the show." },
+  { id: "1", animalId: "1", date: "2023-05-10", title: "New Feeding Routine", content: "Started new feeding routine today.", tags: [], mood: "positive" },
+  { id: "2", animalId: "2", date: "2023-05-10", title: "Champion Progress", content: "Champion is looking great!", tags: [], mood: "positive" },
+  { id: "3", animalId: "3", date: "2023-05-10", title: "Show Preparation", content: "Star is ready for the show.", tags: [], mood: "neutral" },
 ];
 
 // Mock data for expenses
 export const mockExpenses: Expense[] = [
-  { id: "1", animalId: "1", date: "2023-05-05", description: "Feed", amount: 50 },
-  { id: "2", animalId: "2", date: "2023-05-05", description: "Vet", amount: 100 },
-  { id: "3", animalId: "3", date: "2023-05-05", description: "Supplements", amount: 25 },
+  { id: "1", animalId: "1", date: "2023-05-05", description: "Feed", amount: 50, category: "feed", taxDeductible: true },
+  { id: "2", animalId: "2", date: "2023-05-05", description: "Vet", amount: 100, category: "medicine", taxDeductible: true },
+  { id: "3", animalId: "3", date: "2023-05-05", description: "Supplements", amount: 25, category: "supplies", taxDeductible: false },
 ];
 
 // Mock data for feeding schedules
@@ -40,74 +41,72 @@ export const mockFeedingSchedules: FeedingSchedule[] = [
     id: "1",
     animalId: "1",
     name: "Morning Feed",
-    time: "07:00",
-    food: "High-energy grain mix",
-    amount: "5 lbs",
-    notes: "Ensure fresh water is available.",
     feedingTimes: [
-      { id: "1", time: "07:00", completed: false, lastCompleted: null, locationData: null },
-    ]
+      { id: "1", startTime: "07:00", endTime: "08:00", completed: false, lastCompleted: null, locationData: null },
+    ],
+    reminderEnabled: true,
+    reminderMinutesBefore: 15,
+    createdAt: "2023-01-01"
   },
   {
     id: "2",
     animalId: "1",
     name: "Evening Feed",
-    time: "19:00",
-    food: "Hay and mineral supplements",
-    amount: "10 lbs hay, supplements as directed",
-    notes: "Check weight and adjust feed as necessary.",
     feedingTimes: [
-      { id: "2", time: "19:00", completed: false, lastCompleted: null, locationData: null },
-    ]
+      { id: "2", startTime: "19:00", endTime: "20:00", completed: false, lastCompleted: null, locationData: null },
+    ],
+    reminderEnabled: true,
+    reminderMinutesBefore: 15,
+    createdAt: "2023-01-01"
   },
   {
     id: "3",
     animalId: "2",
     name: "Daily Feed",
-    time: "08:00",
-    food: "Goat feed pellets",
-    amount: "2 lbs",
-    notes: "Monitor for bloating.",
     feedingTimes: [
-      { id: "3", time: "08:00", completed: false, lastCompleted: null, locationData: null },
-    ]
+      { id: "3", startTime: "08:00", endTime: "09:00", completed: false, lastCompleted: null, locationData: null },
+    ],
+    reminderEnabled: true,
+    reminderMinutesBefore: 15,
+    createdAt: "2023-01-01"
   },
 ];
 
 // Mock data for user
 export const mockUser: User = {
   id: "1",
-  name: "John Doe",
   firstName: "John",
   lastName: "Doe",
   email: "john@example.com",
   avatarUrl: "/placeholder.svg",
   aboutMe: "I love showing livestock and exploring new fairs!",
-  phone: "555-123-4567",
+  role: "user",
   subscriptionLevel: "elite", // Make sure this is set to "elite"
   subscriptionEndDate: "2025-12-31",
-  notifications: {
-    email: true,
-    push: true,
-    sms: false
+  badges: [],
+  streaks: {
+    feedLogging: 5,
+    weightLogging: 3,
+    expenseTracking: 7
   },
+  createdAt: "2022-01-01"
 };
 
 // Mock subscription levels
 export const subscriptionLevels: { [key: string]: SubscriptionLevel } = {
   free: {
     level: "free",
-    price: 0,
     features: ["Basic animal tracking", "Limited journal entries"],
+    expiresAt: "never"
   },
   pro: {
     level: "pro",
-    price: 10,
     features: ["Advanced weight tracking", "Unlimited journal entries", "Gallery access"],
+    expiresAt: "2025-12-31"
   },
   elite: {
     level: "elite",
-    price: 20,
     features: ["AI-powered analysis", "Priority support", "All pro features"],
+    expiresAt: "2025-12-31"
   },
 };
