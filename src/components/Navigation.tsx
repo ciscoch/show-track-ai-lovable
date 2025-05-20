@@ -24,6 +24,10 @@ const Navigation = ({ navigationItems = [], user }: NavigationProps) => {
   // Check if current route is part of the buyer section
   const isBuyerRoute = location.pathname.startsWith("/buyer");
 
+  // For debugging
+  console.log("Navigation - Current user subscription:", userSubscription);
+  console.log("Navigation - User object:", user);
+
   return (
     <Card className="rounded-none shadow-sm border-b">
       <div className="container flex h-14 max-w-screen-2xl items-center">

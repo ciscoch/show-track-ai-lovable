@@ -1,3 +1,4 @@
+
 import { useState, useEffect, ReactNode } from "react";
 import { Animal, WeightEntry, JournalEntry, Expense, User, FeedingSchedule } from "@/types/models";
 import { 
@@ -25,8 +26,11 @@ export const useAppProviderState = () => {
   const [user, setUser] = useState<User | null>(mockUser);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // Select the user's subscription level
-  const userSubscription = subscriptionLevels[user?.subscriptionLevel || 'free'];
+  // Make sure we're using the user's actual subscription level from the user object
+  // This ensures the UI consistently shows the correct plan
+  const userSubscription = user?.subscriptionLevel 
+    ? subscriptionLevels[user.subscriptionLevel] 
+    : subscriptionLevels['free'];
 
   // Handle feeding reminders
   useFeedingReminders({ feedingSchedules, animals, user });
