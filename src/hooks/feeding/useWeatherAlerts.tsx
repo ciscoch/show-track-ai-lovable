@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { User } from '@/types/models';
 import { toast } from "@/hooks/use-toast";
 import { getWeatherForecast, detectWeatherAlerts } from '@/services/weatherService';
+import { getCurrentPosition } from '@/platform/geolocation';
 
 interface UseWeatherAlertsProps {
   user: User | null;
@@ -16,8 +17,8 @@ export const useWeatherAlerts = ({ user }: UseWeatherAlertsProps) => {
   
   // Request geolocation once
   useEffect(() => {
-    if (navigator.geolocation && hasWeatherAccess) {
-      navigator.geolocation.getCurrentPosition(
+    if (hasWeatherAccess) {
+      getCurrentPosition(
         (position) => {
           setLocation({
             latitude: position.coords.latitude,

@@ -5,6 +5,7 @@ import PremiumFeatureBanner from "./PremiumFeatureBanner";
 import { useAppContext } from "@/contexts/AppContext";
 import { Badge } from "@/components/ui/badge";
 import { CheckIcon, XIcon } from "lucide-react";
+import { navigate } from "@/platform/navigation";
 
 type JudgeAnalysisCardProps = {
   animal: Animal;
@@ -16,7 +17,7 @@ const JudgeAnalysisCard = ({ animal }: JudgeAnalysisCardProps) => {
   
   const handleNavigateToSubscriptions = () => {
     // In a real app, navigate to subscription page
-    window.location.href = '/subscription';
+    navigate('/subscription');
   };
   
   if (!isElite) {

@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { navigate } from "@/platform/navigation";
 import { useAppContext } from "@/contexts/AppContext";
 import MainLayout from "@/components/MainLayout";
 import { Button } from "@/components/ui/button";
@@ -61,7 +62,7 @@ const JournalPage = () => {
   
   const handleUpgrade = () => {
     // Redirect to subscription page
-    window.location.href = '/subscription';
+    navigate('/subscription');
   };
   
   return (

@@ -2,6 +2,7 @@
 import { ShowEvent } from "@/types/schedule";
 import { toast } from "@/hooks/use-toast";
 import { supabase, isRealSupabaseConnection } from "@/lib/supabaseClient";
+import { navigate } from "@/platform/navigation";
 
 export const useEventActions = (
   events: ShowEvent[], 
@@ -21,7 +22,7 @@ export const useEventActions = (
   
   const handleUpgrade = () => {
     // Redirect to subscription page
-    window.location.href = '/subscription';
+    navigate('/subscription');
   };
 
   const saveEvent = async (event: ShowEvent) => {

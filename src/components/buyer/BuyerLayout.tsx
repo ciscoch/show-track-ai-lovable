@@ -2,6 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Bell, Home, User, LogOut } from "lucide-react";
+import { getItem, removeItem } from "@/platform/storage";
 
 interface BuyerLayoutProps {
   children: React.ReactNode;
@@ -13,14 +14,14 @@ const BuyerLayout = ({ children, title, notificationBell }: BuyerLayoutProps) =>
   const navigate = useNavigate();
   
   const handleLogout = () => {
-    localStorage.removeItem("buyerLoggedIn");
-    localStorage.removeItem("buyerEmail");
+    removeItem("buyerLoggedIn");
+    removeItem("buyerEmail");
     navigate("/buyer/login");
   };
   
   // Check if buyer is logged in
-  const isLoggedIn = localStorage.getItem("buyerLoggedIn") === "true";
-  const buyerEmail = localStorage.getItem("buyerEmail") || "Buyer";
+  const isLoggedIn = getItem("buyerLoggedIn") === "true";
+  const buyerEmail = getItem("buyerEmail") || "Buyer";
 
   return (
     <div className="min-h-screen bg-background flex flex-col">

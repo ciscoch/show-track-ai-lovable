@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { getItem, removeItem } from "@/platform/storage";
 
 interface ConnectedUser {
   id: string;
@@ -112,7 +113,7 @@ export const useDashboardState = () => {
 
   // Check if buyer is logged in
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem("buyerLoggedIn") === "true";
+    const isLoggedIn = getItem("buyerLoggedIn") === "true";
     if (!isLoggedIn) {
       navigate("/buyer/login");
     }
@@ -149,8 +150,8 @@ export const useDashboardState = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("buyerLoggedIn");
-    localStorage.removeItem("buyerEmail");
+    removeItem("buyerLoggedIn");
+    removeItem("buyerEmail");
     navigate("/buyer/login");
   };
 

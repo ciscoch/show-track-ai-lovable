@@ -12,6 +12,7 @@ import { getTrendData } from "./judge-trend/trendData";
 import TrendChart from "./judge-trend/TrendChart";
 import TrendInsights from "./judge-trend/TrendInsights";
 import RegionalVariations from "./judge-trend/RegionalVariations";
+import { navigate } from "@/platform/navigation";
 
 interface JudgeTrendAnalysisProps {
   species: string;
@@ -40,7 +41,7 @@ const JudgeTrendAnalysis: React.FC<JudgeTrendAnalysisProps> = ({
         description="Upgrade to Elite to access detailed judge trend analysis, showing how judging criteria evolve over time across different shows and regions."
         requiredLevel="elite"
         currentLevel={userSubscription.level}
-        onUpgrade={() => window.location.href = '/subscription'}
+        onUpgrade={() => navigate('/subscription')}
       />
     );
   }
