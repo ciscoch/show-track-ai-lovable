@@ -13,7 +13,7 @@ import { ShowEvent } from "@/types/schedule";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 const SchedulePage = () => {
-  const { animals, userSubscription } = useAppContext();
+  const { animals, userSubscription, user } = useAppContext();
   const {
     date,
     setDate,
@@ -77,7 +77,7 @@ const SchedulePage = () => {
   };
   
   return (
-    <MainLayout title="Show Schedule">
+    <MainLayout title="Show Schedule" user={user}>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <div className="lg:col-span-2">
           <ScheduleControls 

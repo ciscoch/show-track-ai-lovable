@@ -17,7 +17,7 @@ import PremiumFeatureBanner from "@/components/PremiumFeatureBanner";
 import { Badge } from "@/components/ui/badge";
 
 const JournalPage = () => {
-  const { animals, journals, userSubscription } = useAppContext();
+  const { animals, journals, userSubscription, user } = useAppContext();
   const [isAddEntryOpen, setIsAddEntryOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAnimalId, setSelectedAnimalId] = useState<string>("");
@@ -65,7 +65,7 @@ const JournalPage = () => {
   };
   
   return (
-    <MainLayout title="Journal Entries">
+    <MainLayout title="Journal Entries" user={user}>
       <div className="flex flex-col md:flex-row justify-between mb-6 gap-4">
         <div className="flex flex-col md:flex-row gap-4 w-full md:w-2/3">
           <div className="relative w-full">

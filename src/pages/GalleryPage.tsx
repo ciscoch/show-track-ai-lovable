@@ -61,7 +61,7 @@ const mockPhotos: Photo[] = [
 ];
 
 const GalleryPage = () => {
-  const { animals, userSubscription } = useAppContext();
+  const { animals, userSubscription, user } = useAppContext();
   const [isAddPhotoOpen, setIsAddPhotoOpen] = useState(false);
   const [selectedAnimalId, setSelectedAnimalId] = useState<string>("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -117,7 +117,7 @@ const GalleryPage = () => {
   };
   
   return (
-    <MainLayout title="Photo Gallery">
+    <MainLayout title="Photo Gallery" user={user}>
       <GalleryHeader
         animals={animals}
         selectedAnimalId={selectedAnimalId}

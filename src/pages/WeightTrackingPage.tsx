@@ -16,7 +16,7 @@ import AddWeightForm from "@/components/AddWeightForm";
 import PremiumFeatureBanner from "@/components/PremiumFeatureBanner";
 
 const WeightTrackingPage = () => {
-  const { animals, weights, userSubscription } = useAppContext();
+  const { animals, weights, userSubscription, user } = useAppContext();
   const [selectedAnimalId, setSelectedAnimalId] = useState<string>(animals[0]?.id || "");
   const [isAddWeightOpen, setIsAddWeightOpen] = useState(false);
   
@@ -83,7 +83,7 @@ const WeightTrackingPage = () => {
   const hasEliteAccess = userSubscription.level === 'elite';
   
   return (
-    <MainLayout title="Weight Tracking">
+    <MainLayout title="Weight Tracking" user={user}>
       <Tabs defaultValue="overview" className="w-full mt-8">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
