@@ -263,7 +263,7 @@ const WeightTrackingPage = () => {
         </TabsContent>
         
         <TabsContent value="ai-analysis" className="space-y-6">
-          {!hasEliteAccess ? (
+          {userSubscription.level !== 'elite' ? (
             <PremiumFeatureBanner 
               title="AI Weight Estimation & Analysis" 
               description="Upload photos of your animal and our AI will estimate weight and body composition."
