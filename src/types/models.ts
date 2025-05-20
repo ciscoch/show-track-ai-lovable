@@ -103,6 +103,9 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
+  name?: string; // Optional display name
+  avatarUrl?: string | null; // Optional profile photo
+  aboutMe?: string; // Optional about me description
   role?: string; // Added role property
   subscriptionLevel: "free" | "pro" | "elite";
   subscriptionEndDate?: string; // Added subscriptionEndDate property
