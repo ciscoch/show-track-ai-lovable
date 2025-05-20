@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { generateId } from "@/lib/utils";
 import { ArrowLeftIcon } from "lucide-react";
+import { useOrganizations } from "@/hooks/useOrganizations";
 
 const AddAnimal = () => {
   const navigate = useNavigate();
@@ -25,6 +26,8 @@ const AddAnimal = () => {
   const [showId, setShowId] = useState("");
   const [notes, setNotes] = useState("");
   const [weight, setWeight] = useState<number>(0); // Added weight field
+  const [organizationId, setOrganizationId] = useState("");
+  const { organizations } = useOrganizations();
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,6 +46,9 @@ const AddAnimal = () => {
       purpose: "show" as const, // Default value for purpose
       description: notes || "", // Use notes as description
       weight: weight || 0, // Added weight field
+      organization: organizationId
+        ? organizations.find((o) => o.id === organizationId)
+        : undefined,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       notes: notes || undefined
@@ -145,7 +151,26 @@ const AddAnimal = () => {
                   </Select>
                 </div>
               </div>
-              
+
+              <div>
+                <Label htmlFor="organization">Organization</Label>
+                <Select
+                  value={organizationId}
+                  onValueChange={setOrganizationId}
+                >
+                  <SelectTrigger id="organization">
+                    <SelectValue placeholder="Select organization" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {organizations.map((org) => (
+                      <SelectItem key={org.id} value={org.id}>
+                        {org.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="birthdate">Birth Date*</Label>
