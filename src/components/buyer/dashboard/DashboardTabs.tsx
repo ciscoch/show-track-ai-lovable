@@ -12,6 +12,7 @@ interface Update {
   animalId: string;
   date: string;
   details: string;
+  read?: boolean;
 }
 
 interface ConnectedUser {
@@ -28,6 +29,7 @@ interface DashboardTabsProps {
   activeTab: string;
   setActiveTab: (value: string) => void;
   recentUpdates: Update[];
+  onMarkRead: (id: string) => void;
   filteredUsers: ConnectedUser[];
   onConnectUser: () => void;
 }
@@ -35,9 +37,10 @@ interface DashboardTabsProps {
 const DashboardTabs = ({ 
   activeTab, 
   setActiveTab, 
-  recentUpdates, 
-  filteredUsers, 
-  onConnectUser 
+  recentUpdates,
+  onMarkRead,
+  filteredUsers,
+  onConnectUser
 }: DashboardTabsProps) => {
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
@@ -47,7 +50,7 @@ const DashboardTabs = ({
       </TabsList>
       
       <TabsContent value="updates">
-        <UserActivityFeed updates={recentUpdates} />
+        <UserActivityFeed updates={recentUpdates} onRead={onMarkRead} />
       </TabsContent>
       
       <TabsContent value="users">

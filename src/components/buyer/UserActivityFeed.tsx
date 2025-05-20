@@ -14,13 +14,15 @@ interface Update {
   animalId: string;
   date: string;
   details: string;
+  read?: boolean;
 }
 
 interface UserActivityFeedProps {
   updates: Update[];
+  onRead: (id: string) => void;
 }
 
-const UserActivityFeed = ({ updates }: UserActivityFeedProps) => {
+const UserActivityFeed = ({ updates, onRead }: UserActivityFeedProps) => {
   const navigate = useNavigate();
   const [filter, setFilter] = useState<string>("all");
   
@@ -29,7 +31,8 @@ const UserActivityFeed = ({ updates }: UserActivityFeedProps) => {
     ? updates 
     : updates.filter(update => update.updateType === filter);
 
-  const handleUpdateClick = (userId: string, updateType: string, animalId?: string) => {
+  const handleUpdateClick = (id: string, userId: string, updateType: string, animalId?: string) => {
+    onRead(id);
     // Navigate to the appropriate page based on the update type
     navigate(`/buyer/user/${userId}`, { 
       state: { activeTab: updateType === "photo" ? "gallery" : updateType === "journal" ? "journal" : "updates" } 
@@ -68,7 +71,8 @@ const UserActivityFeed = ({ updates }: UserActivityFeedProps) => {
                 animalId={update.animalId}
                 date={update.date}
                 details={update.details}
-                onClick={() => handleUpdateClick(update.userId, update.updateType, update.animalId)}
+                read={update.read}
+                onClick={() => handleUpdateClick(update.id, update.userId, update.updateType, update.animalId)}
               />
             ))
           ) : (
