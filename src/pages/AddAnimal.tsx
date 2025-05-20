@@ -14,7 +14,7 @@ import { useOrganizations } from "@/hooks/useOrganizations";
 
 const AddAnimal = () => {
   const navigate = useNavigate();
-  const { addAnimal, user } = useAppContext();
+  const { addAnimal } = useAppContext();
   
   const [name, setName] = useState("");
   const [species, setSpecies] = useState<"cattle" | "goat" | "sheep" | "pig">("goat");
@@ -23,7 +23,6 @@ const AddAnimal = () => {
   const [purchaseDate, setPurchaseDate] = useState("");
   const [gender, setGender] = useState<"male" | "female">("male");
   const [tagNumber, setTagNumber] = useState("");
-  const [showId, setShowId] = useState("");
   const [notes, setNotes] = useState("");
   const [weight, setWeight] = useState<number>(0); // Added weight field
   const [organizationId, setOrganizationId] = useState("");
@@ -154,6 +153,9 @@ const AddAnimal = () => {
 
               <div>
                 <Label htmlFor="organization">Organization</Label>
+                <p className="text-sm text-muted-foreground mb-1">
+                  Type the first letter to quickly navigate the list
+                </p>
                 <Select
                   value={organizationId}
                   onValueChange={setOrganizationId}
