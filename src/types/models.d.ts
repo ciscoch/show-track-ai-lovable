@@ -42,8 +42,12 @@ declare module "@/types/models" {
 
   interface User {
     id: string;
-    name: string;
+    name?: string;
+    firstName?: string;
+    lastName?: string;
     email: string;
+    avatarUrl?: string | null;
+    aboutMe?: string;
     subscriptionLevel: 'free' | 'basic' | 'premium';
   }
 

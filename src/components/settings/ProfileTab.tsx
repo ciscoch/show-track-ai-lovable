@@ -4,6 +4,7 @@ import { User } from "@/types/models";
 import EmailVerificationModal from "./EmailVerificationModal";
 import ProfileForm from "./ProfileForm";
 import DeleteAccountSection from "./DeleteAccountSection";
+import AboutMeSection from "./AboutMeSection";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import BuckleShowcase from "@/components/badges/BuckleShowcase";
 import ProfileBadges from "@/components/badges/ProfileBadges";
@@ -49,11 +50,13 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
 
   return (
     <>
-      <ProfileForm 
-        user={user} 
+      <ProfileForm
+        user={user}
         emailVerified={emailVerified}
         onEmailChange={handleEmailChange}
       />
+
+      <AboutMeSection user={user} />
       
       {legacyUser && (
         <div className="mt-6">

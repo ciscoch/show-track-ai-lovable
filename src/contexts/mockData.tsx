@@ -78,8 +78,11 @@ export const mockFeedingSchedules: FeedingSchedule[] = [
 export const mockUser: User = {
   id: "1",
   name: "John Doe",
+  firstName: "John",
+  lastName: "Doe",
   email: "john@example.com",
-  profileImage: "/placeholder.svg",
+  avatarUrl: "/placeholder.svg",
+  aboutMe: "I love showing livestock and exploring new fairs!",
   phone: "555-123-4567",
   subscriptionLevel: "elite", // Make sure this is set to "elite"
   subscriptionEndDate: "2025-12-31",
