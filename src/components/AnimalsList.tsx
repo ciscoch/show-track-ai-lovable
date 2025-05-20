@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Animal, User } from "@/types/models";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import AnimalCard from "@/components/AnimalCard";  // Updated import path
+import AnimalCard from "@/components/AnimalCard";
 import WelcomeMessage from "./WelcomeMessage";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";

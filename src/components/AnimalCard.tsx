@@ -1,9 +1,7 @@
-
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-// Remove this import as it's causing the naming conflict
-// import AnimalCard from "@/components/animals/AnimalCard";
+import AnimalCard from "@/components/animals/AnimalCard";
 
 interface AnimalCardProps {
   animal: {

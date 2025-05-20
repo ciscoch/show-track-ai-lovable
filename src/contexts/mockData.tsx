@@ -1,3 +1,4 @@
+
 import { Animal, WeightEntry, JournalEntry, Expense, User, SubscriptionLevel, FeedingSchedule, FeedingTime } from "@/types/models";
 
 // Mock data for animals
@@ -92,29 +93,20 @@ export const mockUser: User = {
 };
 
 // Mock subscription levels
-export const subscriptionLevels = [
-  {
-    id: "free",
-    name: "Free",
-    description: "Basic features for showing your animals",
-    features: ["Up to 3 animals", "Basic weight tracking", "Photo uploads (5 per animal)"],
-    isFree: true,
-    buttonText: "Current Plan"
+export const subscriptionLevels: { [key: string]: SubscriptionLevel } = {
+  free: {
+    level: "free",
+    features: ["Basic animal tracking", "Limited journal entries"],
+    expiresAt: "never"
   },
-  {
-    id: "pro",
-    name: "Exhibitor Pro",
-    description: "Everything you need to manage your show animals",
-    features: ["Unlimited animals", "Advanced weight tracking", "Unlimited photo uploads", "Expense tracking", "Judge insights"],
-    isFree: false,
-    buttonText: "Upgrade"
+  pro: {
+    level: "pro",
+    features: ["Advanced weight tracking", "Unlimited journal entries", "Gallery access"],
+    expiresAt: "2025-12-31"
   },
-  {
-    id: "team",
-    name: "Team Account",
-    description: "For agriculture teachers and club leaders",
-    features: ["All Pro features", "Manage up to 50 exhibitor accounts", "Consolidated reporting", "Bulk animal management", "Premium support"],
-    isFree: false,
-    buttonText: "Contact Sales"
-  }
-];
+  elite: {
+    level: "elite",
+    features: ["AI-powered analysis", "Priority support", "All pro features"],
+    expiresAt: "2025-12-31"
+  },
+};
