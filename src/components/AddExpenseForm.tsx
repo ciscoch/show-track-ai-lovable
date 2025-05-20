@@ -26,6 +26,7 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { CalendarIcon, Camera, Image } from "lucide-react";
 import { v4 as uuidv4 } from 'uuid';
+import { readFileAsDataURL } from "@/platform/file";
 
 const formSchema = z.object({
   animalId: z.string().min(1, "Please select an animal"),
@@ -59,17 +60,16 @@ const AddExpenseForm = ({ initialAnimalId, onSuccess }: AddExpenseFormProps) => 
     },
   });
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && typeof window !== "undefined") {
+    if (file) {
       form.setValue("receiptImage", file);
-      const fileReader = new FileReader();
-      fileReader.onload = (e) => {
-        if (e.target?.result) {
-          setPreviewUrl(e.target.result as string);
-        }
-      };
-      fileReader.readAsDataURL(file);
+      try {
+        const dataUrl = await readFileAsDataURL(file);
+        setPreviewUrl(dataUrl);
+      } catch (error) {
+        console.error("Failed to read file", error);
+      }
     }
   };
 

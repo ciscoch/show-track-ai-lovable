@@ -9,6 +9,7 @@ import { calculateAge } from "@/lib/utils";
 import { useAppContext } from "@/contexts/AppContext";
 import ImageUploadButton from "@/components/ImageUploadButton";
 import { Input } from "@/components/ui/input";
+import { readFileAsDataURL } from "@/platform/file";
 
 interface AnimalHeaderProps {
   animal: Animal;
@@ -52,22 +53,8 @@ const AnimalHeader = ({ animal }: AnimalHeaderProps) => {
 
   const handleImageUpload = async (file: File) => {
     try {
-      // Create a data URL from the file
-      if (typeof window === "undefined") return;
-      const reader = new FileReader();
-      
-      const imageUrl = await new Promise<string>((resolve, reject) => {
-        reader.onload = (e) => {
-          if (e.target?.result) {
-            resolve(e.target.result as string);
-          } else {
-            reject(new Error('Failed to read file'));
-          }
-        };
-        reader.onerror = () => reject(reader.error);
-        reader.readAsDataURL(file);
-      });
-      
+      const imageUrl = await readFileAsDataURL(file);
+
       // Update animal with new image
       const updatedAnimal = {
         ...animal,
