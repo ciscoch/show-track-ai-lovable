@@ -18,6 +18,7 @@ import AccountTypePage from "@/pages/AccountTypePage";
 import LoginPage from "@/pages/LoginPage";
 import FriendsPage from "@/pages/FriendsPage";
 import UploadsPage from "@/pages/UploadsPage";
+import SupportChatPage from "@/pages/SupportChatPage";
 import BuyerLoginPage from "@/pages/buyer/BuyerLoginPage";
 import BuyerDashboardPage from "@/pages/buyer/BuyerDashboardPage";
 import BuyerViewUserPage from "@/pages/buyer/BuyerViewUserPage";
@@ -40,6 +41,7 @@ function App() {
         <Route path="/settings" element={<UserSettingsPage />} />
         <Route path="/feed-reminders" element={<FeedReminderPage />} />
         <Route path="/friends" element={<FriendsPage />} />
+        <Route path="/help" element={<SupportChatPage />} />
         <Route path="/signup" element={<AccountTypePage />} />
         <Route path="/signup/exhibitor" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />

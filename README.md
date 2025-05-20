@@ -60,6 +60,16 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
+## Environment Variables
+
+The app expects an OpenAI API key to power the in-app support chat. Copy `env` to `.env` and set:
+
+```
+VITE_OPENAI_API_KEY=YOUR_OPENAI_API_KEY
+```
+
+Replace `YOUR_OPENAI_API_KEY` with a valid key from OpenAI.
+
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/ce7c82f5-877e-44f1-8152-03e9fb646c17) and click on Share -> Publish.
