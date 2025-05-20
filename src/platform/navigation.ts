@@ -1,3 +1,5 @@
 export function navigate(url: string) {
-  window.location.href = url;
+  if (typeof window !== "undefined") {
+    window.location.href = url;
+  }
 }

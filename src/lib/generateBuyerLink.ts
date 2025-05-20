@@ -13,7 +13,7 @@ export const generateBuyerLink = async (
     const token = uuidv4();
     
     // Get base URL from current location
-    const baseUrl = window.location.origin;
+    const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
     
     // Create the link
     const link = `${baseUrl}/buyer-link/${token}`;

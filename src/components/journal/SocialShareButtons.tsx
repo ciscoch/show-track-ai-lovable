@@ -13,11 +13,11 @@ interface SocialShareButtonsProps {
 const SocialShareButtons = ({ title, text, className }: SocialShareButtonsProps) => {
   const handleShare = async (platform: string) => {
     const shareText = `${title}: ${text.substring(0, 100)}${text.length > 100 ? '...' : ''}`;
-    const shareUrl = window.location.href;
+    const shareUrl = typeof window !== "undefined" ? window.location.href : "";
     
     try {
       // Try Web Share API first if available
-      if (navigator.share) {
+      if (typeof navigator !== "undefined" && navigator.share) {
         await navigator.share({
           title: title,
           text: shareText,
@@ -32,17 +32,25 @@ const SocialShareButtons = ({ title, text, className }: SocialShareButtonsProps)
     // Fallback to platform-specific sharing or copying link
     switch (platform) {
       case "facebook":
-        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, "_blank");
+        if (typeof window !== "undefined") {
+          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, "_blank");
+        }
         break;
       case "twitter":
-        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`, "_blank");
+        if (typeof window !== "undefined") {
+          window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`, "_blank");
+        }
         break;
       case "linkedin":
-        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, "_blank");
+        if (typeof window !== "undefined") {
+          window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, "_blank");
+        }
         break;
       case "copy":
       default:
-        navigator.clipboard.writeText(`${title}\n\n${text}\n\n${shareUrl}`);
+        if (typeof navigator !== "undefined" && navigator.clipboard) {
+          navigator.clipboard.writeText(`${title}\n\n${text}\n\n${shareUrl}`);
+        }
         toast({
           title: "Link copied",
           description: "Journal entry link copied to clipboard",

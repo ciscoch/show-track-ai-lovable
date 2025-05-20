@@ -61,7 +61,7 @@ const AddExpenseForm = ({ initialAnimalId, onSuccess }: AddExpenseFormProps) => 
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
+    if (file && typeof window !== "undefined") {
       form.setValue("receiptImage", file);
       const fileReader = new FileReader();
       fileReader.onload = (e) => {
@@ -291,7 +291,11 @@ const AddExpenseForm = ({ initialAnimalId, onSuccess }: AddExpenseFormProps) => 
                       type="button"
                       variant="outline"
                       className="w-full"
-                      onClick={() => document.getElementById('receipt-upload')?.click()}
+                      onClick={() => {
+                        if (typeof document !== "undefined") {
+                          document.getElementById('receipt-upload')?.click();
+                        }
+                      }}
                     >
                       <Camera className="h-4 w-4 mr-2" />
                       Take Photo
@@ -300,7 +304,11 @@ const AddExpenseForm = ({ initialAnimalId, onSuccess }: AddExpenseFormProps) => 
                       type="button"
                       variant="outline"
                       className="w-full"
-                      onClick={() => document.getElementById('receipt-upload')?.click()}
+                      onClick={() => {
+                        if (typeof document !== "undefined") {
+                          document.getElementById('receipt-upload')?.click();
+                        }
+                      }}
                     >
                       <Image className="h-4 w-4 mr-2" />
                       Upload Image

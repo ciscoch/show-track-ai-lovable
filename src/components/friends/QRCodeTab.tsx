@@ -13,11 +13,13 @@ const QRCodeTab = () => {
   useEffect(() => {
     // Generate a unique invite code
     const inviteCode = generateId();
-    setQrValue(`${window.location.origin}/friends?invite=${inviteCode}`);
+    if (typeof window !== "undefined") {
+      setQrValue(`${window.location.origin}/friends?invite=${inviteCode}`);
+    }
   }, []);
-  
+
   const handleShare = async () => {
-    if (navigator.share) {
+    if (typeof navigator !== "undefined" && navigator.share) {
       try {
         await navigator.share({
           title: 'Add me as a friend',
@@ -29,7 +31,9 @@ const QRCodeTab = () => {
       }
     } else {
       // Fallback for browsers that don't support the Web Share API
-      navigator.clipboard.writeText(qrValue);
+      if (typeof navigator !== "undefined" && navigator.clipboard) {
+        navigator.clipboard.writeText(qrValue);
+      }
       toast({
         title: "Link copied",
         description: "Share this link with your friends",

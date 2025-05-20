@@ -9,10 +9,13 @@ import { AppProvider } from './contexts/AppContext'
 import "../public/badgeList.js";
 import "../public/badgeLogic.js";
 
-createRoot(document.getElementById("root")!).render(
-  <BrowserRouter>
-    <AppProvider>
-      <App />
-    </AppProvider>
-  </BrowserRouter>
-);
+const rootEl = typeof document !== "undefined" ? document.getElementById("root") : null;
+if (rootEl) {
+  createRoot(rootEl).render(
+    <BrowserRouter>
+      <AppProvider>
+        <App />
+      </AppProvider>
+    </BrowserRouter>
+  );
+}

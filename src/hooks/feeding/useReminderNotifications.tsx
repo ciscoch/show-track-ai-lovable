@@ -16,6 +16,7 @@ export const useReminderNotifications = ({
 }: UseReminderNotificationsProps) => {
   
   useEffect(() => {
+    if (typeof window === "undefined") return;
     const checkFeedingReminders = () => {
       const now = new Date();
       
