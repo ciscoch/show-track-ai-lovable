@@ -1,36 +1,34 @@
 
-import { supabase } from "@/lib/supabaseClient";
-import { nanoid } from "nanoid";
+import { createClient } from "@supabase/supabase-js";
+import { v4 as uuidv4 } from "uuid";
 import QRCode from "qrcode";
 
-/**
- * Generates a shareable buyer link and a QR code for a specific user.
- * Stores the token with expiration in buyer_links.
- */
-export async function generateBuyerLink(userId: string, buyerId: string): Promise<{ url: string, qr: string } | null> {
+export const generateBuyerLink = async (
+  userId: string,
+  animalIds: string[],
+  expiresInDays = 30
+) => {
   try {
-    const token = nanoid(12);
-    const expires_at = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7); // 7 days from now
-
-    const { error } = await supabase
-      .from("buyer_links")
-      .insert({
-        user_id: userId,
-        buyer_id: buyerId,
-        token,
-        expires_at
-      });
-
-    if (error) {
-      console.error("Error saving buyer link:", error);
-      return null;
-    }
-
-    const url = `${window.location.origin}/buyer-link/${token}`;
-    const qr = await QRCode.toDataURL(url);
-    return { url, qr };
-  } catch (err) {
-    console.error("QR link generation error:", err);
-    return null;
+    // Generate a unique token
+    const token = uuidv4();
+    
+    // Get base URL from current location
+    const baseUrl = window.location.origin;
+    
+    // Create the link
+    const link = `${baseUrl}/buyer-link/${token}`;
+    
+    // Generate QR code
+    const qrCodeDataUrl = await QRCode.toDataURL(link);
+    
+    return {
+      token,
+      link,
+      qrCode: qrCodeDataUrl,
+      expiresAt: new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000).toISOString(),
+    };
+  } catch (error) {
+    console.error("Error generating buyer link:", error);
+    throw new Error("Failed to generate buyer link");
   }
-}
+};

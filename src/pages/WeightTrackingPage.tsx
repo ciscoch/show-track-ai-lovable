@@ -75,6 +75,12 @@ const WeightTrackingPage = () => {
     // Redirect to subscription page
     window.location.href = '/subscription';
   };
+
+  // Check if user has Pro or Elite access
+  const hasPremiumAccess = userSubscription.level === 'pro' || userSubscription.level === 'elite';
+  
+  // Check if user has Elite access
+  const hasEliteAccess = userSubscription.level === 'elite';
   
   return (
     <MainLayout title="Weight Tracking">
@@ -233,21 +239,66 @@ const WeightTrackingPage = () => {
         </TabsContent>
         
         <TabsContent value="trends" className="space-y-6">
-          <PremiumFeatureBanner 
-            title="Advanced Weight Trend Analysis" 
-            description="Upgrade to access advanced weight trend analysis, including growth projections and comparison to breed standards."
-            requiredLevel="pro"
-            onUpgrade={handleUpgrade}
-          />
+          {!hasPremiumAccess ? (
+            <PremiumFeatureBanner 
+              title="Advanced Weight Trend Analysis" 
+              description="Upgrade to access advanced weight trend analysis, including growth projections and comparison to breed standards."
+              requiredLevel="pro"
+              currentLevel={userSubscription.level}
+              onUpgrade={handleUpgrade}
+            />
+          ) : (
+            <Card>
+              <CardHeader>
+                <CardTitle>Advanced Weight Trends</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Your advanced weight trend analysis is available here. This feature shows detailed projections and comparisons to breed standards.
+                </p>
+                {/* Advanced trend content would go here */}
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
         
         <TabsContent value="ai-analysis" className="space-y-6">
-          <PremiumFeatureBanner 
-            title="AI Weight Estimation & Analysis" 
-            description="Upload photos of your animal and our AI will estimate weight and body composition."
-            requiredLevel="pro"
-            onUpgrade={handleUpgrade}
-          />
+          {!hasEliteAccess ? (
+            <PremiumFeatureBanner 
+              title="AI Weight Estimation & Analysis" 
+              description="Upload photos of your animal and our AI will estimate weight and body composition."
+              requiredLevel="elite"
+              currentLevel={userSubscription.level}
+              onUpgrade={handleUpgrade}
+            />
+          ) : (
+            <Card>
+              <CardHeader>
+                <CardTitle>AI Weight Estimation & Analysis</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <p>Upload photos of your animal for AI-powered weight estimation and body composition analysis.</p>
+                  
+                  <div className="border-2 border-dashed rounded-lg p-8 text-center">
+                    <Button className="mb-4">
+                      Upload Photo for Analysis
+                    </Button>
+                    <p className="text-sm text-muted-foreground">
+                      For best results, take photos from the side, front, and top angle with good lighting.
+                    </p>
+                  </div>
+                  
+                  <div>
+                    <h3 className="font-medium mb-2">Recent Analyses</h3>
+                    <p className="text-sm text-muted-foreground">
+                      No analyses yet. Upload a photo to get started.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
       </Tabs>
       
