@@ -60,6 +60,15 @@ const GalleryPreview = ({ userId }: GalleryPreviewProps) => {
     }
   ];
 
+  // Make sure we have gallery images to display
+  if (!galleryImages || galleryImages.length === 0) {
+    return (
+      <div className="text-center py-8 text-muted-foreground">
+        No photos available
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">

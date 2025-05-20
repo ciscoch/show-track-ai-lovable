@@ -22,14 +22,17 @@ interface UserActivityFeedProps {
   onRead: (id: string) => void;
 }
 
-const UserActivityFeed = ({ updates, onRead }: UserActivityFeedProps) => {
+const UserActivityFeed = ({ updates = [], onRead }: UserActivityFeedProps) => {
   const navigate = useNavigate();
   const [filter, setFilter] = useState<string>("all");
   
+  // Make sure updates is always an array
+  const safeUpdates = updates || [];
+  
   // Filter updates based on selected filter
   const filteredUpdates = filter === "all" 
-    ? updates 
-    : updates.filter(update => update.updateType === filter);
+    ? safeUpdates 
+    : safeUpdates.filter(update => update.updateType === filter);
 
   const handleUpdateClick = (id: string, userId: string, updateType: string, animalId?: string) => {
     onRead(id);

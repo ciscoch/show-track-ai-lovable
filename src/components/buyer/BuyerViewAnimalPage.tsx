@@ -76,6 +76,10 @@ const BuyerViewAnimalPage = () => {
       tags: ["Health", "Veterinary"]
     }
   ];
+
+  // Make sure all arrays have default values if undefined
+  const safeWeights = mockWeights || [];
+  const safeJournalEntries = mockJournalEntries || [];
   
   return (
     <BuyerLayout title={animalData.name}>
@@ -151,7 +155,7 @@ const BuyerViewAnimalPage = () => {
                   <CardContent>
                     <div className="h-80">
                       <WeightChart 
-                        weights={mockWeights} 
+                        weights={safeWeights} 
                         animalId={animalId || "1"}
                         height={300}
                       />
@@ -160,7 +164,7 @@ const BuyerViewAnimalPage = () => {
                     <div className="space-y-2 mt-6">
                       <h4 className="font-medium">Weight Log</h4>
                       <div className="space-y-2">
-                        {mockWeights.map((entry) => (
+                        {safeWeights.map((entry) => (
                           <div 
                             key={entry.id} 
                             className="flex justify-between py-2 border-b last:border-b-0"
@@ -185,7 +189,7 @@ const BuyerViewAnimalPage = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-6">
-                      {mockJournalEntries.map((entry) => (
+                      {safeJournalEntries.map((entry) => (
                         <div key={entry.id} className="border-b pb-4 last:border-b-0">
                           <div className="flex justify-between items-start">
                             <h3 className="font-semibold text-lg">{entry.title}</h3>
@@ -193,7 +197,7 @@ const BuyerViewAnimalPage = () => {
                           </div>
                           <p className="my-2">{entry.content}</p>
                           <div className="flex flex-wrap gap-1 mt-2">
-                            {entry.tags.map((tag) => (
+                            {entry.tags && entry.tags.map((tag) => (
                               <span 
                                 key={tag} 
                                 className="inline-block bg-primary/10 text-primary text-xs px-2 py-1 rounded-full"

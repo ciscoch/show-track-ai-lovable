@@ -88,6 +88,15 @@ const UpdateTimeline = ({ userId }: UpdateTimelineProps) => {
     }
   };
 
+  // Make sure we have events to display
+  if (!timelineEvents || timelineEvents.length === 0) {
+    return (
+      <div className="text-center py-8 text-muted-foreground">
+        No recent updates to display
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {timelineEvents.map((event) => (

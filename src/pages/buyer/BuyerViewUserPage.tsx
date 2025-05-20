@@ -28,6 +28,9 @@ const BuyerViewUserPage = () => {
     bio: "Raising show animals for over 10 years",
     lastActive: "2025-05-15"
   });
+  
+  // Ensure userId is defined, use a default if not
+  const safeUserId = userId || "user1";
 
   // Check if buyer is logged in
   useEffect(() => {
@@ -55,6 +58,11 @@ const BuyerViewUserPage = () => {
       });
     }
   }, [navigate, inviteCode, userId]);
+  
+  // Get a filtered list of journals for this user
+  const userJournals = journals && journals.length > 0 
+    ? journals.slice(0, 3)
+    : [];
 
   return (
     <BuyerLayout title={userData.name}>
@@ -154,7 +162,7 @@ const BuyerViewUserPage = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <UpdateTimeline userId={userId || "user1"} />
+                    <UpdateTimeline userId={safeUserId} />
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -168,25 +176,31 @@ const BuyerViewUserPage = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    {journals.slice(0, 3).map((entry) => (
-                      <div key={entry.id} className="py-4 border-b last:border-b-0">
-                        <div className="flex justify-between">
-                          <h3 className="font-semibold">{entry.title}</h3>
-                          <span className="text-sm text-muted-foreground">{entry.date}</span>
+                    {userJournals && userJournals.length > 0 ? (
+                      userJournals.map((entry) => (
+                        <div key={entry.id} className="py-4 border-b last:border-b-0">
+                          <div className="flex justify-between">
+                            <h3 className="font-semibold">{entry.title}</h3>
+                            <span className="text-sm text-muted-foreground">{entry.date}</span>
+                          </div>
+                          <p className="text-sm my-2 line-clamp-3">{entry.content}</p>
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {entry.tags && entry.tags.map((tag) => (
+                              <span 
+                                key={tag} 
+                                className="inline-block bg-primary/10 text-primary text-xs px-2 py-1 rounded-full"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
                         </div>
-                        <p className="text-sm my-2 line-clamp-3">{entry.content}</p>
-                        <div className="flex flex-wrap gap-1 mt-2">
-                          {entry.tags.map((tag) => (
-                            <span 
-                              key={tag} 
-                              className="inline-block bg-primary/10 text-primary text-xs px-2 py-1 rounded-full"
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
+                      ))
+                    ) : (
+                      <div className="text-center py-8 text-muted-foreground">
+                        No journal entries to display
                       </div>
-                    ))}
+                    )}
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -200,7 +214,7 @@ const BuyerViewUserPage = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <GalleryPreview userId={userId || "user1"} />
+                    <GalleryPreview userId={safeUserId} />
                   </CardContent>
                 </Card>
               </TabsContent>
