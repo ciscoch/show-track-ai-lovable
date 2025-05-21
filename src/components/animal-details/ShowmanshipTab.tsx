@@ -40,7 +40,8 @@ const ShowmanshipTab = ({ animal }: ShowmanshipTabProps) => {
       
       <div className="grid grid-cols-1 gap-6">
         <ShowTipsCard animal={animal} />
-        <JudgeAnalysisCard animal={animal} />
+        {/* Pass a default location so local insights can be shown */}
+        <JudgeAnalysisCard animal={animal} location="Texas" />
         <JudgeInsightsCard animal={animal} />
         <JudgeTrendAnalysis species={animal.species} />
       </div>
