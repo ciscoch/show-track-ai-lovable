@@ -3,9 +3,9 @@ import { Animal, WeightEntry, JournalEntry, Expense, User, SubscriptionLevel, Fe
 
 // Mock data for animals
 export const mockAnimals: Animal[] = [
-  { id: "1", name: "Blue Ribbon", species: "cattle", breed: "Angus", gender: "male", birthdate: "2020-05-15", weight: 1200, image: "/placeholder.svg", description: "Champion Angus bull", showAnimal: true, purpose: "show" },
-  { id: "2", name: "Champion", species: "goat", breed: "Boer", gender: "female", birthdate: "2021-03-20", weight: 150, image: "/placeholder.svg", description: "Prize-winning Boer goat", showAnimal: true, purpose: "breeding" },
-  { id: "3", name: "Star", species: "sheep", breed: "Dorset", gender: "female", birthdate: "2022-01-10", weight: 180, image: "/placeholder.svg", description: "Excellent Dorset ewe", showAnimal: true, purpose: "market" },
+  { id: "1", name: "Blue Ribbon", species: "cattle", breed: "Angus", gender: "male", birthdate: "2020-05-15", weight: 1200, image: "/placeholder.svg", description: "Champion Angus bull", showAnimal: true, purpose: "show", penNumber: "A1" },
+  { id: "2", name: "Champion", species: "goat", breed: "Boer", gender: "female", birthdate: "2021-03-20", weight: 150, image: "/placeholder.svg", description: "Prize-winning Boer goat", showAnimal: true, purpose: "breeding", penNumber: "B2" },
+  { id: "3", name: "Star", species: "sheep", breed: "Dorset", gender: "female", birthdate: "2022-01-10", weight: 180, image: "/placeholder.svg", description: "Excellent Dorset ewe", showAnimal: true, purpose: "market", penNumber: "C3" },
 ];
 
 // Mock data for weight entries

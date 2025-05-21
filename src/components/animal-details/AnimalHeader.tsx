@@ -20,6 +20,8 @@ const AnimalHeader = ({ animal }: AnimalHeaderProps) => {
   const { updateAnimal } = useAppContext();
   const [isEditingName, setIsEditingName] = useState(false);
   const [animalName, setAnimalName] = useState(animal.name);
+  const [isEditingPen, setIsEditingPen] = useState(false);
+  const [penNumber, setPenNumber] = useState(animal.penNumber || "");
   
   const handleEditAnimal = () => {
     navigate(`/animal/${animal.id}/edit`);
@@ -49,6 +51,28 @@ const AnimalHeader = ({ animal }: AnimalHeaderProps) => {
   const cancelEditingName = () => {
     setIsEditingName(false);
     setAnimalName(animal.name);
+  };
+
+  const startEditingPen = () => {
+    setIsEditingPen(true);
+    setPenNumber(animal.penNumber || "");
+  };
+
+  const savePenNumber = () => {
+    const trimmedPen = penNumber.trim();
+    if (trimmedPen !== (animal.penNumber || "")) {
+      const updatedAnimal = {
+        ...animal,
+        penNumber: trimmedPen || undefined
+      };
+      updateAnimal(updatedAnimal);
+    }
+    setIsEditingPen(false);
+  };
+
+  const cancelEditingPen = () => {
+    setIsEditingPen(false);
+    setPenNumber(animal.penNumber || "");
   };
 
   const handleImageUpload = async (file: File) => {
@@ -156,7 +180,7 @@ const AnimalHeader = ({ animal }: AnimalHeaderProps) => {
               
               <p className="text-muted-foreground">{animal.breed}</p>
               
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-2 mt-4">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-x-8 gap-y-2 mt-4">
                 <div>
                   <p className="text-sm text-muted-foreground">Age</p>
                   <p className="font-medium">{calculateAge(animal.birthdate)}</p>
@@ -168,6 +192,32 @@ const AnimalHeader = ({ animal }: AnimalHeaderProps) => {
                 <div>
                   <p className="text-sm text-muted-foreground">Tag/ID</p>
                   <p className="font-medium">{animal.tagNumber || 'N/A'}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Pen #</p>
+                  {isEditingPen ? (
+                    <div className="flex items-center gap-1">
+                      <Input
+                        value={penNumber}
+                        onChange={(e) => setPenNumber(e.target.value)}
+                        className="h-7 py-1 max-w-[80px]"
+                        autoFocus
+                      />
+                      <Button variant="ghost" size="icon" onClick={savePenNumber} className="h-6 w-6">
+                        <CheckIcon className="h-3 w-3" />
+                      </Button>
+                      <Button variant="ghost" size="icon" onClick={cancelEditingPen} className="h-6 w-6">
+                        <XIcon className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1">
+                      <p className="font-medium">{animal.penNumber || 'N/A'}</p>
+                      <Button variant="ghost" size="icon" onClick={startEditingPen} className="h-6 w-6" title="Edit pen #">
+                        <PencilIcon className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  )}
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Purchased</p>

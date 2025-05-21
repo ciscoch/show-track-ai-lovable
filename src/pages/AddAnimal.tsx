@@ -23,6 +23,7 @@ const AddAnimal = () => {
   const [purchaseDate, setPurchaseDate] = useState("");
   const [gender, setGender] = useState<"male" | "female">("male");
   const [tagNumber, setTagNumber] = useState("");
+  const [penNumber, setPenNumber] = useState("");
   const [notes, setNotes] = useState("");
   const [weight, setWeight] = useState<number>(0); // Added weight field
   const [organizationId, setOrganizationId] = useState("");
@@ -41,6 +42,7 @@ const AddAnimal = () => {
       purchaseDate: purchaseDate || undefined,
       gender,
       tagNumber: tagNumber || undefined,
+      penNumber: penNumber || undefined,
       showAnimal: true, // Default value for showAnimal
       purpose: "show" as const, // Default value for purpose
       description: notes || "", // Use notes as description
@@ -196,7 +198,7 @@ const AddAnimal = () => {
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <Label htmlFor="gender">Gender*</Label>
                   <Select 
@@ -232,6 +234,16 @@ const AddAnimal = () => {
                     onChange={(e) => setWeight(Number(e.target.value))}
                     placeholder="Enter weight"
                     required
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="penNumber">Pen #</Label>
+                  <Input
+                    id="penNumber"
+                    value={penNumber}
+                    onChange={(e) => setPenNumber(e.target.value)}
+                    placeholder="Enter pen #"
                   />
                 </div>
               </div>

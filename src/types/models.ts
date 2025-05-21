@@ -19,6 +19,7 @@ export interface Animal {
   
   // Additional fields used in existing components
   tagNumber?: string;
+  penNumber?: string;
   purchaseDate?: string;
   notes?: string;
   createdAt?: string;

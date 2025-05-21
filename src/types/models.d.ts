@@ -9,6 +9,7 @@ declare module "@/types/models" {
     gender: 'male' | 'female';
     birthdate: string;
     tagNumber?: string;
+    penNumber?: string;
     purchaseDate?: string;
     image?: string;
     imageUrl?: string;
