@@ -3,6 +3,7 @@ export interface Animal {
   name: string;
   species: string;
   breed: string;
+  breederName?: string;
   gender: "male" | "female";
   birthdate: string;
   description: string;

@@ -7,6 +7,7 @@ interface AnimalCardProps {
     id: string;
     name: string;
     breed: string;
+    breederName?: string;
     species: string;
     organization?: {
       name: string;
@@ -21,6 +22,9 @@ const AnimalCard: React.FC<AnimalCardProps> = ({ animal, onClick }) => {
       <CardContent className="p-4 space-y-1">
         <div className="text-xl font-semibold">{animal.name}</div>
         <div className="text-sm text-muted-foreground">{animal.breed} · {animal.species}</div>
+        {animal.breederName && (
+          <div className="text-xs text-muted-foreground">Breeder: {animal.breederName}</div>
+        )}
         {animal.organization && (
           <Badge className="mt-2">{animal.organization.name}</Badge>
         )}
