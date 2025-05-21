@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
-import { Facebook, Github, Apple } from "lucide-react";
+import { Github, Apple } from "lucide-react";
+import GoogleIcon from "@/components/icons/GoogleIcon";
 
 interface SocialLoginButtonProps {
   provider: "google" | "apple" | "github";
@@ -21,7 +22,7 @@ const SocialLoginButton = ({ provider }: SocialLoginButtonProps) => {
     >
       {provider === "google" && (
         <>
-          <Facebook className="mr-2 h-4 w-4" /> {/* Using Facebook icon for Google */}
+          <GoogleIcon className="mr-2 h-4 w-4" />
           Google
         </>
       )}
