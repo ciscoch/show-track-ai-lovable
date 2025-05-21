@@ -7,6 +7,7 @@ import { useAppContext } from "@/contexts/AppContext";
 import NavigationMenu from "@/components/NavigationMenu";
 import { LucideIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import LogoutButton from "@/components/LogoutButton";
 
 interface NavigationProps {
   navigationItems?: {
@@ -58,7 +59,11 @@ const Navigation = ({ navigationItems = [], user }: NavigationProps) => {
               </Badge>
             )}
             
-            <LoginButton user={user} />
+            {user ? (
+              <LogoutButton />
+            ) : (
+              <LoginButton user={user} />
+            )}
 
             <div className="hidden sm:block mx-2">
               <Link

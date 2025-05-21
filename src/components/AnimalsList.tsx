@@ -88,7 +88,7 @@ const AnimalsList = ({ animals, user, onAnimalClick, onAddAnimal }: AnimalsListP
             <AnimalCard 
               key={animal.id} 
               animal={animal} 
-              onClick={(animal) => onAnimalClick(animal.id)} 
+              onClick={() => onAnimalClick(animal.id)} 
             />
           ))}
           

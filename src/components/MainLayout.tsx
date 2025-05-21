@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import Navigation from "@/components/Navigation";
 import { LucideIcon } from "lucide-react";
 import { useAppContext } from "@/contexts/AppContext";
+import LogoutButton from "@/components/LogoutButton";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -69,9 +70,12 @@ const MainLayout = ({
               )}
 
               {!isBuyer && (
-                <Button variant="outline" onClick={() => navigate("/subscription")}>
-                  Manage Subscription
-                </Button>
+                <>
+                  <Button variant="outline" onClick={() => navigate("/subscription")}>
+                    Manage Subscription
+                  </Button>
+                  <LogoutButton variant="outline" />
+                </>
               )}
             </>
           ) : (
