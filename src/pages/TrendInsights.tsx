@@ -1,11 +1,12 @@
 import React from "react";
+import TrendChart from "@/components/charts/TrendChart";
 
 const TrendInsights = () => {
   return (
     <div className="space-y-8 p-6">
-      {/* Chart (placeholder) */}
-      <div className="w-full h-64 bg-gray-100 border rounded flex items-center justify-center text-muted-foreground">
-        [Trend Chart Here]
+      {/* Chart */}
+      <div className="w-full">
+        <TrendChart />
       </div>
 
       {/* Key Insights */}
