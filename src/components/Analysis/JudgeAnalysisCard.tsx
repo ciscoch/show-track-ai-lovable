@@ -1,3 +1,4 @@
+
 import {
   Card,
   CardContent,
@@ -6,7 +7,7 @@ import {
   CardTitle
 } from "@/components/ui/card";
 import { Animal } from "@/types/models";
-import PremiumFeatureBanner from "./PremiumFeatureBanner";
+import PremiumFeatureBanner from "../PremiumFeatureBanner";
 import { useAppContext } from "@/contexts/AppContext";
 import { Badge } from "@/components/ui/badge";
 import { CheckIcon, XIcon } from "lucide-react";

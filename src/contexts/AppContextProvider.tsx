@@ -62,6 +62,14 @@ export const useAppProviderState = () => {
     setWeights(prev => [...prev, entry]);
   };
 
+  const updateWeightEntry = (entry: WeightEntry) => {
+    setWeights(prev => prev.map(w => w.id === entry.id ? entry : w));
+  };
+
+  const deleteWeightEntry = (entryId: string) => {
+    setWeights(prev => prev.filter(w => w.id !== entryId));
+  };
+
   const addJournalEntry = (entry: JournalEntry) => {
     setJournals(prev => [...prev, entry]);
   };
@@ -144,6 +152,8 @@ export const useAppProviderState = () => {
     updateAnimal,
     deleteAnimal,
     addWeightEntry,
+    updateWeightEntry,
+    deleteWeightEntry,
     addJournalEntry,
     addExpenseEntry,
     deleteExpenseEntry,
