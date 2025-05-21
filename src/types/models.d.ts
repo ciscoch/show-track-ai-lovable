@@ -6,6 +6,7 @@ declare module "@/types/models" {
     name: string;
     species: string;
     breed: string;
+    breederName?: string;
     gender: 'male' | 'female';
     birthdate: string;
     tagNumber?: string;

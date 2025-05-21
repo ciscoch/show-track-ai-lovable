@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { generateId } from "@/lib/utils";
 import { ArrowLeftIcon } from "lucide-react";
 import { useOrganizations } from "@/hooks/useOrganizations";
+import { useBreeders } from "@/hooks/useBreeders";
 import ImageUploadButton from "@/components/ImageUploadButton";
 import { readFileAsDataURL } from "@/platform/file";
 
@@ -21,6 +22,7 @@ const AddAnimal = () => {
   const [name, setName] = useState("");
   const [species, setSpecies] = useState<"cattle" | "goat" | "sheep" | "pig">("goat");
   const [breed, setBreed] = useState("");
+  const [breederName, setBreederName] = useState("");
   const [birthdate, setBirthdate] = useState(""); // Changed from birthDate to match Animal interface
   const [purchaseDate, setPurchaseDate] = useState("");
   const [gender, setGender] = useState<"male" | "female">("male");
@@ -31,16 +33,23 @@ const AddAnimal = () => {
   const [weight, setWeight] = useState<number>(0); // Added weight field
   const [organizationId, setOrganizationId] = useState("");
   const { organizations } = useOrganizations();
+  const { breeders, addBreeder } = useBreeders();
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     // Create new animal object
+    if (breederName) {
+      // Save breeder name for future use
+      addBreeder(breederName);
+    }
+
     const newAnimal = {
       id: generateId(),
       name,
       species,
       breed,
+      breederName: breederName || undefined,
       birthdate, // Changed from birthDate to match Animal interface
       purchaseDate: purchaseDate || undefined,
       gender,
@@ -154,8 +163,8 @@ const AddAnimal = () => {
                 
                 <div>
                   <Label htmlFor="breed">Breed*</Label>
-                  <Select 
-                    value={breed} 
+                  <Select
+                    value={breed}
                     onValueChange={setBreed}
                   >
                     <SelectTrigger id="breed">
@@ -169,6 +178,21 @@ const AddAnimal = () => {
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+                <div>
+                  <Label htmlFor="breederName">Breeder</Label>
+                  <Input
+                    id="breederName"
+                    list="breeder-options"
+                    value={breederName}
+                    onChange={(e) => setBreederName(e.target.value)}
+                    placeholder="Enter breeder name"
+                  />
+                  <datalist id="breeder-options">
+                    {breeders.map((b) => (
+                      <option key={b.id} value={b.name} />
+                    ))}
+                  </datalist>
                 </div>
               </div>
 

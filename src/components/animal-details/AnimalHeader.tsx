@@ -180,7 +180,7 @@ const AnimalHeader = ({ animal }: AnimalHeaderProps) => {
               
               <p className="text-muted-foreground">{animal.breed}</p>
               
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-x-8 gap-y-2 mt-4">
+              <div className="grid grid-cols-2 md:grid-cols-6 gap-x-8 gap-y-2 mt-4">
                 <div>
                   <p className="text-sm text-muted-foreground">Age</p>
                   <p className="font-medium">{calculateAge(animal.birthdate)}</p>
@@ -192,6 +192,10 @@ const AnimalHeader = ({ animal }: AnimalHeaderProps) => {
                 <div>
                   <p className="text-sm text-muted-foreground">Tag/ID</p>
                   <p className="font-medium">{animal.tagNumber || 'N/A'}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Breeder</p>
+                  <p className="font-medium">{animal.breederName || 'N/A'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Pen #</p>
