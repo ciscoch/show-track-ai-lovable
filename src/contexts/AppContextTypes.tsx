@@ -37,6 +37,7 @@ export type AppContextType = {
   user: User | null;
   userSubscription: SubscriptionLevel;
   loading: boolean;
+  setUser: (user: User | null) => void;
   setCurrentAnimal: (animal: Animal | null) => void;
   addAnimal: (animal: Animal) => void;
   updateAnimal: (animal: Animal) => void;

@@ -1,5 +1,6 @@
 
 import { useState, useEffect, ReactNode } from "react";
+import { getItem, setItem, removeItem } from "@/platform/storage";
 import { Animal, WeightEntry, JournalEntry, Expense, User, FeedingSchedule } from "@/types/models";
 import { 
   mockAnimals, 
@@ -23,7 +24,17 @@ export const useAppProviderState = () => {
   const [journals, setJournals] = useState<JournalEntry[]>(mockJournals);
   const [expenses, setExpenses] = useState<Expense[]>(mockExpenses);
   const [feedingSchedules, setFeedingSchedules] = useState<FeedingSchedule[]>(mockFeedingSchedules);
-  const [user, setUser] = useState<User | null>(mockUser);
+  const [user, setUser] = useState<User | null>(() => {
+    const stored = getItem('user');
+    if (stored) {
+      try {
+        return JSON.parse(stored) as User;
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  });
   const [loading, setLoading] = useState<boolean>(false);
 
   // Make sure we're using the user's actual subscription level from the user object
@@ -109,6 +120,14 @@ export const useAppProviderState = () => {
     refreshData();
   }, []);
 
+  useEffect(() => {
+    if (user) {
+      setItem('user', JSON.stringify(user));
+    } else {
+      removeItem('user');
+    }
+  }, [user]);
+
   return {
     animals,
     currentAnimal,
@@ -119,6 +138,7 @@ export const useAppProviderState = () => {
     user,
     userSubscription,
     loading,
+    setUser,
     setCurrentAnimal,
     addAnimal,
     updateAnimal,
