@@ -13,6 +13,8 @@ import { CheckIcon, XIcon } from "lucide-react";
 import { navigate } from "@/platform/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LocalJudgeInsightFeed from "./local-insights/LocalJudgeInsightFeed";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
 
 type JudgeAnalysisCardProps = {
   animal: Animal;
@@ -23,9 +25,31 @@ const JudgeAnalysisCard = ({ animal, location = "default" }: JudgeAnalysisCardPr
   const { userSubscription } = useAppContext();
   const isElite = userSubscription.level === "elite";
 
+  const [useAI, setUseAI] = useState(false); // default to real animal data
+  const [aiInsights, setAiInsights] = useState<any>(null);
+
   const handleNavigateToSubscriptions = () => {
     navigate("/subscription");
   };
+
+  useEffect(() => {
+    if (useAI) {
+      async function fetchAiInsights() {
+        const { data, error } = await supabase
+          .from("animal_ai_insights")
+          .select("*")
+          .eq("animal_id", animal.id)
+          .single();
+
+        if (error) {
+          console.error("Error fetching AI insights:", error);
+        } else {
+          setAiInsights(data);
+        }
+      }
+      fetchAiInsights();
+    }
+  }, [useAI, animal.id]);
 
   if (!isElite) {
     return (
@@ -38,7 +62,7 @@ const JudgeAnalysisCard = ({ animal, location = "default" }: JudgeAnalysisCardPr
     );
   }
 
-  const judgePreferences = {
+  const judgePreferences = useAI && aiInsights ? aiInsights : {
     name: "Judge Richard Anderson",
     preferredTraits: [
       "Strong muscle definition in the loin",
@@ -61,7 +85,15 @@ const JudgeAnalysisCard = ({ animal, location = "default" }: JudgeAnalysisCardPr
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle>Judge Analysis</CardTitle>
-          <Badge className="bg-primary">Elite Feature</Badge>
+          <div className="flex gap-2 items-center">
+            <Badge className="bg-primary">{useAI ? "AI-Driven" : "Profile-Based"}</Badge>
+            <button
+              onClick={() => setUseAI(!useAI)}
+              className="text-xs underline text-primary"
+            >
+              {useAI ? "Use real profile" : "Use AI insights"}
+            </button>
+          </div>
         </div>
         <CardDescription>
           Insights on what top judges are looking for
@@ -86,7 +118,7 @@ const JudgeAnalysisCard = ({ animal, location = "default" }: JudgeAnalysisCardPr
                 <div>
                   <h4 className="text-sm font-medium mb-2 text-primary">Preferred Traits</h4>
                   <ul className="space-y-2">
-                    {judgePreferences.preferredTraits.map((trait, index) => (
+                    {judgePreferences.preferredTraits.map((trait: string, index: number) => (
                       <li key={index} className="flex items-start gap-2 text-sm">
                         <CheckIcon className="h-4 w-4 text-primary mt-0.5" />
                         <span>{trait}</span>
@@ -98,7 +130,7 @@ const JudgeAnalysisCard = ({ animal, location = "default" }: JudgeAnalysisCardPr
                 <div>
                   <h4 className="text-sm font-medium mb-2 text-barn-red-500">Traits to Avoid</h4>
                   <ul className="space-y-2">
-                    {judgePreferences.avoidTraits.map((trait, index) => (
+                    {judgePreferences.avoidTraits.map((trait: string, index: number) => (
                       <li key={index} className="flex items-start gap-2 text-sm">
                         <XIcon className="h-4 w-4 text-barn-red-500 mt-0.5" />
                         <span>{trait}</span>
