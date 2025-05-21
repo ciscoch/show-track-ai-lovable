@@ -1,4 +1,3 @@
-
 import { Animal, WeightEntry, JournalEntry, Expense, User, SubscriptionLevel, FeedingSchedule, FeedingTime } from "@/types/models";
 
 // Mock data for animals
@@ -93,20 +92,40 @@ export const mockUser: User = {
 };
 
 // Mock subscription levels
-export const subscriptionLevels: { [key: string]: SubscriptionLevel } = {
+export const subscriptionLevels: {
+  [key: string]: {
+    level: "free" | "pro" | "elite";
+    features: string[];
+    price?: number;
+  }
+} = {
   free: {
     level: "free",
-    features: ["Basic animal tracking", "Limited journal entries"],
-    expiresAt: "never"
+    features: [
+      "Track animal weights",
+      "Basic record keeping",
+      "Animal profiles"
+    ],
+    price: 0
   },
   pro: {
     level: "pro",
-    features: ["Advanced weight tracking", "Unlimited journal entries", "Gallery access"],
-    expiresAt: "2025-12-31"
+    features: [
+      "All Free features",
+      "Advanced weight tracking",
+      "Expense tracking",
+      "Show scheduling"
+    ],
+    price: 9.99
   },
   elite: {
     level: "elite",
-    features: ["AI-powered analysis", "Priority support", "All pro features"],
-    expiresAt: "2025-12-31"
-  },
+    features: [
+      "All Pro features",
+      "AI weight estimation",
+      "Judge trend analysis",
+      "Premium support"
+    ],
+    price: 19.99
+  }
 };

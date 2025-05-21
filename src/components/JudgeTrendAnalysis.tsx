@@ -62,15 +62,23 @@ const JudgeTrendAnalysis: React.FC<JudgeTrendAnalysisProps> = ({
         )}
       </CardHeader>
       
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-8">
         {/* Trend Chart */}
-        <TrendChart trendData={trendData} />
+        <div>
+          <h3 className="text-lg font-medium mb-3">Judging Trends Over Time</h3>
+          <TrendChart trendData={trendData} />
+        </div>
         
         {/* Key Trend Insights */}
-        <TrendInsights trends={insights.trends} />
+        <div>
+          <h3 className="text-lg font-medium mb-3">Key Insights</h3>
+          <TrendInsights trends={insights.trends} />
+        </div>
         
-        {/* Regional Variations */}
-        <RegionalVariations />
+        {/* Regional Variations - Now in its own section with proper spacing */}
+        <div>
+          <RegionalVariations />
+        </div>
         
         <div className="flex justify-end">
           <Button variant="outline" size="sm">

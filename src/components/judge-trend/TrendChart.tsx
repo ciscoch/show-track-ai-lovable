@@ -1,7 +1,7 @@
 
 import React from "react";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Legend } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer } from "recharts";
 
 interface TrendChartProps {
   trendData: {
@@ -14,7 +14,7 @@ interface TrendChartProps {
 
 const TrendChart: React.FC<TrendChartProps> = ({ trendData }) => {
   return (
-    <div className="h-72">
+    <div className="h-80">
       <ChartContainer 
         config={{
           structure: { color: "#2563eb", label: "Structure" },
