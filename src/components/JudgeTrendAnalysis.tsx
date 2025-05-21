@@ -75,8 +75,8 @@ const JudgeTrendAnalysis: React.FC<JudgeTrendAnalysisProps> = ({
           <TrendInsights trends={insights.trends} />
         </div>
         
-        {/* Regional Variations - Now in its own section with proper spacing */}
-        <div>
+        {/* Regional Judging Variations should sit below the chart */}
+        <div className="mt-8">
           <RegionalVariations />
         </div>
         
