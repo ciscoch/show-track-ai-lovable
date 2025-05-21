@@ -1,17 +1,28 @@
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from "@/components/ui/card";
 import { Animal } from "@/types/models";
 import PremiumFeatureBanner from "./PremiumFeatureBanner";
 import { useAppContext } from "@/contexts/AppContext";
 import { Badge } from "@/components/ui/badge";
 import { CheckIcon, XIcon } from "lucide-react";
 import { navigate } from "@/platform/navigation";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type JudgeAnalysisCardProps = {
   animal: Animal;
+  /**
+   * Optional location used to surface local judge insights
+   */
+  location?: string;
 };
 
-const JudgeAnalysisCard = ({ animal }: JudgeAnalysisCardProps) => {
+const JudgeAnalysisCard = ({ animal, location = 'default' }: JudgeAnalysisCardProps) => {
   const { userSubscription } = useAppContext();
   const isElite = userSubscription.level === 'elite';
   
@@ -30,7 +41,7 @@ const JudgeAnalysisCard = ({ animal }: JudgeAnalysisCardProps) => {
       />
     );
   }
-  
+
   // Mock data for judge preferences
   const judgePreferences = {
     name: "Judge Richard Anderson",
@@ -49,6 +60,32 @@ const JudgeAnalysisCard = ({ animal }: JudgeAnalysisCardProps) => {
     animalMatches: 3,
     animalMisses: 1
   };
+
+  const localInsightsMap: Record<string, { recentShow: string; insights: string[] }> = {
+    Texas: {
+      recentShow: 'Houston Livestock Show',
+      insights: [
+        'Local judges prioritize structural correctness',
+        'Moderate frame size with ample muscle'
+      ]
+    },
+    Ohio: {
+      recentShow: 'Ohio State Fair',
+      insights: [
+        'Balance and conditioning are heavily weighted',
+        'Clean lines with strong topline preferred'
+      ]
+    },
+    default: {
+      recentShow: 'Local County Fair',
+      insights: [
+        'Focus on overall balance and soundness',
+        'Presentation and grooming impact final decisions'
+      ]
+    }
+  };
+
+  const localInsights = localInsightsMap[location] || localInsightsMap['default'];
   
   return (
     <Card className="w-full">
@@ -61,53 +98,76 @@ const JudgeAnalysisCard = ({ animal }: JudgeAnalysisCardProps) => {
           Insights on what top judges are looking for
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="border rounded-md p-4 bg-muted/10">
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="font-semibold">{judgePreferences.name}</h3>
-            <Badge variant="outline">Recent: {judgePreferences.recentShow}</Badge>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            <div>
-              <h4 className="text-sm font-medium mb-2 text-primary">Preferred Traits</h4>
-              <ul className="space-y-2">
-                {judgePreferences.preferredTraits.map((trait, index) => (
-                  <li key={index} className="flex items-start gap-2 text-sm">
-                    <CheckIcon className="h-4 w-4 text-primary mt-0.5" />
-                    <span>{trait}</span>
-                  </li>
+      <CardContent>
+        <Tabs defaultValue="overview" className="w-full">
+          <TabsList className="mb-4">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="recent">Recent</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="overview" className="space-y-4">
+            <div className="border rounded-md p-4 bg-muted/10">
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="font-semibold">{judgePreferences.name}</h3>
+                <Badge variant="outline">Recent: {judgePreferences.recentShow}</Badge>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div>
+                  <h4 className="text-sm font-medium mb-2 text-primary">Preferred Traits</h4>
+                  <ul className="space-y-2">
+                    {judgePreferences.preferredTraits.map((trait, index) => (
+                      <li key={index} className="flex items-start gap-2 text-sm">
+                        <CheckIcon className="h-4 w-4 text-primary mt-0.5" />
+                        <span>{trait}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-medium mb-2 text-barn-red-500">Traits to Avoid</h4>
+                  <ul className="space-y-2">
+                    {judgePreferences.avoidTraits.map((trait, index) => (
+                      <li key={index} className="flex items-start gap-2 text-sm">
+                        <XIcon className="h-4 w-4 text-barn-red-500 mt-0.5" />
+                        <span>{trait}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="border rounded-md p-4">
+              <h3 className="font-semibold mb-2">Your Animal Analysis</h3>
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-full bg-muted rounded-full h-2.5">
+                  <div className="bg-primary h-2.5 rounded-full" style={{ width: '75%' }}></div>
+                </div>
+                <span className="text-sm font-medium">75% Match</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Based on your animal's profile, it matches {judgePreferences.animalMatches} preferred traits and
+                has {judgePreferences.animalMisses} trait(s) to improve.
+              </p>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="recent" className="space-y-4">
+            <div className="border rounded-md p-4 bg-muted/10 space-y-3">
+              <div className="flex justify-between items-center">
+                <h3 className="font-semibold">Local Judge Insights</h3>
+                <Badge variant="outline">Recent: {localInsights.recentShow}</Badge>
+              </div>
+              <ul className="list-disc pl-4 space-y-1 text-sm">
+                {localInsights.insights.map((tip, index) => (
+                  <li key={index}>{tip}</li>
                 ))}
               </ul>
             </div>
-            
-            <div>
-              <h4 className="text-sm font-medium mb-2 text-barn-red-500">Traits to Avoid</h4>
-              <ul className="space-y-2">
-                {judgePreferences.avoidTraits.map((trait, index) => (
-                  <li key={index} className="flex items-start gap-2 text-sm">
-                    <XIcon className="h-4 w-4 text-barn-red-500 mt-0.5" />
-                    <span>{trait}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-        
-        <div className="border rounded-md p-4">
-          <h3 className="font-semibold mb-2">Your Animal Analysis</h3>
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-full bg-muted rounded-full h-2.5">
-              <div className="bg-primary h-2.5 rounded-full" style={{ width: '75%' }}></div>
-            </div>
-            <span className="text-sm font-medium">75% Match</span>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            Based on your animal's profile, it matches {judgePreferences.animalMatches} preferred traits and 
-            has {judgePreferences.animalMisses} trait(s) to improve.
-          </p>
-        </div>
+          </TabsContent>
+        </Tabs>
       </CardContent>
     </Card>
   );
