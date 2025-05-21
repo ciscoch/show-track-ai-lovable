@@ -24,12 +24,14 @@ import BuyerDashboardPage from "@/pages/buyer/BuyerDashboardPage";
 import BuyerViewUserPage from "@/pages/buyer/BuyerViewUserPage";
 import BuyerViewAnimalPage from "@/pages/buyer/BuyerViewAnimalPage";
 import BuyerLinkRedirect from "@/pages/buyer/BuyerLinkRedirect";
+import TrendInsights from "@/pages/TrendInsights";
 
 function App() {
   return (
     <>
       <Routes>
         <Route path="/" element={<LoginPage />} />
+        <Route path="/trends" element={<TrendInsights />} />
         <Route path="/dashboard" element={<Index />} />
         <Route path="/animal/:animalId" element={<AnimalDetails />} />
         <Route path="/add-animal" element={<AddAnimal />} />
