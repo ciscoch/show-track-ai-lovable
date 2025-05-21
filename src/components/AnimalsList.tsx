@@ -31,9 +31,11 @@ const AnimalsList = ({ animals, user, onAnimalClick, onAddAnimal }: AnimalsListP
   
   // Filter animals based on search term and species filter
   const filteredAnimals = animals.filter(animal => {
-    const matchesSearch = animal.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        animal.breed.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        animal.tagNumber?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch =
+      animal.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      animal.breed.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      animal.tagNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      animal.penNumber?.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesSpecies = speciesFilter === "all" || animal.species === speciesFilter;
     
