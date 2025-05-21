@@ -1,6 +1,8 @@
 
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useAppContext } from "@/contexts/AppContext";
+import { mockUser } from "@/contexts/mockData";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,16 +34,19 @@ const LoginPage = () => {
     }
   });
 
+  const { setUser } = useAppContext();
+
   const onSubmit = async (data: LoginFormValues) => {
     // In a real app, you would validate credentials with your backend here
-    
+
     // Simulate login success
     toast({
       title: "Login successful",
       description: "Welcome back to Show Track!"
     });
-    
-    // Navigate to home after successful login
+
+    // Store logged in user and navigate to dashboard
+    setUser(mockUser);
     navigate("/dashboard");
   };
 
