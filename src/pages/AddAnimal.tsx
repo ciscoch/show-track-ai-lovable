@@ -11,6 +11,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { generateId } from "@/lib/utils";
 import { ArrowLeftIcon } from "lucide-react";
 import { useOrganizations } from "@/hooks/useOrganizations";
+import ImageUploadButton from "@/components/ImageUploadButton";
+import { readFileAsDataURL } from "@/platform/file";
 
 const AddAnimal = () => {
   const navigate = useNavigate();
@@ -25,6 +27,7 @@ const AddAnimal = () => {
   const [tagNumber, setTagNumber] = useState("");
   const [penNumber, setPenNumber] = useState("");
   const [notes, setNotes] = useState("");
+  const [photo, setPhoto] = useState<string | null>(null);
   const [weight, setWeight] = useState<number>(0); // Added weight field
   const [organizationId, setOrganizationId] = useState("");
   const { organizations } = useOrganizations();
@@ -47,6 +50,7 @@ const AddAnimal = () => {
       purpose: "show" as const, // Default value for purpose
       description: notes || "", // Use notes as description
       weight: weight || 0, // Added weight field
+      imageUrl: photo || undefined,
       organization: organizationId
         ? organizations.find((o) => o.id === organizationId)
         : undefined,
@@ -64,6 +68,11 @@ const AddAnimal = () => {
   
   const handleBack = () => {
     navigate('/dashboard');
+  };
+
+  const handleImageSelected = async (file: File) => {
+    const dataUrl = await readFileAsDataURL(file);
+    setPhoto(dataUrl);
   };
   
   // Helper function to get breeds based on selected species
@@ -103,6 +112,16 @@ const AddAnimal = () => {
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-6">
             <div className="space-y-4">
+              <div className="flex items-center gap-4">
+                <div className="w-24 h-24 rounded-md overflow-hidden border flex items-center justify-center bg-muted">
+                  {photo ? (
+                    <img src={photo} alt="Preview" className="object-cover w-full h-full" />
+                  ) : (
+                    <span className="text-xs text-muted-foreground">No photo</span>
+                  )}
+                </div>
+                <ImageUploadButton onImageSelected={handleImageSelected} />
+              </div>
               <div>
                 <Label htmlFor="name">Animal Name*</Label>
                 <Input
