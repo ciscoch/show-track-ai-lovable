@@ -62,12 +62,12 @@ This project is built with:
 
 ## Environment variables
 
-Create an `.env` file at the project root with the following keys:
+Create an `env` file at the project root with the following keys:
 
 ```sh
-VITE_SUPABASE_URL=<[your supabase url](https://qmvbsrivanucfpfjchpw.supabase.co)>
-VITE_SUPABASE_ANON_KEY=<eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtdmJzcml2YW51Y2ZwZmpjaHB3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDczMjgzMjksImV4cCI6MjA2MjkwNDMyOX0.jF7Tkz8pFtx4HHKrWfRRcQPpSeGR4xu8MQvlvV5Vgxo>
-VITE_OPENAI_API_KEY=<NbCs5UvZCd9s2u39r0qR6s8A0wK_ojB6sEIhUS3pN3jqBEcIJzVWfqeSdjDFbTMJEeg19scQkTT3BlbkFJw4hjMnp8A_OTe9WCkI8zOa00HwyU0L0QhfRMruXAV8hpz2AHvuTfqnd2hIrW1nG6kDoeRnKsoA>
+VITE_SUPABASE_URL=<your supabase url>
+VITE_SUPABASE_ANON_KEY=<your supabase anon key>
+VITE_OPENAI_API_KEY=<your openai api key>
 ```
 
 
@@ -82,16 +82,6 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
-
-## Environment variables
-
-Create an `env` file in the project root with these entries:
-```
-VITE_SUPABASE_URL=<your supabase url>
-VITE_SUPABASE_ANON_KEY=<your supabase anon key>
-VITE_OPENAI_API_KEY=<your openai api key>
-```
-The included `env` file uses placeholder values.
 
 ## Keyboard tips
 
