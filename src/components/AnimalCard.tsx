@@ -9,6 +9,7 @@ interface AnimalCardProps {
     breed: string;
     breederName?: string;
     species: string;
+    aiScore?: number;
     organization?: {
       name: string;
     };
@@ -27,6 +28,11 @@ const AnimalCard: React.FC<AnimalCardProps> = ({ animal, onClick }) => {
         )}
         {animal.organization && (
           <Badge className="mt-2">{animal.organization.name}</Badge>
+        )}
+        {typeof animal.aiScore === 'number' && (
+          <Badge variant="secondary" className="mt-2">
+            AI Score: {animal.aiScore}
+          </Badge>
         )}
       </CardContent>
     </Card>

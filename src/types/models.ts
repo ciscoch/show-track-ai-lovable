@@ -11,6 +11,7 @@ export interface Animal {
   showAnimal: boolean;
   purpose: "breeding" | "show" | "market" | "pet" | "other";
   weight: number;
+  aiScore?: number; // Optional AI score for show readiness or other metrics
 
   // Optional organization reference
   organization?: {
