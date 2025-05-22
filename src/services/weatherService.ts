@@ -1,7 +1,6 @@
 
 // Weather service using OpenWeatherMap API
-// We're using a free API key limit for demo purposes
-// In production, this should be moved to environment variables
+// The API key is loaded from an environment variable
 
 interface WeatherForecast {
   current: {
@@ -40,7 +39,8 @@ export interface WeatherAlert {
   severity: 'low' | 'medium' | 'high';
 }
 
-const API_KEY = "bd5e378503939ddaee76f12ad7a97608"; // Demo API key for OpenWeatherMap
+// OpenWeatherMap API key from environment variables
+const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
 
 export async function getWeatherForecast(
   latitude: number,
