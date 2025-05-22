@@ -13,24 +13,45 @@ import { Badge } from "@/components/ui/badge";
 import { CheckIcon, XIcon } from "lucide-react";
 import { navigate } from "@/platform/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import LocalJudgeInsightFeed from "./Analysis/local-insights/LocalJudgeInsightFeed";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
 
 type JudgeAnalysisCardProps = {
   animal: Animal;
-  /**
-   * Optional location used to surface local judge insights
-   */
   location?: string;
 };
 
-const JudgeAnalysisCard = ({ animal, location = 'default' }: JudgeAnalysisCardProps) => {
+const JudgeAnalysisCard = ({ animal, location = "default" }: JudgeAnalysisCardProps) => {
   const { userSubscription } = useAppContext();
-  const isElite = userSubscription.level === 'elite';
-  
+  const isElite = userSubscription.level === "elite";
+
+  const [useAI, setUseAI] = useState(false); // default to real animal data
+  const [aiInsights, setAiInsights] = useState<any>(null);
+
   const handleNavigateToSubscriptions = () => {
-    // In a real app, navigate to subscription page
-    navigate('/subscription');
+    navigate("/subscription");
   };
-  
+
+  useEffect(() => {
+    if (useAI) {
+      async function fetchAiInsights() {
+        const { data, error } = await supabase
+          .from("animal_ai_insights")
+          .select("*")
+          .eq("animal_id", animal.id)
+          .single();
+
+        if (error) {
+          console.error("Error fetching AI insights:", error);
+        } else {
+          setAiInsights(data);
+        }
+      }
+      fetchAiInsights();
+    }
+  }, [useAI, animal.id]);
+
   if (!isElite) {
     return (
       <PremiumFeatureBanner
@@ -42,8 +63,7 @@ const JudgeAnalysisCard = ({ animal, location = 'default' }: JudgeAnalysisCardPr
     );
   }
 
-  // Mock data for judge preferences
-  const judgePreferences = {
+  const judgePreferences = useAI && aiInsights ? aiInsights : {
     name: "Judge Richard Anderson",
     preferredTraits: [
       "Strong muscle definition in the loin",
@@ -61,43 +81,26 @@ const JudgeAnalysisCard = ({ animal, location = 'default' }: JudgeAnalysisCardPr
     animalMisses: 1
   };
 
-  const localInsightsMap: Record<string, { recentShow: string; insights: string[] }> = {
-    Texas: {
-      recentShow: 'Houston Livestock Show',
-      insights: [
-        'Local judges prioritize structural correctness',
-        'Moderate frame size with ample muscle'
-      ]
-    },
-    Ohio: {
-      recentShow: 'Ohio State Fair',
-      insights: [
-        'Balance and conditioning are heavily weighted',
-        'Clean lines with strong topline preferred'
-      ]
-    },
-    default: {
-      recentShow: 'Local County Fair',
-      insights: [
-        'Focus on overall balance and soundness',
-        'Presentation and grooming impact final decisions'
-      ]
-    }
-  };
-
-  const localInsights = localInsightsMap[location] || localInsightsMap['default'];
-  
   return (
     <Card className="w-full">
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle>Judge Analysis</CardTitle>
-          <Badge className="bg-primary">Elite Feature</Badge>
+          <div className="flex gap-2 items-center">
+            <Badge className="bg-primary">{useAI ? "AI-Driven" : "Profile-Based"}</Badge>
+            <button
+              onClick={() => setUseAI(!useAI)}
+              className="text-xs underline text-primary"
+            >
+              {useAI ? "Use real profile" : "Use AI insights"}
+            </button>
+          </div>
         </div>
         <CardDescription>
           Insights on what top judges are looking for
         </CardDescription>
       </CardHeader>
+
       <CardContent>
         <Tabs defaultValue="overview" className="w-full">
           <TabsList className="mb-4">
@@ -116,7 +119,7 @@ const JudgeAnalysisCard = ({ animal, location = 'default' }: JudgeAnalysisCardPr
                 <div>
                   <h4 className="text-sm font-medium mb-2 text-primary">Preferred Traits</h4>
                   <ul className="space-y-2">
-                    {judgePreferences.preferredTraits.map((trait, index) => (
+                    {judgePreferences.preferredTraits.map((trait: string, index: number) => (
                       <li key={index} className="flex items-start gap-2 text-sm">
                         <CheckIcon className="h-4 w-4 text-primary mt-0.5" />
                         <span>{trait}</span>
@@ -128,7 +131,7 @@ const JudgeAnalysisCard = ({ animal, location = 'default' }: JudgeAnalysisCardPr
                 <div>
                   <h4 className="text-sm font-medium mb-2 text-barn-red-500">Traits to Avoid</h4>
                   <ul className="space-y-2">
-                    {judgePreferences.avoidTraits.map((trait, index) => (
+                    {judgePreferences.avoidTraits.map((trait: string, index: number) => (
                       <li key={index} className="flex items-start gap-2 text-sm">
                         <XIcon className="h-4 w-4 text-barn-red-500 mt-0.5" />
                         <span>{trait}</span>
@@ -143,28 +146,24 @@ const JudgeAnalysisCard = ({ animal, location = 'default' }: JudgeAnalysisCardPr
               <h3 className="font-semibold mb-2">Your Animal Analysis</h3>
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-full bg-muted rounded-full h-2.5">
-                  <div className="bg-primary h-2.5 rounded-full" style={{ width: '75%' }}></div>
+                  <div
+                    className="bg-primary h-2.5 rounded-full"
+                    style={{ width: "75%" }}
+                  />
                 </div>
                 <span className="text-sm font-medium">75% Match</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                Based on your animal's profile, it matches {judgePreferences.animalMatches} preferred traits and
-                has {judgePreferences.animalMisses} trait(s) to improve.
+                Based on your animal's profile, it matches {judgePreferences.animalMatches} preferred traits and has{" "}
+                {judgePreferences.animalMisses} trait(s) to improve.
               </p>
             </div>
           </TabsContent>
 
           <TabsContent value="recent" className="space-y-4">
-            <div className="border rounded-md p-4 bg-muted/10 space-y-3">
-              <div className="flex justify-between items-center">
-                <h3 className="font-semibold">Local Judge Insights</h3>
-                <Badge variant="outline">Recent: {localInsights.recentShow}</Badge>
-              </div>
-              <ul className="list-disc pl-4 space-y-1 text-sm">
-                {localInsights.insights.map((tip, index) => (
-                  <li key={index}>{tip}</li>
-                ))}
-              </ul>
+            <div>
+              <h3 className="font-semibold mb-2">Local Judge Insights Feed</h3>
+              <LocalJudgeInsightFeed location={location} />
             </div>
           </TabsContent>
         </Tabs>
