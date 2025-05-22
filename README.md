@@ -62,7 +62,8 @@ This project is built with:
 
 ## Environment variables
 
-Create an `env` file at the project root with the following keys:
+Create an `env` file at the project root with the following keys. You can copy
+`.env.example` and fill in your real credentials:
 
 ```sh
 VITE_SUPABASE_URL=<your supabase url>
