@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { toast } from "@/hooks/use-toast";
-import { getWeatherForecast, detectWeatherAlerts } from "@/services/weatherService";
+import { getWeatherForecast, detectWeatherAlerts, getRecommendedProducts } from "@/services/weatherService";
 import PremiumFeatureBanner from "@/components/PremiumFeatureBanner";
 import { LocationStatus } from "@/components/feeding/LocationStatus";
 import WeatherAlerts from "@/components/weather/WeatherAlerts";
@@ -104,57 +104,3 @@ export const WeatherFeatureSection = ({ hasWeatherAccess, user }: WeatherFeature
   );
 };
 
-const getRecommendedProducts = (alerts: any[]) => {
-  // Mock function to return recommended products based on weather alerts
-  const products: any[] = [];
-  
-  for (const alert of alerts) {
-    if (alert.event.toLowerCase().includes('freeze') || alert.event.toLowerCase().includes('cold')) {
-      products.push({
-        title: "Heated Water Bucket",
-        description: "Keep your animal's water from freezing in cold temperatures",
-        price: "$49.99",
-        imageUrl: "https://placehold.co/100x100",
-        affiliateUrl: "https://amazon.com/sample-product"
-      });
-      
-      products.push({
-        title: "Cold Weather Animal Blanket",
-        description: "Insulated blanket for livestock during freezing temperatures",
-        price: "$39.99",
-        imageUrl: "https://placehold.co/100x100",
-        affiliateUrl: "https://amazon.com/sample-product"
-      });
-    }
-    
-    if (alert.event.toLowerCase().includes('heat')) {
-      products.push({
-        title: "Livestock Cooling Fan",
-        description: "Keep your animals cool during hot weather",
-        price: "$89.99",
-        imageUrl: "https://placehold.co/100x100",
-        affiliateUrl: "https://amazon.com/sample-product"
-      });
-      
-      products.push({
-        title: "Animal Shade Structure",
-        description: "Portable shade to protect animals from excessive heat",
-        price: "$129.99",
-        imageUrl: "https://placehold.co/100x100",
-        affiliateUrl: "https://amazon.com/sample-product"
-      });
-    }
-    
-    if (alert.event.toLowerCase().includes('storm') || alert.event.toLowerCase().includes('rain')) {
-      products.push({
-        title: "Waterproof Animal Shelter",
-        description: "Protect your animals from storms and heavy rain",
-        price: "$199.99",
-        imageUrl: "https://placehold.co/100x100",
-        affiliateUrl: "https://amazon.com/sample-product"
-      });
-    }
-  }
-  
-  return products;
-};
