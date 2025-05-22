@@ -74,14 +74,20 @@ export const PhotoModal = ({
             {photo.tags && photo.tags.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {photo.tags.map((tag, index) => (
-                  <span 
-                    key={index} 
+                  <span
+                    key={index}
                     className="px-2 py-1 bg-secondary text-secondary-foreground rounded-full text-xs"
                   >
                     {tag}
                   </span>
                 ))}
               </div>
+            )}
+
+            {photo.analysisResult && (
+              <p className="text-sm text-muted-foreground">
+                {photo.analysisResult}
+              </p>
             )}
             
             <div className="border-t pt-4 mt-4">

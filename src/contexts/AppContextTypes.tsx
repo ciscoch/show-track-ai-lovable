@@ -14,6 +14,7 @@ export interface Photo {
   likes?: number;
   comments?: Comment[];
   likedByUser?: boolean;
+  analysisResult?: string;
 }
 
 export interface Comment {
