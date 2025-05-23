@@ -11,7 +11,6 @@ import React, {
   type HTMLAttributes,
   type ReactNode,
 } from "react"
-import { AnimatePresence, motion } from "framer-motion"
 import { X } from "lucide-react"
 import { useMediaQuery } from "react-responsive"
 
@@ -90,18 +89,17 @@ function SidebarDesktop({
           collapsed ? "w-20" : customWidth ?? "w-64"
         )}
       >
-        <AnimatePresence initial={false}>
-          <motion.div
-            initial={{ opacity: 0, width: 0 }}
-            animate={{ opacity: 1, width: collapsed ? 80 : customWidth ? parseInt(customWidth) : 256 }}
-            exit={{ opacity: 0, width: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="h-full"
-          >
+        <div
+          style={{
+            width: collapsed ? 80 : customWidth ? parseInt(customWidth) : 256,
+            opacity: 1,
+          }}
+          className="h-full transition-all duration-300"
+        >
             <div className="relative h-full">
-              <div 
+              <div
                 className={cn(
-                  "h-full w-full", 
+                  "h-full w-full",
                   !collapsed && "p-4"
                 )}
               >
@@ -111,8 +109,7 @@ function SidebarDesktop({
                 <SidebarToggle collapsed={collapsed} setCollapsed={setCollapsed} />
               </div>
             </div>
-          </motion.div>
-        </AnimatePresence>
+        </div>
       </div>
     </div>
   ) : null
