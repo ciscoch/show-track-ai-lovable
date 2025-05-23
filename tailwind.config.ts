@@ -103,6 +103,47 @@ export default {
 					900: "#713f12",
 					950: "#422006",
 				},
+				// New rodeo theme colors
+				"rodeo-leather": {
+					50: "#fbf7f0",
+					100: "#f5ead9",
+					200: "#ead6b5",
+					300: "#dfc190",
+					400: "#d3a96c",
+					500: "#c49050",
+					600: "#b47941",
+					700: "#a06438",
+					800: "#835232",
+					900: "#6d442b",
+				},
+				"western-turquoise": {
+					50: "#edfffe",
+					100: "#d5fffc",
+					200: "#aff5f5",
+					300: "#7ce7ea",
+					400: "#40cfda",
+					500: "#20b2c2",
+					600: "#198fa4",
+					700: "#187286",
+					800: "#185c6d",
+					900: "#194c5c",
+				},
+				"desert-sand": {
+					50: "#fdf8ef",
+					100: "#f9edd9",
+					200: "#f2d9b0",
+					300: "#eabe7d",
+					400: "#e39e4b",
+					500: "#db7e30",
+					600: "#ca6126",
+					700: "#a84924",
+					800: "#883a23",
+					900: "#70321f",
+				},
+			},
+			backgroundImage: {
+				'rodeo-pattern': "url('/public/assets/rodeo-pattern.png')",
+				'leather-texture': "linear-gradient(to bottom, rgba(164, 116, 73, 0.2), rgba(120, 80, 50, 0.3)), url('/public/assets/leather-texture.png')",
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -129,12 +170,17 @@ export default {
 				wiggle: {
 					'0%, 100%': { transform: 'rotate(-3deg)' },
 					'50%': { transform: 'rotate(3deg)' },
+				},
+				'lasso-spin': {
+					'0%': { transform: 'rotate(0deg)' },
+					'100%': { transform: 'rotate(360deg)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				wiggle: 'wiggle 1s ease-in-out infinite',
+				'lasso-spin': 'lasso-spin 3s linear infinite',
 			}
 		}
 	},
