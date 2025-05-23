@@ -1,5 +1,5 @@
 import React from "react";
-import TrendChart from "@/components/charts/TrendChart";
+import TrendChart from "@/components/Charts/TrendChart";
 
 const TrendInsights = () => {
   return (
