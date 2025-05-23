@@ -53,6 +53,7 @@ function Calendar({
         ...classNames,
       }}
       components={{
+        // Fix the type error by using the correct property
         IconLeft: () => <ChevronLeft className="h-4 w-4" />,
         IconRight: () => <ChevronRight className="h-4 w-4" />,
       }}
