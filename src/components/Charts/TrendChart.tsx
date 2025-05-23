@@ -33,13 +33,23 @@ const TrendChart = () => {
         return;
       }
 
-      const grouped = data.reduce<Record<string, TrendEntry>>((acc, row) => {
-        const date = row.recorded_at;
-        if (!acc[date]) acc[date] = { recorded_at: date };
-        // Use type assertion to safely access the metric property
-        acc[date][row.metric as keyof Pick<TrendEntry, "structure" | "muscle" | "form">] = row.value;
-        return acc;
-      }, {});
+      type TrendRow = {
+        recorded_at: string;
+        metric: string;
+        value: number;
+      };
+
+      const grouped = (data as TrendRow[]).reduce(
+        (acc: Record<string, TrendEntry>, row) => {
+          const date = row.recorded_at;
+          if (!acc[date]) acc[date] = { recorded_at: date };
+          acc[date][
+            row.metric as keyof Pick<TrendEntry, "structure" | "muscle" | "form">
+          ] = row.value;
+          return acc;
+        },
+        {} as Record<string, TrendEntry>
+      );
 
       setChartData(Object.values(grouped));
     }
