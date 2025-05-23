@@ -50,6 +50,7 @@ export const usePhotoUpload = () => {
       });
 
       try {
+        // Analyze the photo - this won't cause navigation
         const analysis = await analyzeAnimalPhoto(file);
         const message =
           typeof analysis.weight === "number"

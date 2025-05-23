@@ -42,6 +42,8 @@ const ImageUploadButton = ({ onImageSelected, className, children }: ImageUpload
     setIsUploading(true);
     
     try {
+      // Prevent default form submission behavior that might cause navigation
+      e.preventDefault();
       await onImageSelected(file);
       toast({
         title: "Image uploaded",
@@ -78,6 +80,7 @@ const ImageUploadButton = ({ onImageSelected, className, children }: ImageUpload
             size="sm" 
             className="w-full"
             disabled={isUploading}
+            type="button" // Explicitly set type to prevent form submission
           >
             <UploadIcon className="w-4 h-4 mr-2" />
             {isUploading ? "Uploading..." : "Upload Image"}

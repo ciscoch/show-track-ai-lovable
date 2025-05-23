@@ -48,6 +48,7 @@ export const PhotoUploadForm = ({ onSuccess, onCancel, selectedAnimalId }: Photo
       .filter((tag: string) => tag.length > 0);
     
     try {
+      // Prevent default form submission behavior
       await uploadPhoto({
         file: selectedFile,
         animalId: data.animalId,

@@ -73,7 +73,11 @@ const PhotoAnalysisTab = ({ animal }: PhotoAnalysisProps) => {
           )}
         </div>
         <ImageUploadButton onImageSelected={handlePhotoSelected} className="w-full">
-          <Button className="w-full flex items-center" disabled={isAnalyzing}>
+          <Button 
+            className="w-full flex items-center" 
+            disabled={isAnalyzing}
+            type="button" // Explicitly set type to prevent any form submission behavior
+          >
             <Camera className="h-4 w-4 mr-2" />
             {isAnalyzing ? 'Analyzing...' : 'Upload Photo'}
           </Button>
