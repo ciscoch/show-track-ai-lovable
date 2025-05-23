@@ -14,7 +14,11 @@ const ImageUploadButton = ({ onImageSelected, className, children }: ImageUpload
   const [isUploading, setIsUploading] = useState(false);
   const inputId = useId();
   
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
     const file = e.target.files?.[0];
     if (!file) return;
     
@@ -73,7 +77,7 @@ const ImageUploadButton = ({ onImageSelected, className, children }: ImageUpload
         onChange={handleFileChange}
         disabled={isUploading}
       />
-      <label htmlFor={inputId}>
+      <label htmlFor={inputId} onClick={(e) => e.stopPropagation()}>
         {children || (
           <Button 
             variant="secondary" 
