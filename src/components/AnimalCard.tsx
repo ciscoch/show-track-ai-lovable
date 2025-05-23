@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 
 interface AnimalCardProps {
   animal: {
@@ -9,6 +10,7 @@ interface AnimalCardProps {
     breed: string;
     breederName?: string;
     species: string;
+    aiScore?: number;
     organization?: {
       name: string;
     };
@@ -27,6 +29,12 @@ const AnimalCard: React.FC<AnimalCardProps> = ({ animal, onClick }) => {
         )}
         {animal.organization && (
           <Badge className="mt-2">{animal.organization.name}</Badge>
+        )}
+        {typeof animal.aiScore === 'number' && (
+          <div className="space-y-1 mt-2">
+            <div className="text-xs text-muted-foreground">AI Score</div>
+            <Progress value={animal.aiScore} className="h-2" />
+          </div>
         )}
       </CardContent>
     </Card>
