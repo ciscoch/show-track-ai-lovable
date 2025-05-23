@@ -11,11 +11,7 @@ jest.mock('../lib/supabaseClient', () => ({
         upload: jest.fn().mockResolvedValue({
           error: null,
           data: { 
-            // Properly structured weight analysis without invalid 'result' property
-            weightAnalysis: {
-              weight: 120,
-              confidence: 0.95
-            }
+            path: 'some/path'
           }
         }),
       }),
@@ -31,7 +27,8 @@ describe('usePhotoUpload', () => {
     const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
     
     // Call the uploadPhoto function without arguments that would cause issues
-    await result.current.uploadPhoto();
+    const mockPhoto = { file };
+    await result.current.uploadPhoto(mockPhoto);
     
     // Assertions would go here in a real test
     expect(true).toBe(true);
