@@ -1,5 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { analyzeAnimalPhoto } from "./huggingfaceService";
+import { renderHook, act } from "@testing-library/react";
+
 
 describe("analyzeAnimalPhoto", () => {
   it("returns expected result from mocked API", async () => {
