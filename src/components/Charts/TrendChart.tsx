@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import {
@@ -8,7 +7,7 @@ import {
   YAxis,
   Tooltip,
   Legend,
-  ResponsiveContainer
+  ResponsiveContainer,
 } from "recharts";
 
 type TrendEntry = {
@@ -37,7 +36,10 @@ const TrendChart = () => {
         const date = row.recorded_at;
         if (!acc[date]) acc[date] = { recorded_at: date };
         // Using type assertion to safely access the metric property
-        const metricKey = row.metric as keyof Pick<TrendEntry, "structure" | "muscle" | "form">;
+        const metricKey = row.metric as keyof Pick<
+          TrendEntry,
+          "structure" | "muscle" | "form"
+        >;
         acc[date][metricKey] = row.value;
         return acc;
       }, {});
@@ -57,8 +59,18 @@ const TrendChart = () => {
           <YAxis domain={[60, 100]} />
           <Tooltip />
           <Legend />
-          <Line type="monotone" dataKey="structure" stroke="#3b82f6" name="Structure" />
-          <Line type="monotone" dataKey="muscle" stroke="#10b981" name="Muscle" />
+          <Line
+            type="monotone"
+            dataKey="structure"
+            stroke="#3b82f6"
+            name="Structure"
+          />
+          <Line
+            type="monotone"
+            dataKey="muscle"
+            stroke="#10b981"
+            name="Muscle"
+          />
           <Line type="monotone" dataKey="form" stroke="#8b5cf6" name="Form" />
         </LineChart>
       </ResponsiveContainer>
