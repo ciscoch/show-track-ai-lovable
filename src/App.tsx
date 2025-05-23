@@ -34,6 +34,7 @@ function App() {
         <Route path="/trends" element={<TrendInsights />} />
         <Route path="/dashboard" element={<Index />} />
         <Route path="/animal/:animalId" element={<AnimalDetails />} />
+        <Route path="/animal/:animalId/edit" element={<AddAnimal />} />
         <Route path="/add-animal" element={<AddAnimal />} />
         <Route path="/subscription" element={<Subscription />} />
         <Route path="/weights" element={<WeightTrackingPage />} />
