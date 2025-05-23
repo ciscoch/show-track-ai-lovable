@@ -32,6 +32,7 @@ interface SidebarContextProps {
 const SidebarContext = createContext<SidebarContextProps>({
   open: false,
   setOpen: () => { },
+  customWidth: undefined,
 })
 
 function SidebarProvider({
@@ -73,7 +74,7 @@ function SidebarDesktop({
     if (isDesktop && !open) {
       setOpen(true)
     }
-  }, [isDesktop])
+  }, [isDesktop, open, setOpen])
 
   return open && isDesktop ? (
     <div 
@@ -135,7 +136,7 @@ function SidebarMobile({
     if (isDesktop && open) {
       setOpen(false)
     }
-  }, [isDesktop])
+  }, [isDesktop, open, setOpen])
 
   return !isDesktop ? (
     <Sheet open={open} onOpenChange={setOpen}>

@@ -26,7 +26,7 @@ describe('usePhotoUpload', () => {
     // Mock the file
     const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
     
-    // Call the uploadPhoto function without arguments that would cause issues
+    // Call the uploadPhoto function with just the file
     const mockPhoto = { file };
     await result.current.uploadPhoto(mockPhoto);
     
