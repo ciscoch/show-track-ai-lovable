@@ -24,7 +24,7 @@ describe("analyzeAnimalPhoto", () => {
         formData: async () => new FormData(),
         text: async () => "",
       } as Response)
-    ) as jest.Mock;
+    );
 
     const mockFile = new File(["dummy"], "goat.jpg", { type: "image/jpeg" });
 

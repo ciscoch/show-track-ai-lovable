@@ -26,8 +26,8 @@ describe('usePhotoUpload', () => {
     // Mock the file
     const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
     
-    // Call the uploadPhoto function with just the file
-    const mockPhoto = { file };
+    // Call the uploadPhoto function with required parameters
+    const mockPhoto = { file, animalId: 'test-animal-id' };
     await result.current.uploadPhoto(mockPhoto);
     
     // Assertions would go here in a real test
