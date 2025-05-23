@@ -1,5 +1,6 @@
+
 import * as React from "react"
-import { type DialogProps } from "@radix-ui/react-dialog"
+import { DialogProps } from "@radix-ui/react-dialog"
 import { Command as CommandPrimitive } from "cmdk"
 import { Search } from "lucide-react"
 
@@ -21,7 +22,9 @@ const Command = React.forwardRef<
 ))
 Command.displayName = CommandPrimitive.displayName
 
-interface CommandDialogProps extends DialogProps {}
+interface CommandDialogProps extends DialogProps {
+  children: React.ReactNode
+}
 
 const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
   return (
@@ -51,7 +54,6 @@ const CommandInput = React.forwardRef<
     />
   </div>
 ))
-
 CommandInput.displayName = CommandPrimitive.Input.displayName
 
 const CommandList = React.forwardRef<
@@ -64,7 +66,6 @@ const CommandList = React.forwardRef<
     {...props}
   />
 ))
-
 CommandList.displayName = CommandPrimitive.List.displayName
 
 const CommandEmpty = React.forwardRef<
@@ -77,7 +78,6 @@ const CommandEmpty = React.forwardRef<
     {...props}
   />
 ))
-
 CommandEmpty.displayName = CommandPrimitive.Empty.displayName
 
 const CommandGroup = React.forwardRef<
@@ -93,7 +93,6 @@ const CommandGroup = React.forwardRef<
     {...props}
   />
 ))
-
 CommandGroup.displayName = CommandPrimitive.Group.displayName
 
 const CommandSeparator = React.forwardRef<
@@ -115,13 +114,12 @@ const CommandItem = React.forwardRef<
   <CommandPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50",
+      "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       className
     )}
     {...props}
   />
 ))
-
 CommandItem.displayName = CommandPrimitive.Item.displayName
 
 const CommandShortcut = ({
