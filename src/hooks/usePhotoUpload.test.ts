@@ -3,6 +3,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import { usePhotoUpload } from './usePhotoUpload';
 import { supabase } from '../lib/supabaseClient';
 
+// Mock supabase
 jest.mock('../lib/supabaseClient', () => ({
   supabase: {
     storage: {
