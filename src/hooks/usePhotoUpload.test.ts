@@ -1,7 +1,6 @@
 
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { usePhotoUpload } from './usePhotoUpload';
-import { supabase } from '../lib/supabaseClient';
 
 // Mock supabase
 jest.mock('../lib/supabaseClient', () => ({
