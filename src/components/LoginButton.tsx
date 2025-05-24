@@ -23,7 +23,7 @@ const LoginButton = ({
 
   return (
     <Button
-      onClick={() => navigate("/login")}
+      onClick={() => navigate("/auth")}
       className={`flex items-center gap-2 ${className}`}
       variant="default"
       size="sm"

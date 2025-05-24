@@ -2,7 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useAppContext } from "@/contexts/AppContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
 
 interface LogoutButtonProps {
@@ -17,16 +17,24 @@ const LogoutButton = ({
   className = ""
 }: LogoutButtonProps) => {
   const navigate = useNavigate();
-  const { setUser } = useAppContext();
+  const { signOut } = useAuth();
 
-  const handleLogout = () => {
-    setUser(null);
-    navigate("/login");
-    
-    toast({
-      title: "Logged out successfully",
-      description: "You have been logged out of your account"
-    });
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      navigate("/auth");
+      
+      toast({
+        title: "Logged out successfully",
+        description: "You have been logged out of your account"
+      });
+    } catch (error) {
+      toast({
+        title: "Error logging out",
+        description: "There was a problem logging you out",
+        variant: "destructive"
+      });
+    }
   };
 
   return (

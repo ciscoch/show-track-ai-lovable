@@ -11,44 +11,63 @@ export type Database = {
     Tables: {
       animals: {
         Row: {
+          ai_score: number | null
           birth_date: string | null
           breed: string | null
+          breeder_name: string | null
           created_at: string | null
+          description: string | null
+          gender: string | null
           id: string
+          image: string | null
           name: string
-          organization_id: string | null
+          pen_number: string | null
+          purpose: string | null
+          show_animal: boolean | null
           species: string | null
-          user_id: string | null
+          updated_at: string | null
+          user_id: string
+          weight: number | null
         }
         Insert: {
+          ai_score?: number | null
           birth_date?: string | null
           breed?: string | null
+          breeder_name?: string | null
           created_at?: string | null
+          description?: string | null
+          gender?: string | null
           id?: string
+          image?: string | null
           name: string
-          organization_id?: string | null
+          pen_number?: string | null
+          purpose?: string | null
+          show_animal?: boolean | null
           species?: string | null
-          user_id?: string | null
+          updated_at?: string | null
+          user_id: string
+          weight?: number | null
         }
         Update: {
+          ai_score?: number | null
           birth_date?: string | null
           breed?: string | null
+          breeder_name?: string | null
           created_at?: string | null
+          description?: string | null
+          gender?: string | null
           id?: string
+          image?: string | null
           name?: string
-          organization_id?: string | null
+          pen_number?: string | null
+          purpose?: string | null
+          show_animal?: boolean | null
           species?: string | null
-          user_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+          weight?: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "animals_organization_id_fkey"
-            columns: ["organization_id"]
-            isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       buyer_links: {
         Row: {
@@ -73,6 +92,135 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      expenses: {
+        Row: {
+          amount: number
+          animal_id: string
+          category: string | null
+          created_at: string | null
+          date: string
+          description: string
+          id: string
+          tax_deductible: boolean | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          animal_id: string
+          category?: string | null
+          created_at?: string | null
+          date: string
+          description: string
+          id?: string
+          tax_deductible?: boolean | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          animal_id?: string
+          category?: string | null
+          created_at?: string | null
+          date?: string
+          description?: string
+          id?: string
+          tax_deductible?: boolean | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expenses_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feeding_schedules: {
+        Row: {
+          animal_id: string
+          created_at: string | null
+          feeding_times: Json
+          id: string
+          name: string
+          reminder_enabled: boolean | null
+          reminder_minutes_before: number | null
+          user_id: string
+        }
+        Insert: {
+          animal_id: string
+          created_at?: string | null
+          feeding_times: Json
+          id?: string
+          name: string
+          reminder_enabled?: boolean | null
+          reminder_minutes_before?: number | null
+          user_id: string
+        }
+        Update: {
+          animal_id?: string
+          created_at?: string | null
+          feeding_times?: Json
+          id?: string
+          name?: string
+          reminder_enabled?: boolean | null
+          reminder_minutes_before?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feeding_schedules_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      journal_entries: {
+        Row: {
+          animal_id: string
+          content: string | null
+          created_at: string | null
+          date: string
+          id: string
+          mood: string | null
+          tags: string[] | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          animal_id: string
+          content?: string | null
+          created_at?: string | null
+          date: string
+          id?: string
+          mood?: string | null
+          tags?: string[] | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          animal_id?: string
+          content?: string | null
+          created_at?: string | null
+          date?: string
+          id?: string
+          mood?: string | null
+          tags?: string[] | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journal_entries_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       judge_insights: {
         Row: {
@@ -278,36 +426,92 @@ export type Database = {
       }
       user_profiles: {
         Row: {
+          about_me: string | null
           avatar_url: string | null
           bio: string | null
           created_at: string | null
+          email: string | null
+          first_name: string | null
           id: number
+          last_name: string | null
           role: string | null
+          subscription_end_date: string | null
+          subscription_level: string | null
           subscription_tier: string | null
           updated_at: string | null
           user_id: string | null
         }
         Insert: {
+          about_me?: string | null
           avatar_url?: string | null
           bio?: string | null
           created_at?: string | null
+          email?: string | null
+          first_name?: string | null
           id?: never
+          last_name?: string | null
           role?: string | null
+          subscription_end_date?: string | null
+          subscription_level?: string | null
           subscription_tier?: string | null
           updated_at?: string | null
           user_id?: string | null
         }
         Update: {
+          about_me?: string | null
           avatar_url?: string | null
           bio?: string | null
           created_at?: string | null
+          email?: string | null
+          first_name?: string | null
           id?: never
+          last_name?: string | null
           role?: string | null
+          subscription_end_date?: string | null
+          subscription_level?: string | null
           subscription_tier?: string | null
           updated_at?: string | null
           user_id?: string | null
         }
         Relationships: []
+      }
+      weight_entries: {
+        Row: {
+          animal_id: string
+          created_at: string | null
+          date: string
+          id: string
+          notes: string | null
+          user_id: string
+          weight: number
+        }
+        Insert: {
+          animal_id: string
+          created_at?: string | null
+          date: string
+          id?: string
+          notes?: string | null
+          user_id: string
+          weight: number
+        }
+        Update: {
+          animal_id?: string
+          created_at?: string | null
+          date?: string
+          id?: string
+          notes?: string | null
+          user_id?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "weight_entries_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
