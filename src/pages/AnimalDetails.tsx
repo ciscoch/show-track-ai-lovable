@@ -60,8 +60,15 @@ const AnimalDetails = () => {
     <div className="container max-w-7xl mx-auto py-8 px-4">
       <AnimalHeader animal={animal} />
       
-      <Tabs defaultValue="overview" className="w-full mt-6">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-6 lg:w-auto lg:inline-flex mb-6">
+      <div className="flex flex-col md:flex-row justify-between items-start gap-6 mb-8">
+        <div className="flex-1">
+          {/* This space is intentionally left blank for future content */}
+        </div>
+        <AnimalCalendar />
+      </div>
+      
+      <Tabs defaultValue="overview" className="w-full mt-8">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-6 lg:w-auto lg:inline-flex">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="weights">Weights</TabsTrigger>
           <TabsTrigger value="journal">Journal</TabsTrigger>
@@ -70,46 +77,38 @@ const AnimalDetails = () => {
           <TabsTrigger value="showmanship">Showmanship</TabsTrigger>
         </TabsList>
         
-        <div className="flex flex-col md:flex-row justify-between gap-6">
-          <div className="w-full md:flex-grow">
-            <TabsContent value="overview" className="mt-0">
-              <OverviewTab 
-                animal={animal} 
-                weights={weights} 
-                animalJournals={animalJournals}
-                targetWeight={targetWeight}
-              />
-            </TabsContent>
-            
-            <TabsContent value="weights" className="mt-0">
-              <WeightHistoryTab 
-                weights={weights} 
-                animalId={animal.id}
-                targetWeight={targetWeight} 
-              />
-            </TabsContent>
-            
-            <TabsContent value="journal" className="mt-0">
-              <JournalEntriesTab animalJournals={animalJournals} animalId={animal.id} />
-            </TabsContent>
-            
-            <TabsContent value="expenses" className="mt-0">
-              <ExpensesTab expenses={expenses} animalId={animal.id} />
-            </TabsContent>
-            
-            <TabsContent value="composition" className="mt-0">
-              <BodyCompositionTab animal={animal} />
-            </TabsContent>
-            
-            <TabsContent value="showmanship" className="mt-0">
-              <ShowmanshipTab animal={animal} />
-            </TabsContent>
-          </div>
-          
-          <div className="md:w-auto md:min-w-[320px] md:max-w-[320px]">
-            <AnimalCalendar />
-          </div>
-        </div>
+        <TabsContent value="overview" className="pt-6">
+          <OverviewTab 
+            animal={animal} 
+            weights={weights} 
+            animalJournals={animalJournals}
+            targetWeight={targetWeight}
+          />
+        </TabsContent>
+        
+        <TabsContent value="weights" className="pt-6">
+          <WeightHistoryTab 
+            weights={weights} 
+            animalId={animal.id}
+            targetWeight={targetWeight} 
+          />
+        </TabsContent>
+        
+        <TabsContent value="journal" className="pt-6">
+          <JournalEntriesTab animalJournals={animalJournals} animalId={animal.id} />
+        </TabsContent>
+        
+        <TabsContent value="expenses" className="pt-6">
+          <ExpensesTab expenses={expenses} animalId={animal.id} />
+        </TabsContent>
+        
+        <TabsContent value="composition" className="pt-6">
+          <BodyCompositionTab animal={animal} />
+        </TabsContent>
+        
+        <TabsContent value="showmanship" className="pt-6">
+          <ShowmanshipTab animal={animal} />
+        </TabsContent>
       </Tabs>
     </div>
   );

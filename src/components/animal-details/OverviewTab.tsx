@@ -16,20 +16,19 @@ interface OverviewTabProps {
 const OverviewTab = ({ animal, weights, animalJournals, targetWeight }: OverviewTabProps) => {
   return (
     <div className="space-y-8">
-      <div className="grid grid-cols-1 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <WeightChart 
           weights={weights} 
           animalId={animal.id}
           targetWeight={targetWeight}
         />
+        
+        <RecentJournalEntries animalJournals={animalJournals} animalId={animal.id} />
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <RecentJournalEntries animalJournals={animalJournals} animalId={animal.id} />
-        <div className="grid grid-cols-1 gap-6">
-          <BodyCompositionCard animal={animal} />
-          <ShowTipsCard animal={animal} />
-        </div>
+        <BodyCompositionCard animal={animal} />
+        <ShowTipsCard animal={animal} />
       </div>
     </div>
   );
