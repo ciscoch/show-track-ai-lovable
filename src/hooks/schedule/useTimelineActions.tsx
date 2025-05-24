@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ShowEvent, PrepTimeline } from "@/types/schedule";
 import { toast } from "@/hooks/use-toast";
 import { supabase, isRealSupabaseConnection } from "@/lib/supabaseClient";
+import { logger } from "@/lib/logger";
 import { v4 as uuidv4 } from "uuid";
 
 export const useTimelineActions = (
@@ -28,7 +29,7 @@ export const useTimelineActions = (
       
       // Show appropriate toast for local mode
       if (!usingRealSupabase) {
-        console.warn("⚠️ Running in local-only mode: not connected to Supabase.");
+        logger.warn("⚠️ Running in local-only mode: not connected to Supabase.");
         toast({
           title: "Local Save Mode",
           description: "Timeline saved to local state only (no Supabase connection).",
@@ -37,14 +38,14 @@ export const useTimelineActions = (
         return;
       }
 
-      console.log("Checking for authenticated user...");
+      logger.info("Checking for authenticated user...");
       const {
         data: { user },
         error: userError,
       } = await supabase.auth.getUser();
 
       if (userError || !user) {
-        console.warn("No authenticated user found:", userError);
+        logger.warn("No authenticated user found:", userError);
         toast({
           title: "Not logged in",
           description: "You must be logged in to save your timeline to Supabase.",
@@ -67,8 +68,8 @@ export const useTimelineActions = (
         return;
       }
 
-      console.log("User authenticated:", user.id);
-      console.log("Saving to Supabase 'events' table...");
+      logger.info("User authenticated:", user.id);
+      logger.info("Saving to Supabase 'events' table...");
 
       // Update the event with the new timeline
       const { error } = await supabase
@@ -96,7 +97,7 @@ export const useTimelineActions = (
           variant: "destructive",
         });
       } else {
-        console.log("Supabase save successful!");
+        logger.info("Supabase save successful!");
         toast({
           title: "Timeline Saved",
           description: "Your show preparation timeline was saved successfully to Supabase.",

@@ -1,5 +1,6 @@
 
 import { createClient } from '@supabase/supabase-js';
+import { logger } from '@/lib/logger';
 
 // Initialize the Supabase client with required environment variables
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -14,10 +15,10 @@ let supabase;
 if (usingRealInstance) {
   // Real Supabase connection
   supabase = createClient(supabaseUrl, supabaseAnonKey);
-  console.log('Connected to Supabase instance');
+  logger.info('Connected to Supabase instance');
 } else {
   // Mock Supabase client for development without environment variables
-  console.warn('⚠️ Using mock Supabase client - environment variables not found');
+  logger.warn('⚠️ Using mock Supabase client - environment variables not found');
   
   // Create a minimal mock client for development
   supabase = {

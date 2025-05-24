@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Github, Apple } from "lucide-react";
 import GoogleIcon from "@/components/icons/GoogleIcon";
+import { logger } from "@/lib/logger";
 
 interface SocialLoginButtonProps {
   provider: "google" | "apple" | "github";
@@ -10,7 +11,7 @@ interface SocialLoginButtonProps {
 const SocialLoginButton = ({ provider }: SocialLoginButtonProps) => {
   const handleLogin = () => {
     // In a real app, this would trigger OAuth flow
-    console.log(`Login with ${provider}`);
+    logger.info(`Login with ${provider}`);
   };
 
   return (

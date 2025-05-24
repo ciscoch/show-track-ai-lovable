@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { KeyIcon } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { logger } from "@/lib/logger";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -48,7 +49,7 @@ const PasswordTab = () => {
       title: "Password updated",
       description: "Your password has been updated successfully."
     });
-    console.log("Password updated with values:", values);
+    logger.info("Password updated with values:", values);
     
     // Reset form after successful update
     form.reset();

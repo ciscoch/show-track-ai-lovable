@@ -10,6 +10,7 @@ import ImageUploadButton from "@/components/ImageUploadButton";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { User } from "@/types/models";
 import { toast } from "@/hooks/use-toast";
+import { logger } from "@/lib/logger";
 
 interface AboutMeSectionProps {
   user: User | null;
@@ -42,7 +43,7 @@ const AboutMeSection = ({ user }: AboutMeSectionProps) => {
   };
 
   const onSubmit = (values: AboutMeValues) => {
-    console.log("About Me", { ...values, photo });
+    logger.info("About Me", { ...values, photo });
     toast({ title: "Profile updated", description: "Your About Me section was saved." });
   };
 
