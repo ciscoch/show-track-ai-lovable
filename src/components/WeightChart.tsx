@@ -61,16 +61,16 @@ const WeightChart = ({ weights, animalId, targetWeight, showFullHistory = false,
   }
   
   // Set chart height based on prop or default
-  const chartHeight = height || '80%';
+  const chartHeight = height || '100%';
   
   return (
-    <Card className="w-full">
-      <CardHeader>
+    <Card className="w-full h-full">
+      <CardHeader className="pb-2">
         <CardTitle>Weight Tracking</CardTitle>
         <CardDescription>Track weight progress over time</CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className={typeof chartHeight === 'number' ? `h-${chartHeight}` : "h-64 md:h-80"}>
+      <CardContent className="flex-1 flex flex-col">
+        <div className="flex-1" style={{ minHeight: "320px" }}>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={chartData}
