@@ -138,6 +138,7 @@ const AnimalHeader = ({ animal }: AnimalHeaderProps) => {
                       size="icon"
                       onClick={saveAnimalName}
                       className="h-8 w-8"
+                      title="Save name"
                     >
                       <CheckIcon className="h-4 w-4" />
                     </Button>
@@ -146,6 +147,7 @@ const AnimalHeader = ({ animal }: AnimalHeaderProps) => {
                       size="icon"
                       onClick={cancelEditingName}
                       className="h-8 w-8"
+                      title="Cancel"
                     >
                       <XIcon className="h-4 w-4" />
                     </Button>
@@ -157,10 +159,11 @@ const AnimalHeader = ({ animal }: AnimalHeaderProps) => {
                       variant="ghost" 
                       size="icon"
                       onClick={startEditingName}
-                      className="h-8 w-8"
+                      className="h-8 w-8 flex items-center gap-1"
                       title="Edit name"
                     >
                       <PencilIcon className="h-4 w-4" />
+                      <span className="sr-only">Edit Name</span>
                     </Button>
                   </>
                 )}
@@ -168,13 +171,14 @@ const AnimalHeader = ({ animal }: AnimalHeaderProps) => {
                   {animal.species.charAt(0).toUpperCase() + animal.species.slice(1)}
                 </Badge>
                 <Button 
-                  variant="ghost" 
-                  size="icon"
+                  variant="outline" 
+                  size="sm"
                   onClick={handleEditAnimal}
-                  className="h-8 w-8"
-                  title="Edit animal details"
+                  className="h-8 flex items-center gap-1"
+                  title="Edit all animal details"
                 >
                   <PencilIcon className="h-4 w-4" />
+                  <span>Edit Details</span>
                 </Button>
               </div>
               
@@ -207,18 +211,25 @@ const AnimalHeader = ({ animal }: AnimalHeaderProps) => {
                         className="h-7 py-1 max-w-[80px]"
                         autoFocus
                       />
-                      <Button variant="ghost" size="icon" onClick={savePenNumber} className="h-6 w-6">
+                      <Button variant="ghost" size="icon" onClick={savePenNumber} className="h-6 w-6" title="Save pen number">
                         <CheckIcon className="h-3 w-3" />
                       </Button>
-                      <Button variant="ghost" size="icon" onClick={cancelEditingPen} className="h-6 w-6">
+                      <Button variant="ghost" size="icon" onClick={cancelEditingPen} className="h-6 w-6" title="Cancel">
                         <XIcon className="h-3 w-3" />
                       </Button>
                     </div>
                   ) : (
                     <div className="flex items-center gap-1">
                       <p className="font-medium">{animal.penNumber || 'N/A'}</p>
-                      <Button variant="ghost" size="icon" onClick={startEditingPen} className="h-6 w-6" title="Edit pen #">
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        onClick={startEditingPen} 
+                        className="h-6 w-6 flex items-center justify-center" 
+                        title="Edit pen number"
+                      >
                         <PencilIcon className="h-3 w-3" />
+                        <span className="sr-only">Edit Pen</span>
                       </Button>
                     </div>
                   )}

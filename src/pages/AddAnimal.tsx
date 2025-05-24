@@ -185,7 +185,7 @@ const AddAnimal = () => {
                   <Label htmlFor="species">Species*</Label>
                   <Select 
                     value={species} 
-                    onValueChange={(value) => setSpecies(value as any)}
+                    onValueChange={(value: "cattle" | "goat" | "sheep" | "pig") => setSpecies(value)}
                   >
                     <SelectTrigger id="species">
                       <SelectValue placeholder="Select species" />
@@ -284,7 +284,7 @@ const AddAnimal = () => {
                   <Label htmlFor="gender">Gender*</Label>
                   <Select 
                     value={gender} 
-                    onValueChange={(value) => setGender(value as any)}
+                    onValueChange={(value: "male" | "female") => setGender(value)}
                   >
                     <SelectTrigger id="gender">
                       <SelectValue placeholder="Select gender" />
