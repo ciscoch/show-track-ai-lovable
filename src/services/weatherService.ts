@@ -46,6 +46,12 @@ export async function getWeatherForecast(
   latitude: number,
   longitude: number
 ): Promise<WeatherForecast | null> {
+  // Check if API key is available
+  if (!API_KEY || API_KEY === 'undefined') {
+    console.warn("Weather API key not configured. Weather features will be unavailable.");
+    return null;
+  }
+
   try {
     const response = await fetch(
       `https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${latitude},${longitude}&days=3&alerts=yes&aqi=no`
