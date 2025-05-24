@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DraggableContainer, DraggableItem } from "@/components/ui/draggable-container";
 import QuickAccessSection from "@/components/QuickAccessSection";
 import UserActivityFeed from "@/components/buyer/UserActivityFeed";
+import AnimalCalendar from "@/components/animal-details/AnimalCalendar";
 import { useToast } from "@/hooks/use-toast";
 
 // Mock data for dashboard
@@ -95,6 +96,10 @@ const Dashboard = () => {
           </CardContent>
         </Card>
       )
+    },
+    {
+      id: "schedule-card",
+      content: <AnimalCalendar />
     },
     {
       id: "todo-section",

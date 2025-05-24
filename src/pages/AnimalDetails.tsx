@@ -18,7 +18,6 @@ const mockAnimal: Animal = {
   name: "Buddy",
   species: "Pig",
   breed: "Hampshire",
-  dateOfBirth: "2023-01-15",
   weight: 230,
   penNumber: "A12",
   tagNumber: "T123",
@@ -34,13 +33,29 @@ const mockWeights: WeightEntry[] = [
 ];
 
 const mockJournals: JournalEntry[] = [
-  { id: "j1", animalId: "1", date: "2023-09-01", title: "Diet Change", content: "Switched to premium feed." },
-  { id: "j2", animalId: "1", date: "2023-09-10", title: "Behavior Note", content: "More active than usual." }
+  { 
+    id: "j1", 
+    animalId: "1", 
+    date: "2023-09-01", 
+    title: "Diet Change", 
+    content: "Switched to premium feed.",
+    tags: [],
+    mood: "happy"
+  },
+  { 
+    id: "j2", 
+    animalId: "1", 
+    date: "2023-09-10", 
+    title: "Behavior Note", 
+    content: "More active than usual.",
+    tags: [],
+    mood: "energetic"
+  }
 ];
 
 const mockExpenses: Expense[] = [
-  { id: "e1", animalId: "1", date: "2023-08-05", category: "Feed", amount: 75.50, description: "Premium feed" },
-  { id: "e2", animalId: "1", date: "2023-09-01", category: "Health", amount: 120, description: "Vet checkup" }
+  { id: "e1", animalId: "1", date: "2023-08-05", category: "feed", amount: 75.50, description: "Premium feed" },
+  { id: "e2", animalId: "1", date: "2023-09-01", category: "medicine", amount: 120, description: "Vet checkup" }
 ];
 
 const targetWeight = 250;
