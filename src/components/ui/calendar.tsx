@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
@@ -52,9 +53,11 @@ function Calendar({
         ...classNames,
       }}
       components={{
-    LeftIcon: MyArrowLeft, // ✅ matches the type
-  }}
-/>
+        LeftIcon: ChevronLeft,
+        RightIcon: ChevronRight,
+      }}
+      {...props}
+    />
   );
 }
 Calendar.displayName = "Calendar";

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import {
@@ -32,7 +33,7 @@ const TrendChart = () => {
         return;
       }
 
-      const grouped: Record<string, TrendEntry> = data.reduce((acc, row) => {
+      const grouped: Record<string, TrendEntry> = data.reduce((acc: Record<string, TrendEntry>, row: any) => {
         const date = row.recorded_at;
         if (!acc[date]) acc[date] = { recorded_at: date };
         // Using type assertion to safely access the metric property
