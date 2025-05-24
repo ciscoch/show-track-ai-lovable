@@ -73,6 +73,21 @@ export interface Photo {
   caption?: string;
   tags?: string[];
   created_at: string;
+  title?: string;
+  date?: string;
+  likes?: number;
+  likedByUser?: boolean;
+  comments?: Comment[];
+  analysisResult?: any;
+}
+
+export interface Comment {
+  id: string;
+  photoId: string;
+  userId: string;
+  userName: string;
+  content: string;
+  createdAt: string;
 }
 
 export interface UserSubscription {

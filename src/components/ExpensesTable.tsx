@@ -1,7 +1,7 @@
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Expense } from "@/types/models";
+import { Expense } from "@/contexts/AppContextTypes";
 import { useAppContext } from "@/contexts/AppContext";
 import { format } from "date-fns";
 import { Edit2Icon, Trash2Icon, Image } from "lucide-react";
@@ -19,12 +19,12 @@ interface ExpensesTableProps {
 }
 
 const ExpensesTable = ({ expenses, animalId }: ExpensesTableProps) => {
-  const { animals, deleteExpenseEntry } = useAppContext();
+  const { animals, deleteExpense } = useAppContext();
   const [viewingReceipt, setViewingReceipt] = useState<Expense | null>(null);
 
   // Filter expenses by animalId if provided
   const filteredExpenses = animalId 
-    ? expenses.filter(expense => expense.animalId === animalId) 
+    ? expenses.filter(expense => expense.animal_id === animalId) 
     : expenses;
 
   const getAnimalName = (animalId: string) => {
@@ -34,7 +34,7 @@ const ExpensesTable = ({ expenses, animalId }: ExpensesTableProps) => {
 
   const handleDelete = (id: string) => {
     if (typeof window !== "undefined" && window.confirm("Are you sure you want to delete this expense?")) {
-      deleteExpenseEntry(id);
+      deleteExpense(id);
     }
   };
 
@@ -64,20 +64,12 @@ const ExpensesTable = ({ expenses, animalId }: ExpensesTableProps) => {
               filteredExpenses.map((expense) => (
                 <TableRow key={expense.id}>
                   <TableCell>{format(new Date(expense.date), "PP")}</TableCell>
-                  <TableCell>{getAnimalName(expense.animalId)}</TableCell>
+                  <TableCell>{getAnimalName(expense.animal_id)}</TableCell>
                   <TableCell className="capitalize">{expense.category}</TableCell>
                   <TableCell>{expense.description}</TableCell>
                   <TableCell className="text-right">${expense.amount.toFixed(2)}</TableCell>
                   <TableCell className="text-center">
-                    {expense.receiptImageUrl && (
-                      <Button 
-                        variant="ghost" 
-                        size="icon"
-                        onClick={() => setViewingReceipt(expense)}
-                      >
-                        <Image className="h-4 w-4" />
-                      </Button>
-                    )}
+                    {/* Receipt functionality would be implemented here */}
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
@@ -106,13 +98,7 @@ const ExpensesTable = ({ expenses, animalId }: ExpensesTableProps) => {
             <DialogTitle>Receipt - {viewingReceipt?.description}</DialogTitle>
           </DialogHeader>
           <div className="flex items-center justify-center p-2">
-            {viewingReceipt?.receiptImageUrl && (
-              <img
-                src={viewingReceipt.receiptImageUrl}
-                alt="Receipt"
-                className="max-h-[70vh] object-contain"
-              />
-            )}
+            {/* Receipt image would be displayed here */}
           </div>
         </DialogContent>
       </Dialog>

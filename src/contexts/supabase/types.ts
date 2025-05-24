@@ -1,0 +1,47 @@
+
+import { User } from '@supabase/supabase-js';
+import { Animal, WeightEntry, JournalEntry, Expense, FeedingSchedule, UserSubscription } from '../AppContextTypes';
+
+export interface SupabaseContextState {
+  user: User | null;
+  userProfile: any;
+  userSubscription: UserSubscription;
+  animals: Animal[];
+  weightEntries: WeightEntry[];
+  journalEntries: JournalEntry[];
+  expenses: Expense[];
+  feedingSchedules: FeedingSchedule[];
+  loading: boolean;
+  error: string | null;
+}
+
+export interface SupabaseContextActions {
+  setUser: (user: User | null) => void;
+  
+  // Animal operations
+  addAnimal: (animal: Omit<Animal, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
+  updateAnimal: (id: string, updates: Partial<Animal>) => Promise<void>;
+  deleteAnimal: (id: string) => Promise<void>;
+  
+  // Weight operations
+  addWeightEntry: (entry: Omit<WeightEntry, 'id'>) => Promise<void>;
+  updateWeightEntry: (id: string, updates: Partial<WeightEntry>) => Promise<void>;
+  deleteWeightEntry: (id: string) => Promise<void>;
+  
+  // Journal operations
+  addJournalEntry: (entry: Omit<JournalEntry, 'id'>) => Promise<void>;
+  updateJournalEntry: (id: string, updates: Partial<JournalEntry>) => Promise<void>;
+  deleteJournalEntry: (id: string) => Promise<void>;
+  
+  // Expense operations
+  addExpense: (expense: Omit<Expense, 'id'>) => Promise<void>;
+  updateExpense: (id: string, updates: Partial<Expense>) => Promise<void>;
+  deleteExpense: (id: string) => Promise<void>;
+  
+  // Feeding schedule operations
+  addFeedingSchedule: (schedule: Omit<FeedingSchedule, 'id'>) => Promise<void>;
+  updateFeedingSchedule: (id: string, updates: Partial<FeedingSchedule>) => Promise<void>;
+  deleteFeedingSchedule: (id: string) => Promise<void>;
+}
+
+export type SupabaseAppContextType = SupabaseContextState & SupabaseContextActions;
