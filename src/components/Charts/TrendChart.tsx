@@ -32,7 +32,7 @@ const TrendChart = () => {
         return;
       }
 
-      const grouped = data.reduce<Record<string, TrendEntry>>((acc, row) => {
+      const grouped: Record<string, TrendEntry> = data.reduce((acc, row) => {
         const date = row.recorded_at;
         if (!acc[date]) acc[date] = { recorded_at: date };
         // Using type assertion to safely access the metric property
