@@ -1,179 +1,251 @@
 
-import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { useAppContext } from "@/contexts/AppContext";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { generateId } from "@/lib/utils";
-import { ArrowLeftIcon } from "lucide-react";
-import { useOrganizations } from "@/hooks/useOrganizations";
-import { useBreeders } from "@/hooks/useBreeders";
-import AnimalFormFields from "@/components/animal-form/AnimalFormFields";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { ArrowLeft } from 'lucide-react';
+import { useSupabaseApp } from '@/contexts/SupabaseAppContext';
+import { useToast } from '@/hooks/use-toast';
 
 const AddAnimal = () => {
   const navigate = useNavigate();
-  const { animalId } = useParams<{ animalId: string }>();
-  const { animals, addAnimal, updateAnimal } = useAppContext();
-  const isEditing = !!animalId;
-  
-  const [name, setName] = useState("");
-  const [species, setSpecies] = useState<"cattle" | "goat" | "sheep" | "pig">("goat");
-  const [breed, setBreed] = useState("");
-  const [breederName, setBreederName] = useState("");
-  const [birthdate, setBirthdate] = useState("");
-  const [purchaseDate, setPurchaseDate] = useState("");
-  const [gender, setGender] = useState<"male" | "female">("male");
-  const [tagNumber, setTagNumber] = useState("");
-  const [penNumber, setPenNumber] = useState("");
-  const [notes, setNotes] = useState("");
-  const [photo, setPhoto] = useState<string | null>(null);
-  const [weight, setWeight] = useState<number>(0);
-  const [organizationId, setOrganizationId] = useState("");
-  const { organizations } = useOrganizations();
-  const { breeders, addBreeder } = useBreeders();
-  
-  // Load existing animal data if editing
-  useEffect(() => {
-    if (isEditing) {
-      const existingAnimal = animals.find(a => a.id === animalId);
-      if (existingAnimal) {
-        setName(existingAnimal.name);
-        setSpecies(existingAnimal.species as "cattle" | "goat" | "sheep" | "pig");
-        setBreed(existingAnimal.breed);
-        setBreederName(existingAnimal.breederName || "");
-        setBirthdate(existingAnimal.birthdate);
-        setPurchaseDate(existingAnimal.purchaseDate || "");
-        setGender(existingAnimal.gender);
-        setTagNumber(existingAnimal.tagNumber || "");
-        setPenNumber(existingAnimal.penNumber || "");
-        setNotes(existingAnimal.notes || "");
-        setPhoto(existingAnimal.imageUrl || null);
-        setWeight(existingAnimal.weight || 0);
-        setOrganizationId(existingAnimal.organization?.id || "");
-      } else {
-        // If animal not found, redirect to dashboard
-        navigate('/dashboard');
-      }
-    }
-  }, [animalId, animals, isEditing, navigate]);
-  
-  const handleSubmit = (e: React.FormEvent) => {
+  const { addAnimal } = useSupabaseApp();
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [formData, setFormData] = useState({
+    name: '',
+    species: '',
+    breed: '',
+    breeder_name: '',
+    gender: '',
+    birth_date: '',
+    weight: '',
+    description: '',
+    purpose: '',
+    pen_number: ''
+  });
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Save breeder name for future use if provided
-    if (breederName) {
-      addBreeder(breederName);
+    if (!formData.name.trim()) {
+      toast({
+        title: "Error",
+        description: "Animal name is required",
+        variant: "destructive",
+      });
+      return;
     }
 
-    const animalData = {
-      name,
-      species,
-      breed,
-      breederName: breederName || undefined,
-      birthdate,
-      purchaseDate: purchaseDate || undefined,
-      gender,
-      tagNumber: tagNumber || undefined,
-      penNumber: penNumber || undefined,
-      showAnimal: true,
-      purpose: "show" as const,
-      description: notes || "",
-      weight: weight || 0,
-      imageUrl: photo || undefined,
-      organization: organizationId
-        ? organizations.find((o) => o.id === organizationId)
-        : undefined,
-      notes: notes || undefined
-    };
-    
-    if (isEditing) {
-      // Update existing animal
-      updateAnimal({
-        ...animalData,
-        id: animalId!,
-        updatedAt: new Date().toISOString()
+    setIsLoading(true);
+    try {
+      await addAnimal({
+        name: formData.name,
+        species: formData.species,
+        breed: formData.breed || undefined,
+        breeder_name: formData.breeder_name || undefined,
+        gender: formData.gender || undefined,
+        birth_date: formData.birth_date || undefined,
+        weight: formData.weight ? parseFloat(formData.weight) : undefined,
+        description: formData.description || undefined,
+        purpose: formData.purpose || undefined,
+        pen_number: formData.pen_number || undefined,
+        show_animal: true
       });
-    } else {
-      // Create new animal
-      addAnimal({
-        ...animalData,
-        id: generateId(),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+
+      toast({
+        title: "Success",
+        description: "Animal added successfully!",
       });
+
+      navigate('/dashboard');
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to add animal",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
-    
-    // Navigate back to animal details or dashboard
-    navigate(isEditing ? `/animal/${animalId}` : '/dashboard');
   };
-  
-  const handleBack = () => {
-    navigate(isEditing ? `/animal/${animalId}` : '/dashboard');
-  };
-  
+
   return (
-    <div className="container max-w-3xl mx-auto py-8 px-4">
-      <Button 
-        variant="ghost" 
-        onClick={handleBack}
-        className="mb-6 flex items-center gap-1"
-      >
-        <ArrowLeftIcon className="h-4 w-4" />
-        <span>Back {isEditing ? `to ${name}` : 'to Animals'}</span>
-      </Button>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle>{isEditing ? 'Edit Animal' : 'Add New Animal'}</CardTitle>
-          <CardDescription>
-            {isEditing ? 'Update information for this animal' : 'Register a new livestock show animal to your account'}
-          </CardDescription>
-        </CardHeader>
-        <form onSubmit={handleSubmit}>
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-2xl mx-auto px-4">
+        <div className="mb-6">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate('/dashboard')}
+            className="mb-4"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Dashboard
+          </Button>
+          
+          <h1 className="text-3xl font-bold text-gray-900">Add New Animal</h1>
+          <p className="text-gray-600 mt-2">Enter your animal's information to get started</p>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Animal Information</CardTitle>
+            <CardDescription>
+              Fill in the details about your show animal
+            </CardDescription>
+          </CardHeader>
           <CardContent>
-            <AnimalFormFields
-              name={name}
-              setName={setName}
-              species={species}
-              setSpecies={setSpecies}
-              breed={breed}
-              setBreed={setBreed}
-              breederName={breederName}
-              setBreederName={setBreederName}
-              birthdate={birthdate}
-              setBirthdate={setBirthdate}
-              purchaseDate={purchaseDate}
-              setPurchaseDate={setPurchaseDate}
-              gender={gender}
-              setGender={setGender}
-              tagNumber={tagNumber}
-              setTagNumber={setTagNumber}
-              penNumber={penNumber}
-              setPenNumber={setPenNumber}
-              notes={notes}
-              setNotes={setNotes}
-              photo={photo}
-              setPhoto={setPhoto}
-              weight={weight}
-              setWeight={setWeight}
-              organizationId={organizationId}
-              setOrganizationId={setOrganizationId}
-              organizations={organizations}
-              breeders={breeders}
-            />
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="name">Animal Name *</Label>
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
+                    placeholder="Enter animal name"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="species">Species</Label>
+                  <Select value={formData.species} onValueChange={(value) => handleInputChange('species', value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select species" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="cattle">Cattle</SelectItem>
+                      <SelectItem value="pig">Pig</SelectItem>
+                      <SelectItem value="sheep">Sheep</SelectItem>
+                      <SelectItem value="goat">Goat</SelectItem>
+                      <SelectItem value="poultry">Poultry</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="breed">Breed</Label>
+                  <Input
+                    id="breed"
+                    value={formData.breed}
+                    onChange={(e) => handleInputChange('breed', e.target.value)}
+                    placeholder="Enter breed"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="gender">Gender</Label>
+                  <Select value={formData.gender} onValueChange={(value) => handleInputChange('gender', value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select gender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="male">Male</SelectItem>
+                      <SelectItem value="female">Female</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="birth_date">Birth Date</Label>
+                  <Input
+                    id="birth_date"
+                    type="date"
+                    value={formData.birth_date}
+                    onChange={(e) => handleInputChange('birth_date', e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="weight">Current Weight (lbs)</Label>
+                  <Input
+                    id="weight"
+                    type="number"
+                    step="0.1"
+                    value={formData.weight}
+                    onChange={(e) => handleInputChange('weight', e.target.value)}
+                    placeholder="Enter weight"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="breeder_name">Breeder Name</Label>
+                  <Input
+                    id="breeder_name"
+                    value={formData.breeder_name}
+                    onChange={(e) => handleInputChange('breeder_name', e.target.value)}
+                    placeholder="Enter breeder name"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="pen_number">Pen Number</Label>
+                  <Input
+                    id="pen_number"
+                    value={formData.pen_number}
+                    onChange={(e) => handleInputChange('pen_number', e.target.value)}
+                    placeholder="Enter pen number"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="purpose">Purpose</Label>
+                <Select value={formData.purpose} onValueChange={(value) => handleInputChange('purpose', value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select purpose" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="show">Show</SelectItem>
+                    <SelectItem value="breeding">Breeding</SelectItem>
+                    <SelectItem value="market">Market</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="description">Description</Label>
+                <Textarea
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) => handleInputChange('description', e.target.value)}
+                  placeholder="Enter description or notes about this animal"
+                  rows={3}
+                />
+              </div>
+
+              <div className="flex gap-4 pt-4">
+                <Button type="submit" disabled={isLoading} className="flex-1">
+                  {isLoading ? "Adding..." : "Add Animal"}
+                </Button>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => navigate('/dashboard')}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </form>
           </CardContent>
-          <CardFooter className="flex justify-between">
-            <Button
-              variant="outline"
-              type="button"
-              onClick={handleBack}
-            >
-              Cancel
-            </Button>
-            <Button type="submit">{isEditing ? 'Save Changes' : 'Add Animal'}</Button>
-          </CardFooter>
-        </form>
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 };

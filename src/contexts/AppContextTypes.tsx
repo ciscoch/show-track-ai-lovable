@@ -1,57 +1,109 @@
 
-import { Animal, WeightEntry, JournalEntry, Expense, User, SubscriptionLevel, FeedingSchedule } from "@/types/models";
-import { ReactNode } from "react";
+import { User } from '@supabase/supabase-js';
 
-// Photo type for the gallery
-export interface Photo {
+export interface Animal {
   id: string;
-  animalId: string;
-  url: string;
+  name: string;
+  species: string;
+  breed?: string;
+  breeder_name?: string;
+  gender?: string;
+  birth_date?: string;
+  weight?: number;
+  ai_score?: number;
+  image?: string;
+  description?: string;
+  show_animal?: boolean;
+  purpose?: string;
+  pen_number?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface WeightEntry {
+  id: string;
+  animal_id: string;
   date: string;
-  tags?: string[];
-  caption?: string;
-  title?: string;
-  likes?: number;
-  comments?: Comment[];
-  likedByUser?: boolean;
-  analysisResult?: string;
+  weight: number;
+  notes?: string;
 }
 
-export interface Comment {
+export interface JournalEntry {
   id: string;
-  photoId: string;
-  userId: string;
-  userName: string;
-  userAvatar?: string;
-  content: string;
-  createdAt: string;
+  animal_id: string;
+  date: string;
+  title: string;
+  content?: string;
+  tags?: string[];
+  mood?: string;
 }
 
-// Context type definition
-export type AppContextType = {
+export interface Expense {
+  id: string;
+  animal_id: string;
+  date: string;
+  description: string;
+  amount: number;
+  category?: string;
+  tax_deductible?: boolean;
+}
+
+export interface FeedingTime {
+  id: string;
+  time: string;
+  amount: string;
+  feedType: string;
+}
+
+export interface FeedingSchedule {
+  id: string;
+  animal_id: string;
+  name: string;
+  feeding_times: FeedingTime[];
+  reminder_enabled?: boolean;
+  reminder_minutes_before?: number;
+}
+
+export interface UserSubscription {
+  level: 'free' | 'pro' | 'elite';
+  endDate?: string;
+  isActive: boolean;
+}
+
+export interface SupabaseAppContextType {
+  user: User | null;
+  userProfile: any;
+  userSubscription: UserSubscription;
   animals: Animal[];
-  currentAnimal: Animal | null;
-  weights: WeightEntry[];
-  journals: JournalEntry[];
+  weightEntries: WeightEntry[];
+  journalEntries: JournalEntry[];
   expenses: Expense[];
   feedingSchedules: FeedingSchedule[];
-  user: User | null;
-  userSubscription: SubscriptionLevel;
   loading: boolean;
   setUser: (user: User | null) => void;
-  setCurrentAnimal: (animal: Animal | null) => void;
-  addAnimal: (animal: Animal) => void;
-  updateAnimal: (animal: Animal) => void;
-  deleteAnimal: (animalId: string) => void;
-  addWeightEntry: (entry: WeightEntry) => void;
-  updateWeightEntry: (entry: WeightEntry) => void;
-  deleteWeightEntry: (entryId: string) => void;
-  addJournalEntry: (entry: JournalEntry) => void;
-  addExpenseEntry: (entry: Expense) => void;
-  deleteExpenseEntry: (id: string) => void;
-  addFeedingSchedule: (schedule: FeedingSchedule) => void;
-  updateFeedingSchedule: (schedule: FeedingSchedule) => void;
-  deleteFeedingSchedule: (scheduleId: string) => void;
-  completeFeedingTime: (scheduleId: string, timeId: string, locationData?: {latitude: number; longitude: number; timestamp: string} | null) => void;
-  refreshData: () => void;
-};
+  
+  // Animal operations
+  addAnimal: (animal: Omit<Animal, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
+  updateAnimal: (id: string, updates: Partial<Animal>) => Promise<void>;
+  deleteAnimal: (id: string) => Promise<void>;
+  
+  // Weight operations
+  addWeightEntry: (entry: Omit<WeightEntry, 'id'>) => Promise<void>;
+  updateWeightEntry: (id: string, updates: Partial<WeightEntry>) => Promise<void>;
+  deleteWeightEntry: (id: string) => Promise<void>;
+  
+  // Journal operations
+  addJournalEntry: (entry: Omit<JournalEntry, 'id'>) => Promise<void>;
+  updateJournalEntry: (id: string, updates: Partial<JournalEntry>) => Promise<void>;
+  deleteJournalEntry: (id: string) => Promise<void>;
+  
+  // Expense operations
+  addExpense: (expense: Omit<Expense, 'id'>) => Promise<void>;
+  updateExpense: (id: string, updates: Partial<Expense>) => Promise<void>;
+  deleteExpense: (id: string) => Promise<void>;
+  
+  // Feeding schedule operations
+  addFeedingSchedule: (schedule: Omit<FeedingSchedule, 'id'>) => Promise<void>;
+  updateFeedingSchedule: (id: string, updates: Partial<FeedingSchedule>) => Promise<void>;
+  deleteFeedingSchedule: (id: string) => Promise<void>;
+}
