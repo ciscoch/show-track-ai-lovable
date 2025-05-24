@@ -33,9 +33,9 @@ function Calendar({
        table: "w-full border-collapse table-fixed",
         head_row: "",
         head_cell:
-          "text-center text-muted-foreground text-xs font-semibold p-2",
+          "text-center w-[14.28%] text-muted-foreground text-xs font-medium",
         row: "",
-        cell: "h-9 w-9 text-center text-sm",
+        cell: "w-[14.28%] text-center p-1 text-sm",
         day: "h-9 w-9 flex items-center justify-center rounded-full hover:bg-accent focus:outline-none",
         ),
         day_range_end: "day-range-end",
