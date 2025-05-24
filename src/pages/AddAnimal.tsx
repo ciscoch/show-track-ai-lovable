@@ -3,17 +3,12 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppContext } from "@/contexts/AppContext";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { generateId } from "@/lib/utils";
 import { ArrowLeftIcon } from "lucide-react";
 import { useOrganizations } from "@/hooks/useOrganizations";
 import { useBreeders } from "@/hooks/useBreeders";
-import ImageUploadButton from "@/components/ImageUploadButton";
-import { readFileAsDataURL } from "@/platform/file";
+import AnimalFormFields from "@/components/animal-form/AnimalFormFields";
 
 const AddAnimal = () => {
   const navigate = useNavigate();
@@ -43,7 +38,7 @@ const AddAnimal = () => {
       const existingAnimal = animals.find(a => a.id === animalId);
       if (existingAnimal) {
         setName(existingAnimal.name);
-        setSpecies(existingAnimal.species);
+        setSpecies(existingAnimal.species as "cattle" | "goat" | "sheep" | "pig");
         setBreed(existingAnimal.breed);
         setBreederName(existingAnimal.breederName || "");
         setBirthdate(existingAnimal.birthdate);
@@ -115,27 +110,6 @@ const AddAnimal = () => {
   const handleBack = () => {
     navigate(isEditing ? `/animal/${animalId}` : '/dashboard');
   };
-
-  const handleImageSelected = async (file: File) => {
-    const dataUrl = await readFileAsDataURL(file);
-    setPhoto(dataUrl);
-  };
-  
-  // Helper function to get breeds based on selected species
-  const getBreedOptions = () => {
-    switch (species) {
-      case 'cattle':
-        return ['Angus', 'Hereford', 'Shorthorn', 'Simmental', 'Charolais', 'Limousin', 'Maine-Anjou', 'Brahman', 'Other'];
-      case 'goat':
-        return ['Boer', 'Kiko', 'Spanish', 'Myotonic', 'Nubian', 'Alpine', 'LaMancha', 'Other'];
-      case 'sheep':
-        return ['Suffolk', 'Hampshire', 'Dorset', 'Southdown', 'Shropshire', 'Oxford', 'Dorper', 'Katahdin', 'Other'];
-      case 'pig':
-        return ['Yorkshire', 'Duroc', 'Hampshire', 'Berkshire', 'Spotted', 'Chester White', 'Poland China', 'Landrace', 'Other'];
-      default:
-        return ['Other'];
-    }
-  };
   
   return (
     <div className="container max-w-3xl mx-auto py-8 px-4">
@@ -156,190 +130,37 @@ const AddAnimal = () => {
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-6">
-            <div className="space-y-4">
-              <div className="flex items-center gap-4">
-                <div className="w-24 h-24 rounded-md overflow-hidden border flex items-center justify-center bg-muted">
-                  {photo ? (
-                    <img src={photo} alt="Preview" className="object-cover w-full h-full" />
-                  ) : (
-                    <span className="text-xs text-muted-foreground">No photo</span>
-                  )}
-                </div>
-                <ImageUploadButton onImageSelected={handleImageSelected} />
-              </div>
-              
-              <div>
-                <Label htmlFor="name">Animal Name*</Label>
-                <Input
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Enter name"
-                  required
-                />
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="species">Species*</Label>
-                  <Select 
-                    value={species} 
-                    onValueChange={(value: "cattle" | "goat" | "sheep" | "pig") => setSpecies(value)}
-                  >
-                    <SelectTrigger id="species">
-                      <SelectValue placeholder="Select species" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="cattle">Cattle</SelectItem>
-                      <SelectItem value="goat">Goat</SelectItem>
-                      <SelectItem value="sheep">Sheep</SelectItem>
-                      <SelectItem value="pig">Pig</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <Label htmlFor="breed">Breed*</Label>
-                  <Select
-                    value={breed}
-                    onValueChange={setBreed}
-                  >
-                    <SelectTrigger id="breed">
-                      <SelectValue placeholder="Select breed" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {getBreedOptions().map((breedOption) => (
-                        <SelectItem key={breedOption} value={breedOption}>
-                          {breedOption}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="breederName">Breeder</Label>
-                  <Input
-                    id="breederName"
-                    list="breeder-options"
-                    value={breederName}
-                    onChange={(e) => setBreederName(e.target.value)}
-                    placeholder="Enter breeder name"
-                  />
-                  <datalist id="breeder-options">
-                    {breeders.map((b) => (
-                      <option key={b.id} value={b.name} />
-                    ))}
-                  </datalist>
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="organization">Organization</Label>
-                <p className="text-sm text-muted-foreground mb-1">
-                  Type the first letter to quickly navigate the list
-                </p>
-                <Select
-                  value={organizationId}
-                  onValueChange={setOrganizationId}
-                >
-                  <SelectTrigger id="organization">
-                    <SelectValue placeholder="Select organization" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {organizations.map((org) => (
-                      <SelectItem key={org.id} value={org.id}>
-                        {org.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="birthdate">Birth Date*</Label>
-                  <Input
-                    id="birthdate"
-                    type="date"
-                    value={birthdate}
-                    onChange={(e) => setBirthdate(e.target.value)}
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="purchaseDate">Purchase Date</Label>
-                  <Input
-                    id="purchaseDate"
-                    type="date"
-                    value={purchaseDate}
-                    onChange={(e) => setPurchaseDate(e.target.value)}
-                  />
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <Label htmlFor="gender">Gender*</Label>
-                  <Select 
-                    value={gender} 
-                    onValueChange={(value: "male" | "female") => setGender(value)}
-                  >
-                    <SelectTrigger id="gender">
-                      <SelectValue placeholder="Select gender" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="male">Male</SelectItem>
-                      <SelectItem value="female">Female</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <Label htmlFor="tagNumber">Tag/ID Number</Label>
-                  <Input
-                    id="tagNumber"
-                    value={tagNumber}
-                    onChange={(e) => setTagNumber(e.target.value)}
-                    placeholder="Enter tag #"
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="weight">Weight (lbs)*</Label>
-                  <Input
-                    id="weight"
-                    type="number"
-                    value={weight.toString()}
-                    onChange={(e) => setWeight(Number(e.target.value))}
-                    placeholder="Enter weight"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="penNumber">Pen #</Label>
-                  <Input
-                    id="penNumber"
-                    value={penNumber}
-                    onChange={(e) => setPenNumber(e.target.value)}
-                    placeholder="Enter pen #"
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <Label htmlFor="notes">Notes</Label>
-                <Textarea
-                  id="notes"
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Add any additional notes about this animal"
-                  rows={4}
-                />
-              </div>
-            </div>
+          <CardContent>
+            <AnimalFormFields
+              name={name}
+              setName={setName}
+              species={species}
+              setSpecies={setSpecies}
+              breed={breed}
+              setBreed={setBreed}
+              breederName={breederName}
+              setBreederName={setBreederName}
+              birthdate={birthdate}
+              setBirthdate={setBirthdate}
+              purchaseDate={purchaseDate}
+              setPurchaseDate={setPurchaseDate}
+              gender={gender}
+              setGender={setGender}
+              tagNumber={tagNumber}
+              setTagNumber={setTagNumber}
+              penNumber={penNumber}
+              setPenNumber={setPenNumber}
+              notes={notes}
+              setNotes={setNotes}
+              photo={photo}
+              setPhoto={setPhoto}
+              weight={weight}
+              setWeight={setWeight}
+              organizationId={organizationId}
+              setOrganizationId={setOrganizationId}
+              organizations={organizations}
+              breeders={breeders}
+            />
           </CardContent>
           <CardFooter className="flex justify-between">
             <Button
