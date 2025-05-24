@@ -68,7 +68,7 @@ Create a `.env` file at the project root based on `.env.example` and fill in you
 VITE_SUPABASE_URL=<your supabase url>
 VITE_SUPABASE_ANON_KEY=<your supabase anon key>
 VITE_OPENAI_API_KEY=<your openai api key>
-VITE_OPENWEATHER_API_KEY=<your openweather api key>
+VITE_WEATHER_API_KEY=35955fb435e4499fa2e15211252204
 ```
 
 

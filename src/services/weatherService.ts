@@ -1,5 +1,5 @@
 
-// Weather service using OpenWeatherMap API
+// Weather service using WeatherAPI.com
 // The API key is loaded from an environment variable
 
 interface WeatherForecast {
@@ -39,8 +39,8 @@ export interface WeatherAlert {
   severity: 'low' | 'medium' | 'high';
 }
 
-// OpenWeatherMap API key from environment variables
-const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
+// WeatherAPI.com key from environment variables
+const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
 
 export async function getWeatherForecast(
   latitude: number,
@@ -48,7 +48,7 @@ export async function getWeatherForecast(
 ): Promise<WeatherForecast | null> {
   try {
     const response = await fetch(
-      `https://api.openweathermap.org/data/3.0/onecall?lat=${latitude}&lon=${longitude}&exclude=minutely,hourly&units=imperial&appid=${API_KEY}`
+      `https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${latitude},${longitude}&days=3&alerts=yes&aqi=no`
     );
 
     if (!response.ok) {
@@ -56,7 +56,43 @@ export async function getWeatherForecast(
       return null;
     }
 
-    return await response.json();
+    const data = await response.json();
+
+    // Convert WeatherAPI response to WeatherForecast format
+    const forecast: WeatherForecast = {
+      current: {
+        temp: data.current.temp_f,
+        weather: [
+          {
+            id: data.current.condition.code,
+            main: data.current.condition.text,
+            description: data.current.condition.text,
+          },
+        ],
+      },
+      daily: data.forecast.forecastday.map((day: any) => ({
+        dt: day.date_epoch,
+        temp: {
+          min: day.day.mintemp_f,
+          max: day.day.maxtemp_f,
+        },
+        weather: [
+          {
+            id: day.day.condition.code,
+            main: day.day.condition.text,
+            description: day.day.condition.text,
+          },
+        ],
+      })),
+      alerts: data.alerts?.alert?.map((alert: any) => ({
+        event: alert.event || alert.headline,
+        description: alert.desc,
+        start: alert.effective_epoch,
+        end: alert.expires_epoch,
+      })),
+    };
+
+    return forecast;
   } catch (error) {
     console.error("Failed to fetch weather data:", error);
     return null;
