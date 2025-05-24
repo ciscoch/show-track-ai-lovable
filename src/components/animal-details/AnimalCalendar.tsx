@@ -11,13 +11,13 @@ const AnimalCalendar = () => {
   return (
     <Card className="w-full md:w-auto md:min-w-[320px]">
       <CardHeader className="pb-3">
-        <CardTitle>Calendar</CardTitle>
+        <CardTitle>Schedule</CardTitle>
         <CardDescription>Track important dates</CardDescription>
       </CardHeader>
       <CardContent className="pb-0">
         <div className="flex flex-col items-center justify-center space-y-4 py-6">
           <CalendarIcon className="h-12 w-12 text-muted-foreground" />
-          <p className="text-center text-muted-foreground">Schedule your animal events</p>
+          <p className="text-center text-muted-foreground">Manage your animal's schedule and events</p>
         </div>
       </CardContent>
       <CardFooter className="flex justify-between pt-3">

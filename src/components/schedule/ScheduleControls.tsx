@@ -4,34 +4,17 @@ import { Button } from "@/components/ui/button";
 import { PlusCircleIcon, ClockIcon } from "lucide-react";
 
 interface ScheduleControlsProps {
-  view: "calendar" | "list";
-  setView: (view: "calendar" | "list") => void;
   onOpenTimelineClick?: () => void;
   onAddEventClick: () => void;
 }
 
 const ScheduleControls = ({ 
-  view, 
-  setView, 
   onOpenTimelineClick, 
   onAddEventClick 
 }: ScheduleControlsProps) => {
   return (
-    <div className="flex flex-col md:flex-row justify-between mb-6 gap-4">
-      <div className="flex gap-4">
-        <Button 
-          variant={view === "calendar" ? "default" : "outline"} 
-          onClick={() => setView("calendar")}
-        >
-          Calendar View
-        </Button>
-        <Button 
-          variant={view === "list" ? "default" : "outline"} 
-          onClick={() => setView("list")}
-        >
-          List View
-        </Button>
-      </div>
+    <div className="flex justify-between mb-6 gap-4">
+      <h2 className="text-2xl font-semibold">Schedule</h2>
       
       <div className="flex gap-2">
         {onOpenTimelineClick && (

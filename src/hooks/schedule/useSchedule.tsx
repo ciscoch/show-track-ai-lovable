@@ -7,17 +7,14 @@ import { useEventFilters } from "./useEventFilters";
 import { useTimelineActions } from "./useTimelineActions";
 
 export const useSchedule = () => {
-  const [date, setDate] = useState<Date>(new Date());
-  const [view, setView] = useState<"calendar" | "list">("list");
   const [events, setEvents] = useState<ShowEvent[]>(mockEvents);
   const [isSaving, setIsSaving] = useState(false);
   
   // Import event filtering functionality
   const { 
-    selectedDateEvents, 
     upcomingEvents, 
     todayEvents 
-  } = useEventFilters(events, date);
+  } = useEventFilters(events);
   
   // Import event action functionality
   const { 
@@ -34,13 +31,8 @@ export const useSchedule = () => {
   } = useTimelineActions(events, setEvents, setIsSaving);
 
   return {
-    date,
-    setDate,
-    view, 
-    setView,
     events,
     setEvents,
-    selectedDateEvents,
     upcomingEvents,
     todayEvents,
     getCategoryColor,

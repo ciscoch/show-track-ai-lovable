@@ -1,8 +1,8 @@
+
 import React, { useState } from "react";
 import { useAppContext } from "@/contexts/AppContext";
 import MainLayout from "@/components/MainLayout";
 import CountdownToRing from "@/components/CountdownToRing";
-import ScheduleCalendarView from "@/components/schedule/ScheduleCalendarView";
 import ScheduleListView from "@/components/schedule/ScheduleListView";
 import ScheduleControls from "@/components/schedule/ScheduleControls";
 import PrepTimeline from "@/components/schedule/PrepTimeline";
@@ -15,12 +15,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 const SchedulePage = () => {
   const { animals, userSubscription, user } = useAppContext();
   const {
-    date,
-    setDate,
-    view,
-    setView,
     events,
-    selectedDateEvents,
     upcomingEvents,
     todayEvents,
     getCategoryColor,
@@ -81,37 +76,22 @@ const SchedulePage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <div className="lg:col-span-2">
           <ScheduleControls 
-            view={view} 
-            setView={setView} 
-            onOpenTimelineClick={selectedDateEvents.length > 0 ? 
-              () => handleOpenTimeline(selectedDateEvents[0]) : undefined}
+            onOpenTimelineClick={todayEvents.length > 0 ? 
+              () => handleOpenTimeline(todayEvents[0]) : undefined}
             onAddEventClick={handleAddEvent}
           />
           
-          {view === "calendar" ? (
-            <ScheduleCalendarView
-              date={date}
-              setDate={setDate}
-              selectedDateEvents={selectedDateEvents}
-              animals={animals}
-              getCategoryColor={getCategoryColor}
-              onPrepTimelineClick={handleCreateNewTimeline}
-              onEditEvent={handleEditEvent}
-              onDeleteEvent={handleDeleteEvent}
-            />
-          ) : (
-            <ScheduleListView
-              todayEvents={todayEvents}
-              upcomingEvents={upcomingEvents}
-              animals={animals}
-              getCategoryColor={getCategoryColor}
-              isProOrElite={isProOrElite}
-              handleUpgrade={handleUpgrade}
-              onPrepTimelineClick={handleCreateNewTimeline}
-              onEditEvent={handleEditEvent}
-              onDeleteEvent={handleDeleteEvent}
-            />
-          )}
+          <ScheduleListView
+            todayEvents={todayEvents}
+            upcomingEvents={upcomingEvents}
+            animals={animals}
+            getCategoryColor={getCategoryColor}
+            isProOrElite={isProOrElite}
+            handleUpgrade={handleUpgrade}
+            onPrepTimelineClick={handleCreateNewTimeline}
+            onEditEvent={handleEditEvent}
+            onDeleteEvent={handleDeleteEvent}
+          />
         </div>
         
         {/* Countdown to the Ring component */}
