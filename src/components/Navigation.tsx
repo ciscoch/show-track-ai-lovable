@@ -8,6 +8,7 @@ import NavigationMenu from "@/components/NavigationMenu";
 import { LucideIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import LogoutButton from "@/components/LogoutButton";
+import { logger } from "@/lib/logger";
 
 interface NavigationProps {
   navigationItems?: {
@@ -26,8 +27,8 @@ const Navigation = ({ navigationItems = [], user }: NavigationProps) => {
   const isBuyerRoute = location.pathname.startsWith("/buyer");
 
   // For debugging
-  console.log("Navigation - Current user subscription:", userSubscription);
-  console.log("Navigation - User object:", user);
+  logger.info("Navigation - Current user subscription:", userSubscription);
+  logger.info("Navigation - User object:", user);
 
   return (
     <Card className="rounded-none shadow-sm border-b">

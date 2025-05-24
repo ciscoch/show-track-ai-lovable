@@ -5,6 +5,7 @@ import { toast } from "@/hooks/use-toast";
 import { useAppContext } from "@/contexts/AppContext";
 import { analyzeAnimalPhoto } from "@/services/huggingfaceService";
 import { Photo } from "@/contexts/AppContextTypes";
+import { logger } from "@/lib/logger";
 
 export interface UploadPhotoParams {
   file: File;
@@ -42,7 +43,7 @@ export const usePhotoUpload = () => {
 
       // In a real app, we would save this to a database
       // For now, let's just simulate it
-      console.log("Photo uploaded:", newPhoto);
+      logger.info("Photo uploaded:", newPhoto);
 
       toast({
         title: "Photo uploaded successfully",

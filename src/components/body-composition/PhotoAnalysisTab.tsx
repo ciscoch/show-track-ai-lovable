@@ -6,6 +6,7 @@ import ImageUploadButton from "@/components/ImageUploadButton";
 import { analyzeAnimalPhoto } from "@/services/huggingfaceService";
 import { toast } from "@/hooks/use-toast";
 import { PhotoAnalysisProps } from "./types";
+import { logger } from "@/lib/logger";
 
 const PhotoAnalysisTab = ({ animal }: PhotoAnalysisProps) => {
   const [photo, setPhoto] = useState<string | null>(null);
@@ -21,9 +22,9 @@ const PhotoAnalysisTab = ({ animal }: PhotoAnalysisProps) => {
     setAnalysisSuccess(false);
 
     try {
-      console.log('Starting photo analysis for animal:', animal.name);
+      logger.info('Starting photo analysis for animal:', animal.name);
       const result = await analyzeAnimalPhoto(file);
-      console.log('Analysis result:', result);
+      logger.info('Analysis result:', result);
       
       const message =
         typeof result.weight === 'number'

@@ -11,6 +11,7 @@ import PracticeSessionsSection from "./timeline/PracticeSessionsSection";
 import ChecklistSection from "./timeline/ChecklistSection";
 import { generateDefaultTargetWeights, createDefaultTimeline } from "./timeline/timelineUtils";
 import { supabase, isRealSupabaseConnection } from "@/lib/supabaseClient";
+import { logger } from "@/lib/logger";
 
 interface PrepTimelineProps {
   event: ShowEvent;
@@ -32,7 +33,10 @@ const PrepTimeline = ({ event, animals, onSaveTimeline }: PrepTimelineProps) => 
   const usingRealSupabase = isRealSupabaseConnection();
 
   useEffect(() => {
-    console.log("PrepTimeline connection status:", usingRealSupabase ? "Using real Supabase connection" : "Using local fallback mode");
+    logger.info(
+      "PrepTimeline connection status:",
+      usingRealSupabase ? "Using real Supabase connection" : "Using local fallback mode"
+    );
   }, [usingRealSupabase]);
 
   const handleSaveTimeline = async () => {
@@ -43,11 +47,11 @@ const PrepTimeline = ({ event, animals, onSaveTimeline }: PrepTimelineProps) => 
         targetWeightGoal: Object.values(targetWeights)[0]
       };
 
-      console.log("Attempting to save timeline:", updatedTimeline);
+      logger.info("Attempting to save timeline:", updatedTimeline);
       
       if (!usingRealSupabase) {
-        console.warn("⚠️ Running in local-only mode: not connected to Supabase.");
-        console.log("Saved locally:", updatedTimeline);
+        logger.warn("⚠️ Running in local-only mode: not connected to Supabase.");
+        logger.info("Saved locally:", updatedTimeline);
         toast({
           title: "Local Save Mode",
           description: "Data saved to local state only (no Supabase connection).",
@@ -57,14 +61,14 @@ const PrepTimeline = ({ event, animals, onSaveTimeline }: PrepTimelineProps) => 
         return;
       }
 
-      console.log("Checking for authenticated user...");
+      logger.info("Checking for authenticated user...");
       const {
         data: { user },
         error: userError,
       } = await supabase.auth.getUser();
 
       if (userError || !user) {
-        console.warn("No authenticated user found:", userError);
+        logger.warn("No authenticated user found:", userError);
         toast({
           title: "Not logged in",
           description: "You must be logged in to save your timeline to Supabase.",
@@ -74,8 +78,8 @@ const PrepTimeline = ({ event, animals, onSaveTimeline }: PrepTimelineProps) => 
         return;
       }
 
-      console.log("User authenticated:", user.id);
-      console.log("Saving to Supabase 'show_plans' table...");
+      logger.info("User authenticated:", user.id);
+      logger.info("Saving to Supabase 'show_plans' table...");
 
       const { error } = await supabase
         .from("show_plans")
@@ -95,7 +99,7 @@ const PrepTimeline = ({ event, animals, onSaveTimeline }: PrepTimelineProps) => 
           variant: "destructive",
         });
       } else {
-        console.log("Supabase save successful!");
+        logger.info("Supabase save successful!");
         toast({
           title: "Timeline Saved",
           description: "Your show preparation timeline was saved successfully to Supabase.",

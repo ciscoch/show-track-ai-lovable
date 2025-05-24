@@ -2,6 +2,7 @@
 import { ShowEvent } from "@/types/schedule";
 import { toast } from "@/hooks/use-toast";
 import { supabase, isRealSupabaseConnection } from "@/lib/supabaseClient";
+import { logger } from "@/lib/logger";
 import { navigate } from "@/platform/navigation";
 
 export const useEventActions = (
@@ -41,7 +42,7 @@ export const useEventActions = (
       
       // Show appropriate toast for local mode
       if (!usingRealSupabase) {
-        console.warn("⚠️ Running in local-only mode: not connected to Supabase.");
+        logger.warn("⚠️ Running in local-only mode: not connected to Supabase.");
         toast({
           title: "Local Save Mode",
           description: `Event ${isNew ? "added" : "updated"} in local state only (no Supabase connection).`,
@@ -51,14 +52,14 @@ export const useEventActions = (
       }
       
       // Save to Supabase if connected
-      console.log("Checking for authenticated user...");
+      logger.info("Checking for authenticated user...");
       const {
         data: { user },
         error: userError,
       } = await supabase.auth.getUser();
 
       if (userError || !user) {
-        console.warn("No authenticated user found:", userError);
+        logger.warn("No authenticated user found:", userError);
         toast({
           title: "Not logged in",
           description: "You must be logged in to save events to Supabase.",
@@ -68,8 +69,8 @@ export const useEventActions = (
         return;
       }
 
-      console.log("User authenticated:", user.id);
-      console.log("Saving event to Supabase 'events' table...");
+      logger.info("User authenticated:", user.id);
+      logger.info("Saving event to Supabase 'events' table...");
 
       // Prepare event data for Supabase (format dates as ISO strings)
       const eventData = {
@@ -97,7 +98,7 @@ export const useEventActions = (
           variant: "destructive",
         });
       } else {
-        console.log("Supabase save successful!");
+        logger.info("Supabase save successful!");
         toast({
           title: `Event ${isNew ? "Added" : "Updated"}`,
           description: `Your event was ${isNew ? "added" : "updated"} successfully.`,
@@ -124,7 +125,7 @@ export const useEventActions = (
       
       // Show appropriate toast for local mode
       if (!usingRealSupabase) {
-        console.warn("⚠️ Running in local-only mode: not connected to Supabase.");
+        logger.warn("⚠️ Running in local-only mode: not connected to Supabase.");
         toast({
           title: "Local Delete Mode",
           description: "Event removed from local state only (no Supabase connection).",
@@ -139,7 +140,7 @@ export const useEventActions = (
       } = await supabase.auth.getUser();
 
       if (userError || !user) {
-        console.warn("No authenticated user found:", userError);
+        logger.warn("No authenticated user found:", userError);
         toast({
           title: "Not logged in",
           description: "You must be logged in to delete events from Supabase.",
