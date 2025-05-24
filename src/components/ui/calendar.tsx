@@ -53,8 +53,9 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: ChevronLeft,
-        IconRight: ChevronRight,
+        // Use the correct property names as defined in DayPicker's CustomComponents type
+        LeftIcon: ChevronLeft,
+        RightIcon: ChevronRight,
       }}
       {...props}
     />

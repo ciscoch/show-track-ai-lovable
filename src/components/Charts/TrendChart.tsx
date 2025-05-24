@@ -18,6 +18,13 @@ type TrendEntry = {
   form?: number;
 };
 
+// Define the row type from the database
+type JudgingTrendRow = {
+  recorded_at: string;
+  metric: 'structure' | 'muscle' | 'form';
+  value: number;
+};
+
 const TrendChart = () => {
   const [chartData, setChartData] = useState<TrendEntry[]>([]);
 
@@ -33,15 +40,15 @@ const TrendChart = () => {
         return;
       }
 
-      const grouped: Record<string, TrendEntry> = data.reduce((acc: Record<string, TrendEntry>, row: any) => {
+      // Type assertion for the data returned from supabase
+      const typedData = data as JudgingTrendRow[];
+      
+      const grouped: Record<string, TrendEntry> = typedData.reduce((acc: Record<string, TrendEntry>, row: JudgingTrendRow) => {
         const date = row.recorded_at;
         if (!acc[date]) acc[date] = { recorded_at: date };
-        // Using type assertion to safely access the metric property
-        const metricKey = row.metric as keyof Pick<
-          TrendEntry,
-          "structure" | "muscle" | "form"
-        >;
-        acc[date][metricKey] = row.value;
+        
+        // Now TypeScript knows that metric is only one of the allowed keys
+        acc[date][row.metric] = row.value;
         return acc;
       }, {});
 
