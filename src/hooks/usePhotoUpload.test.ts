@@ -1,15 +1,16 @@
 
 import { renderHook } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
 import { usePhotoUpload } from './usePhotoUpload';
 
 // Mock supabase
-jest.mock('../lib/supabaseClient', () => ({
+vi.mock('../lib/supabaseClient', () => ({
   supabase: {
     storage: {
-      from: jest.fn().mockReturnValue({
-        upload: jest.fn().mockResolvedValue({
+      from: vi.fn().mockReturnValue({
+        upload: vi.fn().mockResolvedValue({
           error: null,
-          data: { 
+          data: {
             path: 'some/path'
           }
         }),
