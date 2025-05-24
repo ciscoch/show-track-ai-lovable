@@ -26,7 +26,8 @@ import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
-import { v4 as uuidv4 } from 'uuid';
+import LoadingState from "./LoadingState";
+import ErrorState from "./ErrorState";
 
 const formSchema = z.object({
   animalId: z.string().min(1, "Please select an animal"),
@@ -41,7 +42,7 @@ interface AddWeightFormProps {
 }
 
 const AddWeightForm = ({ initialAnimalId, onSuccess }: AddWeightFormProps) => {
-  const { animals, addWeightEntry } = useAppContext();
+  const { animals, addWeightEntry, loading, error } = useAppContext();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -54,19 +55,26 @@ const AddWeightForm = ({ initialAnimalId, onSuccess }: AddWeightFormProps) => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  if (loading) {
+    return <LoadingState message="Loading animals..." />;
+  }
+
+  if (error) {
+    return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+  }
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
     
     try {
       const newEntry = {
-        id: uuidv4(),
-        animalId: values.animalId,
+        animal_id: values.animalId,
         date: format(values.date, "yyyy-MM-dd"),
         weight: values.weight,
         notes: values.notes,
       };
       
-      addWeightEntry(newEntry);
+      await addWeightEntry(newEntry);
       
       toast({
         title: "Weight added successfully",
@@ -206,7 +214,14 @@ const AddWeightForm = ({ initialAnimalId, onSuccess }: AddWeightFormProps) => {
         />
 
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Adding..." : "Add Weight Entry"}
+          {isSubmitting ? (
+            <>
+              <LoadingState variant="spinner" className="mr-2" />
+              Adding...
+            </>
+          ) : (
+            "Add Weight Entry"
+          )}
         </Button>
       </form>
     </Form>

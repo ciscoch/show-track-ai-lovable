@@ -9,11 +9,13 @@ export interface Animal {
   breeder_name?: string;
   gender?: string;
   birth_date?: string;
+  birthdate?: string; // Add for backward compatibility
   weight?: number;
   ai_score?: number;
   image?: string;
   description?: string;
   show_animal?: boolean;
+  showAnimal?: boolean; // Add for backward compatibility
   purpose?: string;
   pen_number?: string;
   createdAt?: string;
@@ -64,6 +66,15 @@ export interface FeedingSchedule {
   reminder_minutes_before?: number;
 }
 
+export interface Photo {
+  id: string;
+  animal_id: string;
+  url: string;
+  caption?: string;
+  tags?: string[];
+  created_at: string;
+}
+
 export interface UserSubscription {
   level: 'free' | 'pro' | 'elite';
   endDate?: string;
@@ -80,6 +91,7 @@ export interface SupabaseAppContextType {
   expenses: Expense[];
   feedingSchedules: FeedingSchedule[];
   loading: boolean;
+  error: string | null;
   setUser: (user: User | null) => void;
   
   // Animal operations

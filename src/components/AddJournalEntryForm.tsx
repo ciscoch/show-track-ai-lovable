@@ -17,7 +17,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAppContext } from "@/contexts/AppContext";
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
-import { v4 as uuidv4 } from 'uuid';
 import TagsInput from "./TagsInput";
 import AnimalSelectField from "./journal/AnimalSelectField";
 import DatePickerField from "./journal/DatePickerField";
@@ -26,6 +25,8 @@ import MoodSelector from "./journal/MoodSelector";
 import JournalImageUpload from "./journal/JournalImageUpload";
 import { journalFormSchema, JournalFormValues } from "./journal/journalFormSchema";
 import { usePhotoUpload } from "@/hooks/usePhotoUpload";
+import LoadingState from "./LoadingState";
+import ErrorState from "./ErrorState";
 
 interface AddJournalEntryFormProps {
   initialAnimalId?: string;
@@ -33,7 +34,7 @@ interface AddJournalEntryFormProps {
 }
 
 const AddJournalEntryForm = ({ initialAnimalId, onSuccess }: AddJournalEntryFormProps) => {
-  const { animals, addJournalEntry } = useAppContext();
+  const { animals, addJournalEntry, loading, error } = useAppContext();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { uploadPhoto } = usePhotoUpload();
 
@@ -50,6 +51,14 @@ const AddJournalEntryForm = ({ initialAnimalId, onSuccess }: AddJournalEntryForm
       images: [],
     },
   });
+
+  if (loading) {
+    return <LoadingState message="Loading animals..." />;
+  }
+
+  if (error) {
+    return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+  }
 
   const onSubmit = async (values: JournalFormValues) => {
     setIsSubmitting(true);
@@ -77,19 +86,15 @@ const AddJournalEntryForm = ({ initialAnimalId, onSuccess }: AddJournalEntryForm
       }
       
       const newEntry = {
-        id: uuidv4(),
-        animalId: values.animalId,
+        animal_id: values.animalId,
         date: format(values.date, "yyyy-MM-dd"),
-        time: values.time,
         title: values.title,
         content: values.content,
         tags: values.tags,
         mood: values.mood,
-        images: imageUrls,
-        timestamp: new Date().toISOString()
       };
       
-      addJournalEntry(newEntry);
+      await addJournalEntry(newEntry);
       
       toast({
         title: "Journal entry added",
@@ -190,7 +195,14 @@ const AddJournalEntryForm = ({ initialAnimalId, onSuccess }: AddJournalEntryForm
         />
 
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Adding..." : "Add Journal Entry"}
+          {isSubmitting ? (
+            <>
+              <LoadingState variant="spinner" className="mr-2" />
+              Adding...
+            </>
+          ) : (
+            "Add Journal Entry"
+          )}
         </Button>
       </form>
     </Form>

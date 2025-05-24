@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -24,6 +23,7 @@ export const SupabaseAppProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [feedingSchedules, setFeedingSchedules] = useState<FeedingSchedule[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const userSubscription: UserSubscription = {
     level: userProfile?.subscription_level || 'free',
@@ -44,6 +44,7 @@ export const SupabaseAppProvider: React.FC<{ children: React.ReactNode }> = ({ c
       setExpenses([]);
       setFeedingSchedules([]);
       setLoading(false);
+      setError(null);
     }
   }, [user]);
 
@@ -51,63 +52,81 @@ export const SupabaseAppProvider: React.FC<{ children: React.ReactNode }> = ({ c
     if (!user) return;
     
     setLoading(true);
+    setError(null);
     try {
       // Load user profile
-      const { data: profile } = await supabase
+      const { data: profile, error: profileError } = await supabase
         .from('user_profiles')
         .select('*')
         .eq('user_id', user.id)
         .single();
       
+      if (profileError && profileError.code !== 'PGRST116') {
+        throw profileError;
+      }
+      
       setUserProfile(profile);
 
       // Load animals
-      const { data: animalsData } = await supabase
+      const { data: animalsData, error: animalsError } = await supabase
         .from('animals')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
       
+      if (animalsError) throw animalsError;
       setAnimals(animalsData || []);
 
       // Load weight entries
-      const { data: weightData } = await supabase
+      const { data: weightData, error: weightError } = await supabase
         .from('weight_entries')
         .select('*')
         .eq('user_id', user.id)
         .order('date', { ascending: false });
       
+      if (weightError) throw weightError;
       setWeightEntries(weightData || []);
 
       // Load journal entries
-      const { data: journalData } = await supabase
+      const { data: journalData, error: journalError } = await supabase
         .from('journal_entries')
         .select('*')
         .eq('user_id', user.id)
         .order('date', { ascending: false });
       
+      if (journalError) throw journalError;
       setJournalEntries(journalData || []);
 
       // Load expenses
-      const { data: expensesData } = await supabase
+      const { data: expensesData, error: expensesError } = await supabase
         .from('expenses')
         .select('*')
         .eq('user_id', user.id)
         .order('date', { ascending: false });
       
+      if (expensesError) throw expensesError;
       setExpenses(expensesData || []);
 
-      // Load feeding schedules
-      const { data: schedulesData } = await supabase
+      // Load feeding schedules with proper type casting
+      const { data: schedulesData, error: schedulesError } = await supabase
         .from('feeding_schedules')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
       
-      setFeedingSchedules(schedulesData || []);
+      if (schedulesError) throw schedulesError;
+      
+      // Transform feeding_times from JSONB to proper type
+      const transformedSchedules: FeedingSchedule[] = (schedulesData || []).map(schedule => ({
+        ...schedule,
+        feeding_times: Array.isArray(schedule.feeding_times) ? schedule.feeding_times as FeedingTime[] : []
+      }));
+      
+      setFeedingSchedules(transformedSchedules);
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error loading user data:', error);
+      setError(error.message || 'Failed to load data');
     } finally {
       setLoading(false);
     }
@@ -160,86 +179,116 @@ export const SupabaseAppProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const addWeightEntry = async (entryData: Omit<WeightEntry, 'id'>) => {
     if (!user) return;
 
-    const { data, error } = await supabase
-      .from('weight_entries')
-      .insert({
-        ...entryData,
-        user_id: user.id
-      })
-      .select()
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('weight_entries')
+        .insert({
+          ...entryData,
+          user_id: user.id
+        })
+        .select()
+        .single();
 
-    if (error) throw error;
-    if (data) {
-      setWeightEntries(prev => [data, ...prev]);
+      if (error) throw error;
+      if (data) {
+        setWeightEntries(prev => [data, ...prev]);
+      }
+    } catch (error: any) {
+      setError(error.message);
+      throw error;
     }
   };
 
   const updateWeightEntry = async (id: string, updates: Partial<WeightEntry>) => {
-    const { data, error } = await supabase
-      .from('weight_entries')
-      .update(updates)
-      .eq('id', id)
-      .select()
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('weight_entries')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
 
-    if (error) throw error;
-    if (data) {
-      setWeightEntries(prev => prev.map(entry => entry.id === id ? data : entry));
+      if (error) throw error;
+      if (data) {
+        setWeightEntries(prev => prev.map(entry => entry.id === id ? data : entry));
+      }
+    } catch (error: any) {
+      setError(error.message);
+      throw error;
     }
   };
 
   const deleteWeightEntry = async (id: string) => {
-    const { error } = await supabase
-      .from('weight_entries')
-      .delete()
-      .eq('id', id);
+    try {
+      const { error } = await supabase
+        .from('weight_entries')
+        .delete()
+        .eq('id', id);
 
-    if (error) throw error;
-    setWeightEntries(prev => prev.filter(entry => entry.id !== id));
+      if (error) throw error;
+      setWeightEntries(prev => prev.filter(entry => entry.id !== id));
+    } catch (error: any) {
+      setError(error.message);
+      throw error;
+    }
   };
 
   // Journal entry operations
   const addJournalEntry = async (entryData: Omit<JournalEntry, 'id'>) => {
     if (!user) return;
 
-    const { data, error } = await supabase
-      .from('journal_entries')
-      .insert({
-        ...entryData,
-        user_id: user.id
-      })
-      .select()
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('journal_entries')
+        .insert({
+          ...entryData,
+          user_id: user.id
+        })
+        .select()
+        .single();
 
-    if (error) throw error;
-    if (data) {
-      setJournalEntries(prev => [data, ...prev]);
+      if (error) throw error;
+      if (data) {
+        setJournalEntries(prev => [data, ...prev]);
+      }
+    } catch (error: any) {
+      setError(error.message);
+      throw error;
     }
   };
 
   const updateJournalEntry = async (id: string, updates: Partial<JournalEntry>) => {
-    const { data, error } = await supabase
-      .from('journal_entries')
-      .update(updates)
-      .eq('id', id)
-      .select()
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('journal_entries')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
 
-    if (error) throw error;
-    if (data) {
-      setJournalEntries(prev => prev.map(entry => entry.id === id ? data : entry));
+      if (error) throw error;
+      if (data) {
+        setJournalEntries(prev => prev.map(entry => entry.id === id ? data : entry));
+      }
+    } catch (error: any) {
+      setError(error.message);
+      throw error;
     }
   };
 
   const deleteJournalEntry = async (id: string) => {
-    const { error } = await supabase
-      .from('journal_entries')
-      .delete()
-      .eq('id', id);
+    try {
+      const { error } = await supabase
+        .from('journal_entries')
+        .delete()
+        .eq('id', id);
 
-    if (error) throw error;
-    setJournalEntries(prev => prev.filter(entry => entry.id !== id));
+      if (error) throw error;
+      setJournalEntries(prev => prev.filter(entry => entry.id !== id));
+    } catch (error: any) {
+      setError(error.message);
+      throw error;
+    }
   };
 
   // Expense operations
@@ -351,6 +400,7 @@ export const SupabaseAppProvider: React.FC<{ children: React.ReactNode }> = ({ c
     expenses,
     feedingSchedules,
     loading,
+    error,
     setUser,
     addAnimal,
     updateAnimal,

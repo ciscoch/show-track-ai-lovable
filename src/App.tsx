@@ -1,208 +1,152 @@
-
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { SupabaseAppProvider } from "@/contexts/SupabaseAppContext";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { Toaster } from "@/components/ui/toaster";
 import ProtectedRoute from "@/components/ProtectedRoute";
+
+// Pages
+import Index from "@/pages/Index";
 import AuthPage from "@/pages/AuthPage";
 import Dashboard from "@/pages/Dashboard";
 import AddAnimal from "@/pages/AddAnimal";
 import AnimalDetails from "@/pages/AnimalDetails";
-import JournalPage from "@/pages/JournalPage";
-import WeightTrackingPage from "@/pages/WeightTrackingPage";
+import EditAnimal from "@/pages/EditAnimal";
 import ExpensesPage from "@/pages/ExpensesPage";
-import GalleryPage from "@/pages/GalleryPage";
-import SchedulePage from "@/pages/SchedulePage";
-import FeedReminderPage from "@/pages/FeedReminderPage";
-import UserSettingsPage from "@/pages/UserSettingsPage";
-import Subscription from "@/pages/Subscription";
-import TrendInsights from "@/pages/TrendInsights";
-import UploadsPage from "@/pages/UploadsPage";
-import SupportChatPage from "@/pages/SupportChatPage";
-import FriendsPage from "@/pages/FriendsPage";
-import NotFound from "@/pages/NotFound";
-
-// Buyer routes
+import AddExpensePage from "@/pages/AddExpensePage";
+import EditExpensePage from "@/pages/EditExpensePage";
+import JournalPage from "@/pages/JournalPage";
+import AddJournalEntryPage from "@/pages/AddJournalEntryPage";
+import EditJournalEntryPage from "@/pages/EditJournalEntryPage";
+import WeightTrackingPage from "@/pages/WeightTrackingPage";
+import SubscriptionPage from "@/pages/SubscriptionPage";
+import LoginPage from "@/pages/LoginPage";
+import SignupPage from "@/pages/SignupPage";
+import BuyerDashboard from "@/pages/buyer/BuyerDashboard";
 import BuyerLoginPage from "@/pages/buyer/BuyerLoginPage";
-import BuyerDashboardPage from "@/pages/buyer/BuyerDashboardPage";
-import BuyerUserDetail from "@/pages/buyer/BuyerUserDetail";
-import BuyerViewUserPage from "@/pages/buyer/BuyerViewUserPage";
-import BuyerViewAnimalPage from "@/pages/buyer/BuyerViewAnimalPage";
-import BuyerLinkRedirect from "@/pages/buyer/BuyerLinkRedirect";
+import FeedingSchedulePage from "@/pages/FeedingSchedulePage";
+import AddFeedingSchedulePage from "@/pages/AddFeedingSchedulePage";
+import EditFeedingSchedulePage from "@/pages/EditFeedingSchedulePage";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: (failureCount, error: any) => {
+        // Don't retry on 401/403 errors
+        if (error?.status === 401 || error?.status === 403) {
+          return false;
+        }
+        return failureCount < 3;
+      },
+    },
+  },
+});
 
-const AuthenticatedApp = () => {
+function App() {
   return (
-    <SupabaseAppProvider>
-      <Routes>
-        <Route path="/auth" element={<AuthPage />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/add-animal"
-          element={
-            <ProtectedRoute>
-              <AddAnimal />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/animal/:id"
-          element={
-            <ProtectedRoute>
-              <AnimalDetails />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/journal"
-          element={
-            <ProtectedRoute>
-              <JournalPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/weight-tracking"
-          element={
-            <ProtectedRoute>
-              <WeightTrackingPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/expenses"
-          element={
-            <ProtectedRoute>
-              <ExpensesPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/gallery"
-          element={
-            <ProtectedRoute>
-              <GalleryPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/schedule"
-          element={
-            <ProtectedRoute>
-              <SchedulePage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/feed-reminders"
-          element={
-            <ProtectedRoute>
-              <FeedReminderPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/settings"
-          element={
-            <ProtectedRoute>
-              <UserSettingsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/subscription"
-          element={
-            <ProtectedRoute>
-              <Subscription />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/trends"
-          element={
-            <ProtectedRoute>
-              <TrendInsights />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/uploads"
-          element={
-            <ProtectedRoute>
-              <UploadsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/support"
-          element={
-            <ProtectedRoute>
-              <SupportChatPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/friends"
-          element={
-            <ProtectedRoute>
-              <FriendsPage />
-            </ProtectedRoute>
-          }
-        />
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <SupabaseAppProvider>
+            <Router>
+              <div className="min-h-screen bg-background">
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/auth" element={<AuthPage />} />
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/signup" element={<SignupPage />} />
+                  
+                  {/* Protected Routes */}
+                  <Route path="/dashboard" element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/add-animal" element={
+                    <ProtectedRoute>
+                      <AddAnimal />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/animal/:animalId" element={
+                    <ProtectedRoute>
+                      <AnimalDetails />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/animal/:animalId/edit" element={
+                    <ProtectedRoute>
+                      <EditAnimal />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/expenses" element={
+                    <ProtectedRoute>
+                      <ExpensesPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/expenses/add" element={
+                    <ProtectedRoute>
+                      <AddExpensePage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/expenses/:expenseId/edit" element={
+                    <ProtectedRoute>
+                      <EditExpensePage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/journal" element={
+                    <ProtectedRoute>
+                      <JournalPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/journal/add" element={
+                    <ProtectedRoute>
+                      <AddJournalEntryPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/journal/:journalId/edit" element={
+                    <ProtectedRoute>
+                      <EditJournalEntryPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/weight" element={
+                    <ProtectedRoute>
+                      <WeightTrackingPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/subscription" element={
+                    <ProtectedRoute>
+                      <SubscriptionPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/feeding-schedules" element={
+                    <ProtectedRoute>
+                      <FeedingSchedulePage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/feeding-schedules/add" element={
+                    <ProtectedRoute>
+                      <AddFeedingSchedulePage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/feeding-schedules/:scheduleId/edit" element={
+                    <ProtectedRoute>
+                      <EditFeedingSchedulePage />
+                    </ProtectedRoute>
+                  } />
 
-        {/* Buyer routes */}
-        <Route path="/buyer/login" element={<BuyerLoginPage />} />
-        <Route path="/buyer/dashboard" element={<BuyerDashboardPage />} />
-        <Route path="/buyer/user/:userId" element={<BuyerUserDetail />} />
-        <Route path="/buyer/users/:userId" element={<BuyerViewUserPage />} />
-        <Route path="/buyer/animal/:animalId" element={<BuyerViewAnimalPage />} />
-        <Route path="/buyer/link/:linkId" element={<BuyerLinkRedirect />} />
-
-        {/* Root redirect */}
-        <Route path="/" element={<RootRedirect />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </SupabaseAppProvider>
+                  {/* Buyer Routes */}
+                  <Route path="/buyer/dashboard" element={<BuyerDashboard />} />
+                  <Route path="/buyer/login" element={<BuyerLoginPage />} />
+                </Routes>
+              </div>
+              <Toaster />
+            </Router>
+          </SupabaseAppProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
-};
-
-const RootRedirect = () => {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lg">Loading...</div>
-      </div>
-    );
-  }
-
-  return user ? <Navigate to="/dashboard" replace /> : <Navigate to="/auth" replace />;
-};
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <AuthProvider>
-        <BrowserRouter>
-          <AuthenticatedApp />
-          <Toaster />
-          <Sonner />
-        </BrowserRouter>
-      </AuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+}
 
 export default App;
