@@ -10,7 +10,7 @@ const AnimalCalendar = () => {
   const navigate = useNavigate();
 
   return (
-    <Card className="w-full md:w-auto md:min-w-[280px]">
+    <Card className="w-full md:w-auto md:min-w-[320px]">
       <CardHeader className="pb-3">
         <CardTitle>Calendar</CardTitle>
         <CardDescription>Track important dates</CardDescription>
