@@ -36,9 +36,7 @@ function Calendar({
           "text-center text-muted-foreground text-xs font-semibold p-2",
         row: "",
         cell: "h-9 w-9 text-center text-sm",
-        day: cn(
-          buttonVariants({ variant: "ghost" }),
-          "h-9 w-9 flex items-center justify-center rounded-full hover:bg-accent focus:outline-none",
+        day: "h-9 w-9 flex items-center justify-center rounded-full hover:bg-accent focus:outline-none",
         ),
         day_range_end: "day-range-end",
         day_selected:
