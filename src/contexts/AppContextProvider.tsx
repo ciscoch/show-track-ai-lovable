@@ -13,10 +13,6 @@ import {
 } from "./mockData";
 import { useFeedingReminders } from "./useFeedingReminders";
 
-interface AppProviderProps {
-  children: ReactNode;
-}
-
 export const useAppProviderState = () => {
   const [animals, setAnimals] = useState<Animal[]>(mockAnimals);
   const [currentAnimal, setCurrentAnimal] = useState<Animal | null>(null);
@@ -163,10 +159,4 @@ export const useAppProviderState = () => {
     completeFeedingTime,
     refreshData
   };
-};
-
-export const AppProvider = ({ children }: AppProviderProps) => {
-  // This component is kept as a thin wrapper around the actual implementation
-  // to make testing easier
-  return children;
 };
