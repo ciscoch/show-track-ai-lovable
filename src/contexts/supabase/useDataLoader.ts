@@ -52,8 +52,8 @@ export const useDataLoader = () => {
       if (animals) {
         const transformedAnimals: Animal[] = animals.map(animal => ({
           ...animal,
-          gender: (animal.gender as "male" | "female") || undefined,
-          purpose: (animal.purpose as "breeding" | "show" | "market" | "pet" | "other") || undefined,
+          gender: (animal.gender as "male" | "female") || "male",
+          purpose: (animal.purpose as "breeding" | "show" | "market" | "pet" | "other") || "other",
           animalId: animal.id,
           birthdate: animal.birth_date,
           penNumber: animal.pen_number,
@@ -111,10 +111,35 @@ export const useDataLoader = () => {
 
       if (feedingError) throw feedingError;
       if (feedingSchedules) {
-        const transformedSchedules: FeedingSchedule[] = feedingSchedules.map(schedule => ({
-          ...schedule,
-          feeding_times: Array.isArray(schedule.feeding_times) ? schedule.feeding_times as FeedingTime[] : []
-        }));
+        const transformedSchedules: FeedingSchedule[] = feedingSchedules.map(schedule => {
+          let feedingTimes: FeedingTime[] = [];
+          
+          if (schedule.feeding_times) {
+            try {
+              // Handle the JSON conversion properly
+              const times = Array.isArray(schedule.feeding_times) 
+                ? schedule.feeding_times 
+                : JSON.parse(schedule.feeding_times as string);
+              
+              feedingTimes = times.map((time: any) => ({
+                id: time.id || `${Date.now()}-${Math.random()}`,
+                startTime: time.startTime || time.start_time || '',
+                endTime: time.endTime || time.end_time || '',
+                completed: time.completed || false,
+                lastCompleted: time.lastCompleted || time.last_completed || null,
+                locationData: time.locationData || time.location_data || null
+              }));
+            } catch (e) {
+              console.error('Error parsing feeding times:', e);
+              feedingTimes = [];
+            }
+          }
+          
+          return {
+            ...schedule,
+            feeding_times: feedingTimes
+          };
+        });
         setFeedingSchedules(transformedSchedules);
       }
 

@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "@/hooks/use-toast";
-import { useAppContext } from "@/contexts/AppContext";
 import { analyzeAnimalPhoto } from "@/services/huggingfaceService";
 import { Photo } from "@/contexts/AppContextTypes";
 import { logger } from "@/lib/logger";
@@ -16,7 +15,6 @@ export interface UploadPhotoParams {
 
 export const usePhotoUpload = () => {
   const [isUploading, setIsUploading] = useState(false);
-  const { refreshData } = useAppContext();
   
   const uploadPhoto = async ({ file, animalId, caption, tags }: UploadPhotoParams) => {
     setIsUploading(true);
@@ -72,7 +70,6 @@ export const usePhotoUpload = () => {
         });
       }
 
-      await refreshData();
       return newPhoto;
     } catch (error) {
       console.error("Upload failed:", error);

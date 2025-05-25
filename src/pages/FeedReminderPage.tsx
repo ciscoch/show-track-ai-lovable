@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { useAppContext } from "@/contexts/AppContext";
+import { useSupabaseApp } from "@/contexts/SupabaseAppContext";
 import MainLayout from "@/components/MainLayout";
 import { useFeedingRemindersCore } from "@/hooks/feeding";
 
@@ -18,7 +18,7 @@ const FeedReminderPage = () => {
     deleteFeedingSchedule, 
     completeFeedingTime,
     user
-  } = useAppContext();
+  } = useSupabaseApp();
   
   const [selectedAnimalId, setSelectedAnimalId] = useState<string>("all");
   
@@ -36,12 +36,87 @@ const FeedReminderPage = () => {
     }
   }, [selectedAnimalId]);
 
+  // Convert function signatures to match expected types
+  const handleAddFeedingSchedule = async (schedule: any) => {
+    const scheduleToAdd = {
+      ...schedule,
+      animal_id: schedule.animalId || schedule.animal_id,
+      feeding_times: schedule.feedingTimes || schedule.feeding_times,
+      reminder_enabled: schedule.reminderEnabled ?? schedule.reminder_enabled ?? true,
+      reminder_minutes_before: schedule.reminderMinutesBefore ?? schedule.reminder_minutes_before ?? 30
+    };
+    await addFeedingSchedule(scheduleToAdd);
+  };
+
+  const handleUpdateFeedingSchedule = async (schedule: any) => {
+    const scheduleToUpdate = {
+      ...schedule,
+      animal_id: schedule.animalId || schedule.animal_id,
+      feeding_times: schedule.feedingTimes || schedule.feeding_times,
+      reminder_enabled: schedule.reminderEnabled ?? schedule.reminder_enabled ?? true,
+      reminder_minutes_before: schedule.reminderMinutesBefore ?? schedule.reminder_minutes_before ?? 30
+    };
+    await updateFeedingSchedule(schedule.id, scheduleToUpdate);
+  };
+
+  const handleCompleteFeedingTime = async (scheduleId: string, timeId: string, locationData?: any) => {
+    // Find the time index
+    const schedule = feedingSchedules.find(s => s.id === scheduleId);
+    if (schedule) {
+      const timeIndex = schedule.feeding_times.findIndex(t => t.id === timeId);
+      if (timeIndex >= 0) {
+        await completeFeedingTime(scheduleId, timeIndex);
+      }
+    }
+  };
+
+  // Transform data to match expected types
+  const transformedAnimals = animals.map(animal => ({
+    ...animal,
+    gender: animal.gender || "male" as "male" | "female",
+    animalId: animal.id,
+    birthdate: animal.birth_date || animal.birthdate || "",
+    description: animal.description || "",
+    showAnimal: animal.showAnimal || false,
+    purpose: animal.purpose || "other" as "breeding" | "show" | "market" | "pet" | "other",
+    weight: animal.weight || 0,
+    penNumber: animal.pen_number || animal.penNumber,
+    breederName: animal.breeder_name || animal.breederName,
+    breed: animal.breed || "",
+    species: animal.species || "",
+    createdAt: animal.created_at || animal.createdAt || new Date().toISOString()
+  }));
+
+  const transformedSchedules = feedingSchedules.map(schedule => ({
+    ...schedule,
+    animalId: schedule.animal_id,
+    feedingTimes: schedule.feeding_times.map(time => ({
+      ...time,
+      startTime: time.startTime,
+      endTime: time.endTime,
+      completed: time.completed,
+      lastCompleted: time.lastCompleted,
+      locationData: time.locationData
+    })),
+    reminderEnabled: schedule.reminder_enabled,
+    reminderMinutesBefore: schedule.reminder_minutes_before,
+    createdAt: schedule.created_at || new Date().toISOString()
+  }));
+
+  const transformedUser = user ? {
+    ...user,
+    firstName: user.user_metadata?.first_name || "",
+    lastName: user.user_metadata?.last_name || "",
+    subscriptionLevel: "pro" as "free" | "pro" | "elite",
+    createdAt: user.created_at || new Date().toISOString()
+  } : null;
+
   return (
-    <MainLayout title="Feed Reminders" user={user}>
+    <MainLayout title="Feed Reminders" user={transformedUser}>
       <div className="space-y-8">
         {/* Header with animal selector */}
         <FeedReminderHeader 
-          animals={animals}
+          animals={transformedAnimals}
           setSelectedAnimalId={setSelectedAnimalId}
           selectedAnimalId={selectedAnimalId}
         />
@@ -49,17 +124,17 @@ const FeedReminderPage = () => {
         {/* Weather alerts section - Premium feature */}
         <WeatherFeatureSection 
           hasWeatherAccess={hasWeatherAccess}
-          user={user}
+          user={transformedUser}
         />
         
         {/* Feeding schedule management */}
         <FeedingScheduleManager
-          animals={animals}
-          feedingSchedules={feedingSchedules}
-          addFeedingSchedule={addFeedingSchedule}
-          updateFeedingSchedule={updateFeedingSchedule}
+          animals={transformedAnimals}
+          feedingSchedules={transformedSchedules}
+          addFeedingSchedule={handleAddFeedingSchedule}
+          updateFeedingSchedule={handleUpdateFeedingSchedule}
           deleteFeedingSchedule={deleteFeedingSchedule}
-          completeFeedingTime={completeFeedingTime}
+          completeFeedingTime={handleCompleteFeedingTime}
           selectedAnimalId={selectedAnimalId}
           location={location}
           hasWeatherAccess={hasWeatherAccess}

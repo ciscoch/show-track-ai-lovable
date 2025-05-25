@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User } from '@supabase/supabase-js';
 import { useAuth } from './AuthContext';
-import { Animal, WeightEntry, JournalEntry, Expense, FeedingSchedule, UserSubscription } from './AppContextTypes';
+import { Animal, WeightEntry, JournalEntry, Expense, FeedingSchedule, UserSubscription, Photo } from './AppContextTypes';
 import { SupabaseAppContextType } from './supabase/types';
 import { useDataLoader } from './supabase/useDataLoader';
 import { useAnimalOperations } from './supabase/useAnimalOperations';
@@ -62,7 +62,6 @@ export const SupabaseAppProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   const completeFeedingTime = async (scheduleId: string, timeIndex: number) => {
-    // Implementation for completing feeding time
     const schedule = feedingSchedules.find(s => s.id === scheduleId);
     if (schedule && schedule.feeding_times[timeIndex]) {
       const updatedTimes = [...schedule.feeding_times];
@@ -79,7 +78,6 @@ export const SupabaseAppProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   const refreshData = async () => {
-    // Refresh data implementation
     await loadUserData(
       user,
       setUserProfile,

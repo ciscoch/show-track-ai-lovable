@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Expense } from "@/contexts/AppContextTypes";
 import ExpensesTable from "@/components/ExpensesTable";
 import { Button } from "@/components/ui/button";
@@ -12,9 +12,15 @@ interface ExpensesTabProps {
 
 const ExpensesTab = ({ expenses, animalId }: ExpensesTabProps) => {
   const navigate = useNavigate();
+  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
 
   const handleAddExpense = () => {
     navigate(`/animal/${animalId}/add-expense`);
+  };
+
+  const handleEditExpense = (expense: Expense) => {
+    setEditingExpense(expense);
+    navigate(`/animal/${animalId}/edit-expense/${expense.id}`);
   };
 
   return (
@@ -24,7 +30,7 @@ const ExpensesTab = ({ expenses, animalId }: ExpensesTabProps) => {
         <Button onClick={handleAddExpense}>Add Expense</Button>
       </div>
       
-      <ExpensesTable expenses={expenses} animalId={animalId} />
+      <ExpensesTable expenses={expenses} onEdit={handleEditExpense} />
     </div>
   );
 };
