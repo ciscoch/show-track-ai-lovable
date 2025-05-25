@@ -3,12 +3,29 @@ import MainLayout from "@/components/MainLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAppContext } from "@/contexts/AppContext";
+import { User } from "@/types/models";
 
 const SubscriptionPage = () => {
-  const { userSubscription } = useAppContext();
+  const { userSubscription, user } = useAppContext();
+
+  const transformedUser: User = user ? {
+    ...user,
+    email: user.email || "",
+    firstName: user.user_metadata?.first_name || "",
+    lastName: user.user_metadata?.last_name || "",
+    subscriptionLevel: "pro" as "free" | "pro" | "elite",
+    createdAt: user.created_at || new Date().toISOString()
+  } : {
+    id: "",
+    email: "",
+    firstName: "",
+    lastName: "",
+    subscriptionLevel: "free" as "free" | "pro" | "elite",
+    createdAt: new Date().toISOString()
+  };
 
   return (
-    <MainLayout>
+    <MainLayout title="Subscription" user={transformedUser}>
       <div className="container mx-auto py-8">
         <Card>
           <CardHeader>
@@ -28,13 +45,6 @@ const SubscriptionPage = () => {
                   </Badge>
                 </div>
               </div>
-              
-              {userSubscription.endDate && (
-                <div>
-                  <p className="text-sm text-muted-foreground">End Date</p>
-                  <p>{new Date(userSubscription.endDate).toLocaleDateString()}</p>
-                </div>
-              )}
             </div>
           </CardContent>
         </Card>

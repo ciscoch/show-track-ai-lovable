@@ -20,7 +20,7 @@ const EditAnimal = () => {
 
   return (
     <MainLayout title="Edit Animal" user={transformedUser}>
-      <AnimalFormFields animalId={animalId} />
+      <AnimalFormFields />
     </MainLayout>
   );
 };

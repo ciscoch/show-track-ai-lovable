@@ -1,227 +1,212 @@
 
+import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { getItem } from "@/platform/storage";
+import { supabase } from "@/integrations/supabase/client";
 import BuyerLayout from "@/components/buyer/BuyerLayout";
-import { useAppContext } from "@/contexts/AppContext";
-import AnimalListCard from "@/components/buyer/AnimalListCard";
-import UpdateTimeline from "@/components/buyer/UpdateTimeline";
-import GalleryPreview from "@/components/buyer/GalleryPreview";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+
+interface JournalEntry {
+  id: string;
+  title: string;
+  content: string;
+  date: string;
+  tags: string | string[]; // Can be string or array
+  mood?: string;
+}
+
+interface WeightEntry {
+  id: string;
+  weight: number;
+  date: string;
+  notes?: string;
+}
+
+interface Animal {
+  id: string;
+  name: string;
+  species: string;
+  breed: string;
+}
 
 const BuyerViewUserPage = () => {
-  const { userId, inviteCode } = useParams();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { animals, journals, userSubscription } = useAppContext();
-  
-  // Get active tab from navigation state if available
-  const initialTab = location.state?.activeTab || "updates";
-  const [activeTab, setActiveTab] = useState(initialTab);
-  
-  const [userData, setUserData] = useState({
-    id: userId || "user1",
-    name: "John Smith",
-    email: "john@example.com",
-    location: "Texas",
-    bio: "Raising show animals for over 10 years",
-    lastActive: "2025-05-15"
-  });
-  
-  // Ensure userId is defined, use a default if not
-  const safeUserId = userId || "user1";
+  const { userId } = useParams();
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const [animals, setAnimals] = useState<Animal[]>([]);
+  const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
+  const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Check if buyer is logged in
   useEffect(() => {
-    const isLoggedIn = getItem("buyerLoggedIn") === "true";
-    if (!isLoggedIn && !inviteCode) {
-      navigate("/buyer/login");
+    const fetchUserData = async () => {
+      if (!userId) return;
+
+      try {
+        // Fetch user profile
+        const { data: profile } = await supabase
+          .from('user_profiles')
+          .select('*')
+          .eq('user_id', userId)
+          .single();
+
+        setUserProfile(profile);
+
+        // Fetch animals
+        const { data: animalsData } = await supabase
+          .from('animals')
+          .select('*')
+          .eq('user_id', userId);
+
+        setAnimals(animalsData || []);
+
+        // Fetch journal entries
+        const { data: journalsData } = await supabase
+          .from('journal_entries')
+          .select('*')
+          .eq('user_id', userId)
+          .order('date', { ascending: false });
+
+        setJournalEntries(journalsData || []);
+
+        // Fetch weight entries
+        const { data: weightsData } = await supabase
+          .from('weight_entries')
+          .select('*')
+          .eq('user_id', userId)
+          .order('date', { ascending: false });
+
+        setWeightEntries(weightsData || []);
+
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [userId]);
+
+  if (loading) {
+    return (
+      <BuyerLayout>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-lg">Loading...</div>
+        </div>
+      </BuyerLayout>
+    );
+  }
+
+  if (!userProfile) {
+    return (
+      <BuyerLayout>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-lg">User not found</div>
+        </div>
+      </BuyerLayout>
+    );
+  }
+
+  const getTagsArray = (tags: string | string[]): string[] => {
+    if (Array.isArray(tags)) {
+      return tags;
     }
-    
-    // If this is an invite code access, we would handle that here
-    if (inviteCode) {
-      // In a real app, we would validate the invite code and get the user data
-      console.log("Accessing via invite code:", inviteCode);
+    if (typeof tags === 'string') {
+      try {
+        // Try to parse as JSON array
+        const parsed = JSON.parse(tags);
+        return Array.isArray(parsed) ? parsed : [tags];
+      } catch {
+        // If not JSON, split by comma or return as single item
+        return tags.includes(',') ? tags.split(',').map(t => t.trim()) : [tags];
+      }
     }
-    
-    // Fetch user data based on userId
-    // In a real app, this would be an API call
-    if (userId === "user2") {
-      setUserData({
-        id: userId,
-        name: "Sarah Miller",
-        email: "sarah@example.com",
-        location: "Oklahoma",
-        bio: "Dedicated to raising quality show animals",
-        lastActive: "2025-05-15"
-      });
-    }
-  }, [navigate, inviteCode, userId]);
-  
-  // Get a filtered list of journals for this user
-  const userJournals = journals && journals.length > 0 
-    ? journals.slice(0, 3)
-    : [];
+    return [];
+  };
 
   return (
-    <BuyerLayout title={userData.name}>
-      <div className="container mx-auto py-8 px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="md:col-span-1">
-            <Card>
-              <CardHeader>
-                <CardTitle>User Profile</CardTitle>
-                <CardDescription>Connection details</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-center mb-4">
-                  <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center">
-                    <span className="text-2xl font-bold text-primary">
-                      {userData.name.charAt(0)}
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="text-center mb-4">
-                  <h3 className="font-bold text-xl">{userData.name}</h3>
-                  <p className="text-muted-foreground">{userData.email}</p>
-                </div>
-                
-                <div className="space-y-2 pt-2 border-t">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Location:</span>
-                    <span className="font-medium">{userData.location}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Last active:</span>
-                    <span className="font-medium">{userData.lastActive}</span>
-                  </div>
-                </div>
-                
-                <p className="text-sm">{userData.bio}</p>
-              </CardContent>
-              <CardFooter>
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => navigate("/buyer/dashboard")}
-                >
-                  Back to Dashboard
-                </Button>
-              </CardFooter>
-            </Card>
-            
-            <Card className="mt-6">
-              <CardHeader>
-                <CardTitle>Animals</CardTitle>
-                <CardDescription>
-                  View all animals owned by this user
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <AnimalListCard
-                  id="1"
-                  name="Blue Ribbon"
-                  species="Cattle"
-                  breed="Angus"
-                  onClick={() => navigate("/buyer/animal/1")}
-                />
-                <AnimalListCard
-                  id="2"
-                  name="Champion"
-                  species="Goat"
-                  breed="Boer"
-                  onClick={() => navigate("/buyer/animal/2")}
-                />
-                <AnimalListCard
-                  id="3"
-                  name="Star"
-                  species="Pig"
-                  breed="Hampshire"
-                  onClick={() => navigate("/buyer/animal/3")}
-                />
-              </CardContent>
-            </Card>
-          </div>
-          
-          <div className="md:col-span-2">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="updates">Recent Updates</TabsTrigger>
-                <TabsTrigger value="journal">Journal Entries</TabsTrigger>
-                <TabsTrigger value="gallery">Photo Gallery</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="updates" className="py-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Recent Updates</CardTitle>
-                    <CardDescription>
-                      Latest activity from {userData.name}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <UpdateTimeline userId={safeUserId} />
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              
-              <TabsContent value="journal" className="py-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Journal Entries</CardTitle>
-                    <CardDescription>
-                      Recent journal entries shared by {userData.name}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    {userJournals && userJournals.length > 0 ? (
-                      userJournals.map((entry) => (
-                        <div key={entry.id} className="py-4 border-b last:border-b-0">
-                          <div className="flex justify-between">
-                            <h3 className="font-semibold">{entry.title}</h3>
-                            <span className="text-sm text-muted-foreground">{entry.date}</span>
-                          </div>
-                          <p className="text-sm my-2 line-clamp-3">{entry.content}</p>
-                          <div className="flex flex-wrap gap-1 mt-2">
-                            {entry.tags && entry.tags.map((tag) => (
-                              <span 
-                                key={tag} 
-                                className="inline-block bg-primary/10 text-primary text-xs px-2 py-1 rounded-full"
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="text-center py-8 text-muted-foreground">
-                        No journal entries to display
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              
-              <TabsContent value="gallery" className="py-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Photo Gallery</CardTitle>
-                    <CardDescription>
-                      Photos shared by {userData.name}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <GalleryPreview userId={safeUserId} />
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
+    <BuyerLayout>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">
+              {userProfile.first_name} {userProfile.last_name}
+            </h1>
+            <p className="text-muted-foreground">{userProfile.email}</p>
           </div>
         </div>
+
+        <Tabs defaultValue="animals" className="w-full">
+          <TabsList>
+            <TabsTrigger value="animals">Animals ({animals.length})</TabsTrigger>
+            <TabsTrigger value="journal">Journal ({journalEntries.length})</TabsTrigger>
+            <TabsTrigger value="weights">Weights ({weightEntries.length})</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="animals" className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {animals.map((animal) => (
+                <Card key={animal.id}>
+                  <CardHeader>
+                    <CardTitle>{animal.name}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p><strong>Species:</strong> {animal.species}</p>
+                    <p><strong>Breed:</strong> {animal.breed}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="journal" className="space-y-4">
+            {journalEntries.map((entry) => (
+              <Card key={entry.id}>
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    {entry.title}
+                    <span className="text-sm text-muted-foreground">
+                      {new Date(entry.date).toLocaleDateString()}
+                    </span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="mb-2">{entry.content}</p>
+                  {entry.tags && (
+                    <div className="flex flex-wrap gap-1">
+                      {getTagsArray(entry.tags).map((tag, index) => (
+                        <Badge key={index} variant="secondary" className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </TabsContent>
+
+          <TabsContent value="weights" className="space-y-4">
+            {weightEntries.map((entry) => (
+              <Card key={entry.id}>
+                <CardContent className="pt-6">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="font-semibold">{entry.weight} lbs</p>
+                      <p className="text-sm text-muted-foreground">
+                        {new Date(entry.date).toLocaleDateString()}
+                      </p>
+                    </div>
+                    {entry.notes && (
+                      <p className="text-sm">{entry.notes}</p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </TabsContent>
+        </Tabs>
       </div>
     </BuyerLayout>
   );

@@ -55,13 +55,9 @@ const Index = () => {
       <div className="space-y-8">
         <WelcomeMessage 
           user={transformedUser}
-          animalCount={transformedAnimals.length}
-          isNewUser={isNewUser}
         />
         
-        <QuickAccessSection 
-          user={transformedUser}
-        />
+        <QuickAccessSection />
         
         <PhotoGallery photos={[]} />
       </div>

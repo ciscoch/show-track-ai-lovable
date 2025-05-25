@@ -18,6 +18,7 @@ import {
 import WeightChart from "@/components/WeightChart";
 import AddWeightForm from "@/components/AddWeightForm";
 import PremiumFeatureBanner from "@/components/PremiumFeatureBanner";
+import { WeightEntry, User } from "@/types/models";
 
 const WeightTrackingPage = () => {
   const { animals, weights, userSubscription, user } = useAppContext();
@@ -26,7 +27,13 @@ const WeightTrackingPage = () => {
   const [analysisResult, setAnalysisResult] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   
-  const animalWeights = weights.filter(w => w.animalId === selectedAnimalId)
+  // Transform weights to match expected types
+  const transformedWeights: WeightEntry[] = weights.map(weight => ({
+    ...weight,
+    animalId: weight.animal_id || weight.animalId || ""
+  }));
+  
+  const animalWeights = transformedWeights.filter(w => w.animalId === selectedAnimalId)
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     
   const latestWeight = animalWeights.length > 0 
@@ -109,9 +116,25 @@ const WeightTrackingPage = () => {
   
   // Check if user has Elite access
   const hasEliteAccess = userSubscription.level === 'elite';
+
+  const transformedUser: User = user ? {
+    ...user,
+    email: user.email || "",
+    firstName: user.user_metadata?.first_name || "",
+    lastName: user.user_metadata?.last_name || "",
+    subscriptionLevel: "pro" as "free" | "pro" | "elite",
+    createdAt: user.created_at || new Date().toISOString()
+  } : {
+    id: "",
+    email: "",
+    firstName: "",
+    lastName: "",
+    subscriptionLevel: "free" as "free" | "pro" | "elite",
+    createdAt: new Date().toISOString()
+  };
   
   return (
-    <MainLayout title="Weight Tracking" user={user}>
+    <MainLayout title="Weight Tracking" user={transformedUser}>
       <Tabs defaultValue="overview" className="w-full mt-8">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -194,7 +217,7 @@ const WeightTrackingPage = () => {
             </CardHeader>
             <CardContent>
               <WeightChart 
-                weights={weights} 
+                weights={transformedWeights} 
                 animalId={selectedAnimalId} 
                 targetWeight={targetWeight()}
                 showFullHistory={true}
@@ -249,7 +272,7 @@ const WeightTrackingPage = () => {
                 </CardHeader>
                 <CardContent>
                   <WeightChart 
-                    weights={weights} 
+                    weights={transformedWeights} 
                     animalId={animal.id}
                   />
                   <div className="mt-4 text-center">

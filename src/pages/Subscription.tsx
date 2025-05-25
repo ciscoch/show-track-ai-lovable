@@ -1,3 +1,4 @@
+
 import { useAppContext } from "@/contexts/AppContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,12 +9,29 @@ import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { ArrowLeftIcon, CheckIcon, XIcon, ZapIcon, LineChartIcon, Camera, BarChart3Icon, BookOpenCheckIcon } from "lucide-react";
 import SubscriptionFeatureCard from "@/components/SubscriptionFeatureCard";
+import { User } from "@/types/models";
 
 const Subscription = () => {
   const { user, userSubscription } = useAppContext();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  
+  const transformedUser: User = user ? {
+    ...user,
+    email: user.email || "",
+    firstName: user.user_metadata?.first_name || "",
+    lastName: user.user_metadata?.last_name || "",
+    subscriptionLevel: "pro" as "free" | "pro" | "elite",
+    createdAt: user.created_at || new Date().toISOString()
+  } : {
+    id: "",
+    email: "",
+    firstName: "",
+    lastName: "",
+    subscriptionLevel: "free" as "free" | "pro" | "elite",
+    createdAt: new Date().toISOString()
+  };
   
   const proTierHighlightedFeatures = [
     "AI weight estimation",
@@ -114,13 +132,13 @@ const Subscription = () => {
         </div>
         
         <Badge className={`py-1 px-3 ${
-          user?.subscriptionLevel === 'elite' 
+          transformedUser?.subscriptionLevel === 'elite' 
             ? 'bg-primary' 
-            : user?.subscriptionLevel === 'pro' 
+            : transformedUser?.subscriptionLevel === 'pro' 
               ? 'bg-accent' 
               : 'bg-gray-600'
         }`}>
-          Current: {user?.subscriptionLevel.charAt(0).toUpperCase() + user?.subscriptionLevel.slice(1)} Plan
+          Current: {transformedUser?.subscriptionLevel?.charAt(0).toUpperCase() + transformedUser?.subscriptionLevel?.slice(1)} Plan
         </Badge>
       </div>
       
@@ -140,13 +158,13 @@ const Subscription = () => {
                 description={plan.description}
                 features={plan.features}
                 tier={plan.id as 'free' | 'pro' | 'elite'}
-                isCurrentPlan={user?.subscriptionLevel === plan.id}
+                isCurrentPlan={transformedUser?.subscriptionLevel === plan.id}
                 onSelect={() => handleUpgradeClick(plan.id)}
-                buttonText={user?.subscriptionLevel === 'free'
+                buttonText={transformedUser?.subscriptionLevel === 'free'
                   ? `Upgrade to ${plan.title}`
-                  : user?.subscriptionLevel === 'pro' && plan.id === 'elite'
+                  : transformedUser?.subscriptionLevel === 'pro' && plan.id === 'elite'
                     ? 'Upgrade to Elite'
-                    : user?.subscriptionLevel === 'elite' && plan.id !== 'elite'
+                    : transformedUser?.subscriptionLevel === 'elite' && plan.id !== 'elite'
                       ? 'Downgrade to ' + plan.title
                       : 'Select Plan'}
                 highlightedFeatures={plan.id === 'pro' ? proTierHighlightedFeatures : plan.id === 'elite' ? eliteTierHighlightedFeatures : []}

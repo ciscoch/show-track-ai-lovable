@@ -11,6 +11,7 @@ import { useSchedule } from "@/hooks/schedule/useSchedule";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ShowEvent } from "@/types/schedule";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Animal, User } from "@/types/models";
 
 const SchedulePage = () => {
   const { animals, userSubscription, user } = useAppContext();
@@ -33,6 +34,42 @@ const SchedulePage = () => {
   const [eventToDelete, setEventToDelete] = useState<ShowEvent | null>(null);
   
   const isProOrElite = userSubscription.level === "pro" || userSubscription.level === "elite";
+
+  // Transform animals to match expected types
+  const transformedAnimals: Animal[] = animals.map(animal => ({
+    ...animal,
+    gender: (animal.gender || "male") as "male" | "female",
+    animalId: animal.id,
+    birthdate: animal.birth_date || animal.birthdate || "",
+    description: animal.description || "",
+    showAnimal: animal.showAnimal || false,
+    purpose: (animal.purpose || "other") as "breeding" | "show" | "market" | "pet" | "other",
+    weight: animal.weight || 0,
+    penNumber: animal.pen_number || animal.penNumber,
+    breederName: animal.breeder_name || animal.breeder_name,
+    breed: animal.breed || "",
+    species: animal.species || "",
+    createdAt: animal.created_at || animal.created_at || new Date().toISOString(),
+    organization: typeof animal.organization === 'string' 
+      ? { id: animal.organization, name: animal.organization }
+      : undefined
+  }));
+
+  const transformedUser: User = user ? {
+    ...user,
+    email: user.email || "",
+    firstName: user.user_metadata?.first_name || "",
+    lastName: user.user_metadata?.last_name || "",
+    subscriptionLevel: "pro" as "free" | "pro" | "elite",
+    createdAt: user.created_at || new Date().toISOString()
+  } : {
+    id: "",
+    email: "",
+    firstName: "",
+    lastName: "",
+    subscriptionLevel: "free" as "free" | "pro" | "elite",
+    createdAt: new Date().toISOString()
+  };
   
   const handleOpenTimeline = (event: ShowEvent) => {
     setSelectedEvent(event);
@@ -72,7 +109,7 @@ const SchedulePage = () => {
   };
   
   return (
-    <MainLayout title="Show Schedule" user={user}>
+    <MainLayout title="Show Schedule" user={transformedUser}>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <div className="lg:col-span-2">
           <ScheduleControls 
@@ -84,7 +121,7 @@ const SchedulePage = () => {
           <ScheduleListView
             todayEvents={todayEvents}
             upcomingEvents={upcomingEvents}
-            animals={animals}
+            animals={transformedAnimals}
             getCategoryColor={getCategoryColor}
             isProOrElite={isProOrElite}
             handleUpgrade={handleUpgrade}
@@ -112,7 +149,7 @@ const SchedulePage = () => {
           {selectedEvent && (
             <PrepTimeline 
               event={selectedEvent}
-              animals={animals}
+              animals={transformedAnimals}
               onSaveTimeline={saveEventTimeline}
             />
           )}
@@ -124,7 +161,7 @@ const SchedulePage = () => {
         open={showEventFormDialog}
         onOpenChange={setShowEventFormDialog}
         onSave={saveEvent}
-        animals={animals}
+        animals={transformedAnimals}
         event={eventToEdit}
       />
 
