@@ -12,7 +12,7 @@ const AddExpensePage = () => {
   };
 
   return (
-    <MainLayout>
+    <MainLayout title="Add Expense">
       <div className="container mx-auto py-8">
         <Card>
           <CardHeader>

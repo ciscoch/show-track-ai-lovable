@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 const FeedingSchedulePage = () => {
   return (
-    <MainLayout>
+    <MainLayout title="Feeding Schedules">
       <div className="container mx-auto py-8">
         <Card>
           <CardHeader>

@@ -12,7 +12,7 @@ const AddJournalEntryPage = () => {
   };
 
   return (
-    <MainLayout>
+    <MainLayout title="Add Journal Entry">
       <div className="container mx-auto py-8">
         <Card>
           <CardHeader>

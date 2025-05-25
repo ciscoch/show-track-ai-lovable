@@ -1,116 +1,106 @@
 
-import { User } from '@supabase/supabase-js';
+import { User as SupabaseUser } from '@supabase/supabase-js';
 
 export interface Animal {
   id: string;
   name: string;
   species: string;
-  breed?: string;
-  breeder_name?: string;
-  gender?: string;
+  breed: string; // Make this required to match models.ts
   birth_date?: string;
-  birthdate?: string; // Add for backward compatibility
-  weight?: number;
-  ai_score?: number;
-  image?: string;
-  description?: string;
-  show_animal?: boolean;
-  showAnimal?: boolean; // Add for backward compatibility
-  purpose?: string;
   pen_number?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  organization?: string;
+  notes?: string;
+  user_id: string;
+  created_at?: string;
+  updated_at?: string;
+  breeder_id?: string;
+  photo_url?: string;
+  target_weight?: number;
+  current_weight?: number;
 }
 
 export interface WeightEntry {
   id: string;
   animal_id: string;
-  date: string;
   weight: number;
+  date: string;
   notes?: string;
+  created_at?: string;
 }
 
 export interface JournalEntry {
   id: string;
   animal_id: string;
-  date: string;
   title: string;
-  content?: string;
-  tags?: string[];
+  content: string;
+  date: string;
   mood?: string;
+  tags?: string;
+  photos?: string[];
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface Expense {
   id: string;
-  animal_id: string;
-  date: string;
-  description: string;
+  animal_id: string; // Match the models.ts field name
   amount: number;
-  category?: string;
-  tax_deductible?: boolean;
-}
-
-export interface FeedingTime {
-  id: string;
-  time: string;
-  amount: string;
-  feedType: string;
-}
-
-export interface FeedingSchedule {
-  id: string;
-  animal_id: string;
-  name: string;
-  feeding_times: FeedingTime[];
-  reminder_enabled?: boolean;
-  reminder_minutes_before?: number;
+  description: string;
+  date: string;
+  category: string;
+  tax_deductible?: boolean; // Match the models.ts field name
+  created_at?: string;
 }
 
 export interface Photo {
   id: string;
-  animal_id: string;
+  animal_id: string; // Match the models.ts field name
   url: string;
+  filename: string;
   caption?: string;
-  tags?: string[];
-  created_at: string;
-  title?: string;
-  date?: string;
-  likes?: number;
-  likedByUser?: boolean;
-  comments?: Comment[];
-  analysisResult?: any;
+  created_at?: string;
+  ai_analysis?: string;
 }
 
-export interface Comment {
+export interface FeedingSchedule {
   id: string;
-  photoId: string;
-  userId: string;
-  userName: string;
-  content: string;
-  createdAt: string;
+  animal_id: string; // Match the models.ts field name
+  feeding_times: string[]; // Match the models.ts field name
+  reminder_enabled: boolean;
+  reminder_minutes_before: number;
+  created_at?: string;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  subscriptionLevel?: string;
+  createdAt?: string;
 }
 
 export interface UserSubscription {
-  level: 'free' | 'pro' | 'elite';
-  endDate?: string;
+  level: 'basic' | 'pro' | 'elite';
   isActive: boolean;
 }
 
 export interface SupabaseAppContextType {
-  user: User | null;
-  userProfile: any;
-  userSubscription: UserSubscription;
+  // Data
   animals: Animal[];
   weightEntries: WeightEntry[];
   journalEntries: JournalEntry[];
   expenses: Expense[];
+  photos: Photo[];
   feedingSchedules: FeedingSchedule[];
-  loading: boolean;
-  error: string | null;
-  setUser: (user: User | null) => void;
+  user: SupabaseUser | null;
+  userSubscription: UserSubscription;
+  
+  // Loading states
+  isLoading: boolean;
   
   // Animal operations
-  addAnimal: (animal: Omit<Animal, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
+  addAnimal: (animal: Omit<Animal, 'id'>) => Promise<void>;
   updateAnimal: (id: string, updates: Partial<Animal>) => Promise<void>;
   deleteAnimal: (id: string) => Promise<void>;
   
@@ -125,12 +115,21 @@ export interface SupabaseAppContextType {
   deleteJournalEntry: (id: string) => Promise<void>;
   
   // Expense operations
-  addExpense: (expense: Omit<Expense, 'id'>) => Promise<void>;
-  updateExpense: (id: string, updates: Partial<Expense>) => Promise<void>;
-  deleteExpense: (id: string) => Promise<void>;
+  addExpenseEntry: (expense: Omit<Expense, 'id'>) => Promise<void>;
+  updateExpenseEntry: (id: string, updates: Partial<Expense>) => Promise<void>;
+  deleteExpenseEntry: (id: string) => Promise<void>;
   
-  // Feeding schedule operations
+  // Photo operations
+  addPhoto: (photo: Omit<Photo, 'id'>) => Promise<void>;
+  updatePhoto: (id: string, updates: Partial<Photo>) => Promise<void>;
+  deletePhoto: (id: string) => Promise<void>;
+  
+  // Feeding operations
   addFeedingSchedule: (schedule: Omit<FeedingSchedule, 'id'>) => Promise<void>;
   updateFeedingSchedule: (id: string, updates: Partial<FeedingSchedule>) => Promise<void>;
   deleteFeedingSchedule: (id: string) => Promise<void>;
+  completeFeedingTime: (scheduleId: string, timeIndex: number) => Promise<void>;
+  
+  // Utility
+  refreshData: () => Promise<void>;
 }
