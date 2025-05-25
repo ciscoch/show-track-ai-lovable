@@ -116,6 +116,9 @@ export const SupabaseAppProvider: React.FC<{ children: React.ReactNode }> = ({ c
     ...feedingOps,
     completeFeedingTime,
     refreshData,
+    // Add aliases for backward compatibility
+    weights: weightEntries,
+    journals: journalEntries,
   };
 
   return (

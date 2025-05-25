@@ -41,10 +41,10 @@ const AddFeedingSchedulePage = () => {
     breed: animal.breed || "",
     species: animal.species || "",
     createdAt: animal.created_at || new Date().toISOString(),
-    // Fix organization handling
-    organization: animal.organization && typeof animal.organization === 'string' 
+    // Fix organization handling - ensure it's always an object or undefined
+    organization: typeof animal.organization === 'string' 
       ? { id: animal.organization, name: animal.organization }
-      : animal.organization || undefined
+      : undefined
   }));
 
   const transformedUser: User = user ? {

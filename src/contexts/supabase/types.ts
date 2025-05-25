@@ -50,6 +50,10 @@ export interface SupabaseContextActions {
   deleteFeedingSchedule: (id: string) => Promise<void>;
   completeFeedingTime: (scheduleId: string, timeIndex: number) => Promise<void>;
   
+  // Additional operations needed by the app
+  weights: WeightEntry[];
+  journals: JournalEntry[];
+  
   // Utility
   refreshData: () => Promise<void>;
 }
