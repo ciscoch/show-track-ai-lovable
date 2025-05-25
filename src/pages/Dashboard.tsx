@@ -6,7 +6,6 @@ import { DraggableContainer, DraggableItem } from "@/components/ui/draggable-con
 import QuickAccessSection from "@/components/QuickAccessSection";
 import UserActivityFeed from "@/components/buyer/UserActivityFeed";
 import AnimalCalendar from "@/components/animal-details/AnimalCalendar";
-import { useToast } from "@/hooks/use-toast";
 
 // Mock data for dashboard
 const recentUpdates = [
@@ -47,10 +46,9 @@ const recentUpdates = [
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
   
-  // Create draggable items from dashboard sections
-  const [dashboardItems, setDashboardItems] = useState<DraggableItem[]>([
+  // Create dashboard items
+  const [dashboardItems] = useState<DraggableItem[]>([
     {
       id: "recent-activity",
       content: (
@@ -129,25 +127,16 @@ const Dashboard = () => {
     }
   ]);
 
-  const handleReorder = (newItems: DraggableItem[]) => {
-    setDashboardItems(newItems);
-    toast({
-      title: "Dashboard updated",
-      description: "Your dashboard layout has been saved.",
-    });
-  };
-
   return (
     <div className="container max-w-7xl mx-auto py-8 px-4 space-y-6">
       <h1 className="text-3xl font-bold">Dashboard</h1>
       <p className="text-muted-foreground pb-4">
-        Drag and drop dashboard widgets to customize your layout.
+        Your livestock management overview.
       </p>
       
-      {/* Draggable Dashboard Items */}
+      {/* Dashboard Items */}
       <DraggableContainer 
         items={dashboardItems} 
-        onReorder={handleReorder}
         className="pb-8"
       />
       
