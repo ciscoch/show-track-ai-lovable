@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { navigate } from "@/platform/navigation";
 import { useAppContext } from "@/contexts/AppContext";
@@ -294,7 +295,7 @@ const WeightTrackingPage = () => {
               title="Advanced Weight Trend Analysis" 
               description="Upgrade to access advanced weight trend analysis, including growth projections and comparison to breed standards."
               requiredLevel="pro"
-              currentLevel={userSubscription.level}
+              currentLevel={userSubscription.level === "basic" ? "free" : userSubscription.level}
               onUpgrade={handleUpgrade}
             />
           ) : (
@@ -318,7 +319,7 @@ const WeightTrackingPage = () => {
               title="AI Weight Estimation & Analysis" 
               description="Upload photos of your animal and our AI will estimate weight and body composition."
               requiredLevel="elite"
-              currentLevel={userSubscription.level}
+              currentLevel={userSubscription.level === "basic" ? "free" : userSubscription.level}
               onUpgrade={handleUpgrade}
             />
           ) : (

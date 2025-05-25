@@ -19,7 +19,7 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const result = await signIn(email, password);
+      const result = await signIn(email, password) as { user?: any; error?: any };
       
       if (result?.error) {
         toast({

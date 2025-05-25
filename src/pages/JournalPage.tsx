@@ -124,6 +124,8 @@ const JournalPage = () => {
               <TagsInput
                 value={selectedTags}
                 onChange={setSelectedTags}
+                suggestions={allTags}
+                placeholder="Filter by tags..."
               />
             </div>
           </CardContent>
@@ -151,7 +153,8 @@ const JournalPage = () => {
                     animalId: entry.animal_id,
                     tags: typeof entry.tags === 'string' 
                       ? entry.tags.split(',').filter(tag => tag.trim())
-                      : (entry.tags || [])
+                      : (entry.tags || []),
+                    mood: (entry.mood as "positive" | "neutral" | "negative") || "neutral"
                   }}
                   animalName={animal?.name || "Unknown Animal"}
                 />
