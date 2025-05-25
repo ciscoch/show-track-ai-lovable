@@ -1,1 +1,5 @@
+
 project_id = "qmvbsrivanucfpfjchpw"
+
+[functions.dynamic-worker]
+verify_jwt = false
