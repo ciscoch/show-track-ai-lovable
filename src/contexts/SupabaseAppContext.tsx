@@ -31,8 +31,7 @@ export const SupabaseAppProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [feedingSchedules, setFeedingSchedules] = useState<FeedingSchedule[]>([]);
 
   const userSubscription: UserSubscription = {
-    level: userProfile?.subscription_level || 'free',
-    endDate: userProfile?.subscription_end_date,
+    level: userProfile?.subscription_level || 'pro',
     isActive: true
   };
 
@@ -77,7 +76,10 @@ export const SupabaseAppProvider: React.FC<{ children: React.ReactNode }> = ({ c
     ...animalOps,
     ...weightOps,
     ...journalOps,
-    ...expenseOps,
+    // Map expense operations to match interface
+    addExpenseEntry: expenseOps.addExpense,
+    updateExpenseEntry: expenseOps.updateExpense,
+    deleteExpenseEntry: expenseOps.deleteExpense,
     ...feedingOps,
   };
 

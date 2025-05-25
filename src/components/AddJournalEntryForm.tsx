@@ -90,7 +90,7 @@ const AddJournalEntryForm = ({ initialAnimalId, onSuccess }: AddJournalEntryForm
         date: format(values.date, "yyyy-MM-dd"),
         title: values.title,
         content: values.content,
-        tags: values.tags,
+        tags: values.tags.join(','), // Convert array to string
         mood: values.mood,
       };
       

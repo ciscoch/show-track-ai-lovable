@@ -15,7 +15,7 @@ export const useFeedingOperations = (
       .insert({
         user_id: user.id,
         animal_id: scheduleData.animal_id,
-        name: scheduleData.name,
+        name: scheduleData.name || 'Default Schedule',
         feeding_times: scheduleData.feeding_times as any,
         reminder_enabled: scheduleData.reminder_enabled,
         reminder_minutes_before: scheduleData.reminder_minutes_before

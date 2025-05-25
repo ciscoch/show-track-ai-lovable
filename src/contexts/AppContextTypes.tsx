@@ -5,7 +5,7 @@ export interface Animal {
   id: string;
   name: string;
   species: string;
-  breed: string; // Make this required to match models.ts
+  breed: string;
   birth_date?: string;
   pen_number?: string;
   organization?: string;
@@ -17,6 +17,20 @@ export interface Animal {
   photo_url?: string;
   target_weight?: number;
   current_weight?: number;
+  // Additional fields from models.ts for compatibility
+  gender?: "male" | "female";
+  birthdate?: string;
+  description?: string;
+  showAnimal?: boolean;
+  purpose?: "breeding" | "show" | "market" | "pet" | "other";
+  weight?: number;
+  aiScore?: number;
+  tagNumber?: string;
+  penNumber?: string;
+  purchaseDate?: string;
+  imageUrl?: string;
+  image?: string;
+  breeder_name?: string;
 }
 
 export interface WeightEntry {
@@ -35,7 +49,7 @@ export interface JournalEntry {
   content: string;
   date: string;
   mood?: string;
-  tags?: string;
+  tags?: string; // Changed from string[] to string to match database
   photos?: string[];
   created_at?: string;
   updated_at?: string;
@@ -43,29 +57,60 @@ export interface JournalEntry {
 
 export interface Expense {
   id: string;
-  animal_id: string; // Match the models.ts field name
+  animal_id: string;
   amount: number;
   description: string;
   date: string;
   category: string;
-  tax_deductible?: boolean; // Match the models.ts field name
+  tax_deductible?: boolean;
   created_at?: string;
+}
+
+export interface Comment {
+  id: string;
+  photoId: string;
+  userId: string;
+  userName: string;
+  content: string;
+  createdAt: string;
 }
 
 export interface Photo {
   id: string;
-  animal_id: string; // Match the models.ts field name
+  animal_id: string;
   url: string;
   filename: string;
   caption?: string;
   created_at?: string;
   ai_analysis?: string;
+  // Additional fields for UI features
+  title?: string;
+  date?: string;
+  tags?: string[];
+  likes?: number;
+  comments?: Comment[];
+  likedByUser?: boolean;
+  analysisResult?: string;
+}
+
+export interface FeedingTime {
+  id: string;
+  startTime: string;
+  endTime: string;
+  completed: boolean;
+  lastCompleted: string | null;
+  locationData?: {
+    latitude: number;
+    longitude: number;
+    timestamp: string;
+  } | null;
 }
 
 export interface FeedingSchedule {
   id: string;
-  animal_id: string; // Match the models.ts field name
-  feeding_times: string[]; // Match the models.ts field name
+  animal_id: string;
+  feeding_times: FeedingTime[];
+  name?: string;
   reminder_enabled: boolean;
   reminder_minutes_before: number;
   created_at?: string;
@@ -114,7 +159,7 @@ export interface SupabaseAppContextType {
   updateJournalEntry: (id: string, updates: Partial<JournalEntry>) => Promise<void>;
   deleteJournalEntry: (id: string) => Promise<void>;
   
-  // Expense operations
+  // Expense operations - Fixed method name
   addExpenseEntry: (expense: Omit<Expense, 'id'>) => Promise<void>;
   updateExpenseEntry: (id: string, updates: Partial<Expense>) => Promise<void>;
   deleteExpenseEntry: (id: string) => Promise<void>;

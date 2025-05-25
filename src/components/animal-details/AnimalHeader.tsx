@@ -27,8 +27,8 @@ const AnimalHeader = ({ animal }: AnimalHeaderProps) => {
     navigate('/dashboard');
   };
 
-  const handleAnimalUpdate = (updatedAnimal: Animal) => {
-    updateAnimal(updatedAnimal);
+  const handleAnimalUpdate = async (updatedAnimal: Animal) => {
+    await updateAnimal(updatedAnimal.id, updatedAnimal);
   };
 
   return (

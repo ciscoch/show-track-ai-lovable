@@ -12,18 +12,27 @@ export const useJournalOperations = (
     if (!user) return;
 
     try {
+      // Convert tags from string to array if needed for database
+      const processedEntry = {
+        ...entryData,
+        user_id: user.id,
+        tags: typeof entryData.tags === 'string' ? entryData.tags.split(',').filter(tag => tag.trim()) : entryData.tags
+      };
+
       const { data, error } = await supabase
         .from('journal_entries')
-        .insert({
-          ...entryData,
-          user_id: user.id
-        })
+        .insert(processedEntry)
         .select()
         .single();
 
       if (error) throw error;
       if (data) {
-        setJournalEntries(prev => [data, ...prev]);
+        // Convert tags back to string for UI compatibility
+        const processedData = {
+          ...data,
+          tags: Array.isArray(data.tags) ? data.tags.join(',') : data.tags
+        };
+        setJournalEntries(prev => [processedData, ...prev]);
       }
     } catch (error: any) {
       setError(error.message);
@@ -33,16 +42,26 @@ export const useJournalOperations = (
 
   const updateJournalEntry = useCallback(async (id: string, updates: Partial<JournalEntry>) => {
     try {
+      // Convert tags to array if needed
+      const processedUpdates = {
+        ...updates,
+        tags: typeof updates.tags === 'string' ? updates.tags.split(',').filter(tag => tag.trim()) : updates.tags
+      };
+
       const { data, error } = await supabase
         .from('journal_entries')
-        .update(updates)
+        .update(processedUpdates)
         .eq('id', id)
         .select()
         .single();
 
       if (error) throw error;
       if (data) {
-        setJournalEntries(prev => prev.map(entry => entry.id === id ? data : entry));
+        const processedData = {
+          ...data,
+          tags: Array.isArray(data.tags) ? data.tags.join(',') : data.tags
+        };
+        setJournalEntries(prev => prev.map(entry => entry.id === id ? processedData : entry));
       }
     } catch (error: any) {
       setError(error.message);

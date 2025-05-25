@@ -66,7 +66,7 @@ export const useDataLoader = () => {
       if (weightError) throw weightError;
       setWeightEntries(weightData || []);
 
-      // Load journal entries
+      // Load journal entries - handle tags conversion
       const { data: journalData, error: journalError } = await supabase
         .from('journal_entries')
         .select('*')
@@ -74,7 +74,14 @@ export const useDataLoader = () => {
         .order('date', { ascending: false });
       
       if (journalError) throw journalError;
-      setJournalEntries(journalData || []);
+      
+      // Convert tags from array to string for compatibility
+      const processedJournalData = (journalData || []).map(entry => ({
+        ...entry,
+        tags: Array.isArray(entry.tags) ? entry.tags.join(',') : entry.tags
+      }));
+      
+      setJournalEntries(processedJournalData);
 
       // Load expenses
       const { data: expensesData, error: expensesError } = await supabase

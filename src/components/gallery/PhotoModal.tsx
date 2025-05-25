@@ -1,14 +1,10 @@
 
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { XIcon, ThumbsUp } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { CommentSection, Comment } from "./CommentSection";
-import { Photo } from "@/contexts/AppContextTypes";
+import { Badge } from "@/components/ui/badge";
+import { Heart, X, Camera } from "lucide-react";
+import { Photo, Comment } from "@/contexts/AppContextTypes";
+import CommentSection from "./CommentSection";
 
 interface PhotoModalProps {
   photo: Photo | null;
@@ -18,85 +14,80 @@ interface PhotoModalProps {
   onAddComment: (comment: Comment) => void;
 }
 
-export const PhotoModal = ({ 
-  photo, 
-  isOpen, 
-  onClose, 
-  onLike,
-  onAddComment 
-}: PhotoModalProps) => {
+export const PhotoModal = ({ photo, isOpen, onClose, onLike, onAddComment }: PhotoModalProps) => {
   if (!photo) return null;
-  
+
+  const handleLike = () => {
+    onLike(photo);
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex justify-between items-center">
-            <span>{photo.caption || photo.title || "Photo Details"}</span>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={onClose}
-            >
-              <XIcon className="h-4 w-4" />
-            </Button>
-          </DialogTitle>
-        </DialogHeader>
-        
-        <div className="flex flex-col space-y-4">
-          <div className="relative max-h-[50vh] overflow-hidden rounded-md">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden p-0">
+        <div className="flex flex-col md:flex-row h-full">
+          {/* Image Section */}
+          <div className="flex-1 bg-black flex items-center justify-center">
             <img 
               src={photo.url} 
               alt={photo.caption || photo.title || "Animal photo"} 
-              className="w-full h-full object-contain"
+              className="max-w-full max-h-[60vh] md:max-h-[80vh] object-contain"
             />
           </div>
-          
-          <div className="space-y-4">
+
+          {/* Info Section */}
+          <div className="w-full md:w-80 p-6 space-y-4 overflow-y-auto">
             <div className="flex items-center justify-between">
-              <p className="text-sm">
-                <span className="font-medium">Date:</span>{" "}
-                {photo.date ? new Date(photo.date).toLocaleDateString() : "Unknown"}
-              </p>
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={photo.likedByUser ? "text-primary" : ""}
-                  onClick={() => onLike(photo)}
-                >
-                  <ThumbsUp className="h-4 w-4 mr-2" />
-                  {photo.likes || 0} Likes
-                </Button>
-              </div>
+              <h3 className="text-lg font-semibold">
+                {photo.caption || photo.title || "Photo"}
+              </h3>
+              <Button variant="ghost" size="sm" onClick={onClose}>
+                <X className="h-4 w-4" />
+              </Button>
             </div>
-            
+
+            {(photo.created_at || photo.date) && (
+              <p className="text-sm text-muted-foreground">
+                {photo.created_at || photo.date}
+              </p>
+            )}
+
+            <div className="flex items-center gap-2">
+              <Button
+                variant={photo.likedByUser ? "default" : "outline"}
+                size="sm"
+                onClick={handleLike}
+                className="flex items-center gap-1"
+              >
+                <Heart className="h-4 w-4" />
+                {photo.likes || 0}
+              </Button>
+            </div>
+
             {photo.tags && photo.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {photo.tags.map((tag, index) => (
-                  <span
-                    key={index}
-                    className="px-2 py-1 bg-secondary text-secondary-foreground rounded-full text-xs"
-                  >
-                    {tag}
-                  </span>
-                ))}
+              <div className="space-y-2">
+                <p className="text-sm font-medium">Tags</p>
+                <div className="flex flex-wrap gap-1">
+                  {photo.tags.map((tag, index) => (
+                    <Badge key={index} variant="secondary" className="text-xs">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
               </div>
             )}
 
             {photo.analysisResult && (
-              <p className="text-sm text-muted-foreground">
-                {photo.analysisResult}
-              </p>
+              <div className="space-y-2">
+                <p className="text-sm font-medium">AI Analysis</p>
+                <p className="text-sm text-muted-foreground">{photo.analysisResult}</p>
+              </div>
             )}
-            
-            <div className="border-t pt-4 mt-4">
-              <CommentSection 
-                photoId={photo.id}
-                comments={photo.comments || []}
-                onAddComment={onAddComment}
-              />
-            </div>
+
+            <CommentSection
+              comments={photo.comments || []}
+              onAddComment={onAddComment}
+              photoId={photo.id}
+            />
           </div>
         </div>
       </DialogContent>

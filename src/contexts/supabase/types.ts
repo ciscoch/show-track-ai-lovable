@@ -33,10 +33,10 @@ export interface SupabaseContextActions {
   updateJournalEntry: (id: string, updates: Partial<JournalEntry>) => Promise<void>;
   deleteJournalEntry: (id: string) => Promise<void>;
   
-  // Expense operations
-  addExpense: (expense: Omit<Expense, 'id'>) => Promise<void>;
-  updateExpense: (id: string, updates: Partial<Expense>) => Promise<void>;
-  deleteExpense: (id: string) => Promise<void>;
+  // Expense operations - Fixed to match context interface
+  addExpenseEntry: (expense: Omit<Expense, 'id'>) => Promise<void>;
+  updateExpenseEntry: (id: string, updates: Partial<Expense>) => Promise<void>;
+  deleteExpenseEntry: (id: string) => Promise<void>;
   
   // Feeding schedule operations
   addFeedingSchedule: (schedule: Omit<FeedingSchedule, 'id'>) => Promise<void>;
