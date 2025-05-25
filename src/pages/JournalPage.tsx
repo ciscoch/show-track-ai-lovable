@@ -1,170 +1,168 @@
 
-import { useState } from "react";
-import { navigate } from "@/platform/navigation";
-import { useAppContext } from "@/contexts/AppContext";
+import React, { useState } from "react";
+import { useSupabaseApp } from "@/contexts/SupabaseAppContext";
 import MainLayout from "@/components/MainLayout";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { SearchIcon, FilterIcon } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Plus, Search } from "lucide-react";
 import JournalEntry from "@/components/JournalEntry";
-import AddJournalEntryForm from "@/components/AddJournalEntryForm";
-import PremiumFeatureBanner from "@/components/PremiumFeatureBanner";
-import { Badge } from "@/components/ui/badge";
+import TagsInput from "@/components/TagsInput";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { navigate } from "@/platform/navigation";
 
 const JournalPage = () => {
-  const { animals, journals, userSubscription, user } = useAppContext();
-  const [isAddEntryOpen, setIsAddEntryOpen] = useState(false);
+  const { journalEntries, animals, user } = useSupabaseApp();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAnimalId, setSelectedAnimalId] = useState<string>("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  
-  // Extract unique tags from all journals
+
+  const transformedUser = user ? {
+    ...user,
+    firstName: user.user_metadata?.first_name || "",
+    lastName: user.user_metadata?.last_name || "",
+    subscriptionLevel: "pro" as "free" | "pro" | "elite",
+    createdAt: user.created_at || new Date().toISOString()
+  } : null;
+
+  // Get all unique tags from journal entries
   const allTags = Array.from(
     new Set(
-      journals.flatMap(journal => journal.tags || [])
+      journalEntries.flatMap(entry => 
+        typeof entry.tags === 'string' 
+          ? entry.tags.split(',').filter(tag => tag.trim())
+          : (entry.tags || [])
+      )
     )
   );
-  
-  // Filter journals based on search, animal, and tags
-  const filteredJournals = journals.filter(journal => {
+
+  // Filter journal entries based on search criteria
+  const filteredEntries = journalEntries.filter(entry => {
     const matchesSearch = searchTerm === "" || 
-      journal.content.toLowerCase().includes(searchTerm.toLowerCase());
+      entry.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      entry.content.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesAnimal = selectedAnimalId === "" || 
-      journal.animalId === selectedAnimalId;
+    const matchesAnimal = selectedAnimalId === "" || entry.animal_id === selectedAnimalId;
+    
+    const entryTags = typeof entry.tags === 'string' 
+      ? entry.tags.split(',').filter(tag => tag.trim())
+      : (entry.tags || []);
     
     const matchesTags = selectedTags.length === 0 || 
-      selectedTags.some(tag => journal.tags?.includes(tag));
+      selectedTags.some(tag => entryTags.includes(tag));
     
     return matchesSearch && matchesAnimal && matchesTags;
   });
-  
-  // Sort journals by date (newest first)
-  const sortedJournals = [...filteredJournals].sort(
+
+  // Sort by date (newest first)
+  const sortedEntries = [...filteredEntries].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
-  
-  const toggleTag = (tag: string) => {
-    if (selectedTags.includes(tag)) {
-      setSelectedTags(selectedTags.filter(t => t !== tag));
-    } else {
-      setSelectedTags([...selectedTags, tag]);
-    }
+
+  const handleAddEntry = () => {
+    navigate('/add-journal-entry');
   };
-  
-  const showAdvancedJournaling = userSubscription.level === "pro" || userSubscription.level === "elite";
-  
-  const handleUpgrade = () => {
-    // Redirect to subscription page
-    navigate('/subscription');
-  };
-  
+
   return (
-    <MainLayout title="Journal Entries" user={user}>
-      <div className="flex flex-col md:flex-row justify-between mb-6 gap-4">
-        <div className="flex flex-col md:flex-row gap-4 w-full md:w-2/3">
-          <div className="relative w-full">
-            <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search entries..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9"
-            />
-          </div>
-          
-          <select
-            value={selectedAnimalId}
-            onChange={(e) => setSelectedAnimalId(e.target.value)}
-            className="px-4 py-2 border rounded-md"
-          >
-            <option value="">All Animals</option>
-            {animals.map(animal => (
-              <option key={animal.id} value={animal.id}>
-                {animal.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        
-        <Button onClick={() => setIsAddEntryOpen(true)}>
-          New Journal Entry
-        </Button>
-      </div>
-      
-      {allTags.length > 0 && (
-        <div className="mb-6">
-          <div className="flex items-center mb-2 gap-2">
-            <FilterIcon className="h-4 w-4" />
-            <h3 className="font-medium">Filter by tags:</h3>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {allTags.map(tag => (
-              <Badge 
-                key={tag}
-                variant={selectedTags.includes(tag) ? "default" : "outline"}
-                className="cursor-pointer"
-                onClick={() => toggleTag(tag)}
-              >
-                {tag}
-              </Badge>
-            ))}
-          </div>
-        </div>
-      )}
-      
-      {!showAdvancedJournaling && (
-        <PremiumFeatureBanner
-          title="Advanced Journaling"
-          description="Upgrade to Pro to access advanced journaling features including AI analysis, automatic tagging, and mood tracking insights."
-          requiredLevel="pro"
-          onUpgrade={handleUpgrade}
-          className="mb-6"
-        />
-      )}
-      
+    <MainLayout title="Journal" user={transformedUser}>
       <div className="space-y-6">
-        {sortedJournals.length > 0 ? (
-          sortedJournals.map(entry => {
-            const animal = animals.find(a => a.id === entry.animalId);
-            return (
-              <JournalEntry 
-                key={entry.id} 
-                entry={entry}
-                animalName={animal?.name || "Unknown"}
-              />
-            );
-          })
-        ) : (
-          <div className="text-center py-12 border rounded-md border-dashed">
-            {searchTerm || selectedAnimalId || selectedTags.length > 0 ? (
-              <p className="text-muted-foreground mb-4">No journal entries match your filters.</p>
-            ) : (
-              <>
-                <p className="text-muted-foreground mb-4">No journal entries found. Start recording your observations.</p>
-                <Button onClick={() => setIsAddEntryOpen(true)}>Create Your First Entry</Button>
-              </>
-            )}
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold">Journal</h1>
+            <p className="text-gray-600">Record your observations and thoughts</p>
           </div>
-        )}
+          <Button onClick={handleAddEntry} className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            Add Entry
+          </Button>
+        </div>
+
+        {/* Filters */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Filters</CardTitle>
+            <CardDescription>Search and filter your journal entries</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="search">Search</Label>
+                <div className="relative">
+                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
+                  <Input
+                    id="search"
+                    placeholder="Search entries..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-8"
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <Label htmlFor="animal-filter">Animal</Label>
+                <Select value={selectedAnimalId} onValueChange={setSelectedAnimalId}>
+                  <SelectTrigger id="animal-filter">
+                    <SelectValue placeholder="All animals" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All animals</SelectItem>
+                    {animals.map((animal) => (
+                      <SelectItem key={animal.id} value={animal.id}>
+                        {animal.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            <div>
+              <Label htmlFor="tags">Filter by Tags</Label>
+              <TagsInput
+                id="tags"
+                tags={selectedTags}
+                onTagsChange={setSelectedTags}
+                suggestions={allTags}
+                placeholder="Select tags to filter..."
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Journal Entries */}
+        <div className="space-y-4">
+          {sortedEntries.length === 0 ? (
+            <Card>
+              <CardContent className="py-8 text-center">
+                <p className="text-gray-500">No journal entries found matching your criteria.</p>
+                <Button onClick={handleAddEntry} className="mt-4">
+                  Add Your First Entry
+                </Button>
+              </CardContent>
+            </Card>
+          ) : (
+            sortedEntries.map((entry) => {
+              const animal = animals.find(a => a.id === entry.animal_id);
+              return (
+                <JournalEntry
+                  key={entry.id}
+                  entry={{
+                    ...entry,
+                    animalName: animal?.name || "Unknown Animal",
+                    tags: typeof entry.tags === 'string' 
+                      ? entry.tags.split(',').filter(tag => tag.trim())
+                      : (entry.tags || [])
+                  }}
+                />
+              );
+            })
+          )}
+        </div>
       </div>
-      
-      <Dialog open={isAddEntryOpen} onOpenChange={setIsAddEntryOpen}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>New Journal Entry</DialogTitle>
-          </DialogHeader>
-          <AddJournalEntryForm 
-            onSuccess={() => setIsAddEntryOpen(false)}
-          />
-        </DialogContent>
-      </Dialog>
     </MainLayout>
   );
 };

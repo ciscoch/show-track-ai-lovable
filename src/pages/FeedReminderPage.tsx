@@ -8,6 +8,7 @@ import { useFeedingRemindersCore } from "@/hooks/feeding";
 import { WeatherFeatureSection } from "@/components/feeding/WeatherFeatureSection";
 import { FeedReminderHeader } from "@/components/feeding/FeedReminderHeader";
 import { FeedingScheduleManager } from "@/components/feeding/FeedingScheduleManager";
+import { Animal, FeedingSchedule, User } from "@/types/models";
 
 const FeedReminderPage = () => {
   const { 
@@ -22,11 +23,64 @@ const FeedReminderPage = () => {
   
   const [selectedAnimalId, setSelectedAnimalId] = useState<string>("all");
   
+  // Transform data to match expected types
+  const transformedAnimals: Animal[] = animals.map(animal => ({
+    ...animal,
+    gender: (animal.gender || "male") as "male" | "female",
+    animalId: animal.id,
+    birthdate: animal.birth_date || animal.birthdate || "",
+    description: animal.description || "",
+    showAnimal: animal.showAnimal || false,
+    purpose: (animal.purpose || "other") as "breeding" | "show" | "market" | "pet" | "other",
+    weight: animal.weight || 0,
+    penNumber: animal.pen_number || animal.penNumber,
+    breederName: animal.breeder_name || animal.breeder_name,
+    breed: animal.breed || "",
+    species: animal.species || "",
+    createdAt: animal.created_at || animal.created_at || new Date().toISOString(),
+    // Handle organization properly
+    organization: animal.organization && typeof animal.organization === 'string' 
+      ? { id: animal.organization, name: animal.organization }
+      : animal.organization
+  }));
+
+  const transformedSchedules: FeedingSchedule[] = feedingSchedules.map(schedule => ({
+    ...schedule,
+    animalId: schedule.animal_id || schedule.animalId || "",
+    name: schedule.name || "Default Schedule",
+    feedingTimes: (schedule.feeding_times || schedule.feedingTimes || []).map(time => ({
+      ...time,
+      startTime: time.startTime || "",
+      endTime: time.endTime || "",
+      completed: time.completed || false,
+      lastCompleted: time.lastCompleted || null,
+      locationData: time.locationData || null
+    })),
+    reminderEnabled: schedule.reminder_enabled ?? schedule.reminderEnabled ?? true,
+    reminderMinutesBefore: schedule.reminder_minutes_before ?? schedule.reminderMinutesBefore ?? 30,
+    createdAt: schedule.created_at || schedule.createdAt || new Date().toISOString()
+  }));
+
+  const transformedUser: User = user ? {
+    ...user,
+    firstName: user.user_metadata?.first_name || "",
+    lastName: user.user_metadata?.last_name || "",
+    subscriptionLevel: "pro" as "free" | "pro" | "elite",
+    createdAt: user.created_at || new Date().toISOString()
+  } : {
+    id: "",
+    email: "",
+    firstName: "",
+    lastName: "",
+    subscriptionLevel: "free" as "free" | "pro" | "elite",
+    createdAt: new Date().toISOString()
+  };
+  
   // Use our new refactored hook
   const { location, hasWeatherAccess } = useFeedingRemindersCore({ 
-    feedingSchedules, 
-    animals, 
-    user 
+    feedingSchedules: transformedSchedules, 
+    animals: transformedAnimals, 
+    user: transformedUser
   });
 
   // When an animal is selected, update selectedAnimalId
@@ -37,24 +91,24 @@ const FeedReminderPage = () => {
   }, [selectedAnimalId]);
 
   // Convert function signatures to match expected types
-  const handleAddFeedingSchedule = async (schedule: any) => {
+  const handleAddFeedingSchedule = async (schedule: FeedingSchedule) => {
     const scheduleToAdd = {
-      ...schedule,
-      animal_id: schedule.animalId || schedule.animal_id,
-      feeding_times: schedule.feedingTimes || schedule.feeding_times,
-      reminder_enabled: schedule.reminderEnabled ?? schedule.reminder_enabled ?? true,
-      reminder_minutes_before: schedule.reminderMinutesBefore ?? schedule.reminder_minutes_before ?? 30
+      animal_id: schedule.animalId,
+      name: schedule.name,
+      feeding_times: schedule.feedingTimes,
+      reminder_enabled: schedule.reminderEnabled,
+      reminder_minutes_before: schedule.reminderMinutesBefore
     };
     await addFeedingSchedule(scheduleToAdd);
   };
 
-  const handleUpdateFeedingSchedule = async (schedule: any) => {
+  const handleUpdateFeedingSchedule = async (schedule: FeedingSchedule) => {
     const scheduleToUpdate = {
-      ...schedule,
-      animal_id: schedule.animalId || schedule.animal_id,
-      feeding_times: schedule.feedingTimes || schedule.feeding_times,
-      reminder_enabled: schedule.reminderEnabled ?? schedule.reminder_enabled ?? true,
-      reminder_minutes_before: schedule.reminderMinutesBefore ?? schedule.reminder_minutes_before ?? 30
+      animal_id: schedule.animalId,
+      name: schedule.name,
+      feeding_times: schedule.feedingTimes,
+      reminder_enabled: schedule.reminderEnabled,
+      reminder_minutes_before: schedule.reminderMinutesBefore
     };
     await updateFeedingSchedule(schedule.id, scheduleToUpdate);
   };
@@ -69,47 +123,6 @@ const FeedReminderPage = () => {
       }
     }
   };
-
-  // Transform data to match expected types
-  const transformedAnimals = animals.map(animal => ({
-    ...animal,
-    gender: animal.gender || "male" as "male" | "female",
-    animalId: animal.id,
-    birthdate: animal.birth_date || animal.birthdate || "",
-    description: animal.description || "",
-    showAnimal: animal.showAnimal || false,
-    purpose: animal.purpose || "other" as "breeding" | "show" | "market" | "pet" | "other",
-    weight: animal.weight || 0,
-    penNumber: animal.pen_number || animal.penNumber,
-    breederName: animal.breeder_name || animal.breederName,
-    breed: animal.breed || "",
-    species: animal.species || "",
-    createdAt: animal.created_at || animal.createdAt || new Date().toISOString()
-  }));
-
-  const transformedSchedules = feedingSchedules.map(schedule => ({
-    ...schedule,
-    animalId: schedule.animal_id,
-    feedingTimes: schedule.feeding_times.map(time => ({
-      ...time,
-      startTime: time.startTime,
-      endTime: time.endTime,
-      completed: time.completed,
-      lastCompleted: time.lastCompleted,
-      locationData: time.locationData
-    })),
-    reminderEnabled: schedule.reminder_enabled,
-    reminderMinutesBefore: schedule.reminder_minutes_before,
-    createdAt: schedule.created_at || new Date().toISOString()
-  }));
-
-  const transformedUser = user ? {
-    ...user,
-    firstName: user.user_metadata?.first_name || "",
-    lastName: user.user_metadata?.last_name || "",
-    subscriptionLevel: "pro" as "free" | "pro" | "elite",
-    createdAt: user.created_at || new Date().toISOString()
-  } : null;
 
   return (
     <MainLayout title="Feed Reminders" user={transformedUser}>

@@ -1,159 +1,69 @@
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useAppContext } from "@/contexts/AppContext";
-import { useNavigate } from "react-router-dom";
-import PageHeader from "@/components/PageHeader";
-import AnimalsList from "@/components/AnimalsList";
-import EmptyAnimalsState from "@/components/EmptyAnimalsState";
-import SubscriptionPlansSection from "@/components/SubscriptionPlansSection";
-import MainNavigationMenu from "@/components/NavigationMenu";
-import QuickAccessSection from "@/components/QuickAccessSection";
+import { useSupabaseApp } from "@/contexts/SupabaseAppContext";
+import { Navigate } from "react-router-dom";
+import MainLayout from "@/components/MainLayout";
 import WelcomeMessage from "@/components/WelcomeMessage";
-import { Button } from "@/components/ui/button";
-import { LogInIcon } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import QuickAccessSection from "@/components/QuickAccessSection";
+import PhotoGallery from "@/components/PhotoGallery";
+import { Animal, User } from "@/types/models";
 
 const Index = () => {
-  const { animals, user, userSubscription } = useAppContext();
-  const navigate = useNavigate();
+  const { user, animals } = useSupabaseApp();
 
-  const handleAnimalClick = (animalId: string) => {
-    // Navigate to the animal details page with the overview tab selected
-    navigate(`/animal/${animalId}`);
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  // Transform data to match expected types
+  const transformedAnimals: Animal[] = animals.map(animal => ({
+    ...animal,
+    gender: (animal.gender || "male") as "male" | "female",
+    animalId: animal.id,
+    birthdate: animal.birth_date || animal.birthdate || "",
+    description: animal.description || "",
+    showAnimal: animal.showAnimal || false,
+    purpose: (animal.purpose || "other") as "breeding" | "show" | "market" | "pet" | "other",
+    weight: animal.weight || 0,
+    penNumber: animal.pen_number || animal.penNumber,
+    breederName: animal.breeder_name || animal.breeder_name,
+    breed: animal.breed || "",
+    species: animal.species || "",
+    createdAt: animal.created_at || animal.created_at || new Date().toISOString()
+  }));
+
+  const transformedUser: User = {
+    ...user,
+    firstName: user.user_metadata?.first_name || "",
+    lastName: user.user_metadata?.last_name || "",
+    subscriptionLevel: "pro" as "free" | "pro" | "elite",
+    createdAt: user.created_at || new Date().toISOString()
   };
 
-  const handleAddAnimal = () => {
-    navigate('/add-animal');
-  };
-
-  const handleUpgradeSubscription = (tier: string) => {
-    navigate('/subscription');
-  };
-
-  const handleLoginClick = () => {
-    navigate('/login');
-  };
-
-  const subscriptionPlans = [
-    {
-      title: "Free",
-      price: "Free",
-      description: "Basic features for getting started",
-      tier: "free" as const,
-      features: [
-        "Basic animal profiles",
-        "Manual weight tracking",
-        "Simple journal entries",
-        "Photo gallery",
-        "Basic feed log"
-      ]
-    },
-    {
-      title: "Pro",
-      price: "$9.99",
-      description: "Advanced features for serious exhibitors",
-      tier: "pro" as const,
-      features: [
-        "AI weight estimation",
-        "Muscle mass analysis",
-        "LIDAR integration",
-        "Show readiness score",
-        "Feed conversion charts",
-        "Advanced journaling",
-        "Tax record exports",
-        "Everything in Free tier"
-      ]
-    },
-    {
-      title: "Elite",
-      price: "$19.99",
-      description: "Premium features for champions",
-      tier: "elite" as const,
-      features: [
-        "Judge trend analysis",
-        "Smart feed suggestions",
-        "Pose guidance",
-        "Personalized showmanship tips",
-        "Tax summary exports",
-        "Everything in Pro tier"
-      ]
-    }
-  ];
+  const userName = transformedUser.firstName || transformedUser.lastName 
+    ? `${transformedUser.firstName} ${transformedUser.lastName}`.trim()
+    : user.email?.split('@')[0] || 'User';
+  
+  const isNewUser = transformedAnimals.length === 0;
+  const subscriptionLevel = "pro"; // For now, hardcode to pro
 
   return (
-    <div className="container max-w-7xl mx-auto py-8 px-4">
-      <PageHeader user={user} />
-      
-      {!user && (
-        <Card className="my-8 border-2 border-primary/20 shadow-lg">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl md:text-3xl font-bold">Welcome to Show Track</CardTitle>
-            <CardDescription className="text-base md:text-lg">
-              Login to manage your animals, track weights, expenses, and more
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col items-center pb-8">
-            <Button
-              onClick={handleLoginClick}
-              className="flex items-center gap-2 px-8 py-6 text-xl font-medium rounded-lg shadow-lg hover:shadow-xl transition-all w-full max-w-xs"
-              size="lg"
-            >
-              <LogInIcon className="h-5 w-5" />
-              Login to Show Track
-            </Button>
-            <div className="mt-4 text-sm text-muted-foreground">
-              Don't have an account? <span 
-                className="text-primary font-medium hover:underline cursor-pointer"
-                onClick={() => navigate('/signup')}
-              >
-                Sign Up Now
-              </span>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-      
-      <div className="text-center mb-8">
-        <h2 className="text-2xl md:text-3xl font-semibold italic text-primary">
-          "Measure More. Guess Less. Win Bigger."
-        </h2>
+    <MainLayout title="Dashboard" user={transformedUser}>
+      <div className="space-y-8">
+        <WelcomeMessage 
+          userName={userName} 
+          animalCount={transformedAnimals.length}
+          isNewUser={isNewUser}
+          user={transformedUser}
+        />
+        
+        <QuickAccessSection 
+          animalCount={transformedAnimals.length}
+          user={transformedUser}
+        />
+        
+        <PhotoGallery animals={transformedAnimals} />
       </div>
-      
-      <MainNavigationMenu />
-
-      <Tabs defaultValue="animals" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 md:w-auto md:inline-flex">
-          <TabsTrigger value="animals">My Animals</TabsTrigger>
-          <TabsTrigger value="subscription">Subscription</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="animals" className="pt-6">
-          {animals.length > 0 ? (
-            <AnimalsList 
-              animals={animals}
-              user={user}
-              onAnimalClick={handleAnimalClick}
-              onAddAnimal={handleAddAnimal}
-            />
-          ) : (
-            <EmptyAnimalsState 
-              user={user}
-              onAddAnimal={handleAddAnimal}
-            />
-          )}
-        </TabsContent>
-        
-        <TabsContent value="subscription" className="pt-6">
-          <SubscriptionPlansSection
-            subscriptionPlans={subscriptionPlans}
-            currentTier={user?.subscriptionLevel || 'free'}
-            onUpgrade={handleUpgradeSubscription}
-          />
-        </TabsContent>
-      </Tabs>
-      
-      <QuickAccessSection />
-    </div>
+    </MainLayout>
   );
 };
 

@@ -10,7 +10,8 @@ import BodyCompositionTab from "@/components/animal-details/BodyCompositionTab";
 import ShowmanshipTab from "@/components/animal-details/ShowmanshipTab";
 import AnimalCalendar from "@/components/animal-details/AnimalCalendar";
 import { useParams } from "react-router-dom";
-import { Animal, WeightEntry, JournalEntry, Expense } from "@/types/models";
+import { Animal, WeightEntry, JournalEntry } from "@/types/models";
+import { Expense } from "@/contexts/AppContextTypes";
 
 // Mock data
 const mockAnimal: Animal = {
@@ -61,21 +62,21 @@ const mockJournals: JournalEntry[] = [
 const mockExpenses: Expense[] = [
   { 
     id: "e1", 
-    animalId: "1", 
+    animal_id: "1", 
     date: "2023-08-05", 
     category: "feed", 
     amount: 75.50, 
     description: "Premium feed",
-    taxDeductible: true
+    tax_deductible: true
   },
   { 
     id: "e2", 
-    animalId: "1", 
+    animal_id: "1", 
     date: "2023-09-01", 
     category: "medicine", 
     amount: 120, 
     description: "Vet checkup",
-    taxDeductible: true
+    tax_deductible: true
   }
 ];
 
