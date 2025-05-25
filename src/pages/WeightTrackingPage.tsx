@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { navigate } from "@/platform/navigation";
 import { useAppContext } from "@/contexts/AppContext";
@@ -21,14 +20,14 @@ import PremiumFeatureBanner from "@/components/PremiumFeatureBanner";
 import { WeightEntry, User } from "@/types/models";
 
 const WeightTrackingPage = () => {
-  const { animals, weights, userSubscription, user } = useAppContext();
+  const { animals, weightEntries, userSubscription, user } = useAppContext();
   const [selectedAnimalId, setSelectedAnimalId] = useState<string>(animals[0]?.id || "");
   const [isAddWeightOpen, setIsAddWeightOpen] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   
   // Transform weights to match expected types
-  const transformedWeights: WeightEntry[] = weights.map(weight => ({
+  const transformedWeights: WeightEntry[] = weightEntries.map(weight => ({
     ...weight,
     animalId: weight.animal_id || weight.animalId || ""
   }));
@@ -122,7 +121,7 @@ const WeightTrackingPage = () => {
     email: user.email || "",
     firstName: user.user_metadata?.first_name || "",
     lastName: user.user_metadata?.last_name || "",
-    subscriptionLevel: "pro" as "free" | "pro" | "elite",
+    subscriptionLevel: userSubscription.level === "basic" ? "free" : (userSubscription.level as "free" | "pro" | "elite"),
     createdAt: user.created_at || new Date().toISOString()
   } : {
     id: "",

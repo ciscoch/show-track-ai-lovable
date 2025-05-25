@@ -30,6 +30,7 @@ const UserSettingsPage = () => {
 
   const subscriptionWithFeatures = {
     ...userSubscription,
+    level: userSubscription.level === "basic" ? "free" : userSubscription.level,
     features: []
   };
   

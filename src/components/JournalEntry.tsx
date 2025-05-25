@@ -5,10 +5,11 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import SocialShareButtons from "./journal/SocialShareButtons";
-import { Image } from "lucide-react";
 
 export interface JournalEntryProps {
-  entry: JournalEntryType;
+  entry: JournalEntryType & {
+    animalId?: string;
+  };
   animalName?: string;
 }
 

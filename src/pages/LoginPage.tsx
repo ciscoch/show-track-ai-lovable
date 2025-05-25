@@ -19,15 +19,15 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const { user, error } = await signIn(email, password);
+      const result = await signIn(email, password);
       
-      if (error) {
+      if (result?.error) {
         toast({
           title: "Login failed",
-          description: error.message,
+          description: result.error.message,
           variant: "destructive"
         });
-      } else if (user) {
+      } else if (result?.user) {
         navigate("/dashboard");
       }
     } catch (error) {

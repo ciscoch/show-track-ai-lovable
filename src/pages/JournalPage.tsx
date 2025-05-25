@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Plus, Search } from "lucide-react";
 import JournalEntry from "@/components/JournalEntry";
 import TagsInput from "@/components/TagsInput";
@@ -123,11 +122,8 @@ const JournalPage = () => {
             <div>
               <Label htmlFor="tags">Filter by Tags</Label>
               <TagsInput
-                id="tags"
-                tags={selectedTags}
-                onTagsChange={setSelectedTags}
-                suggestions={allTags}
-                placeholder="Select tags to filter..."
+                value={selectedTags}
+                onChange={setSelectedTags}
               />
             </div>
           </CardContent>
@@ -152,11 +148,12 @@ const JournalPage = () => {
                   key={entry.id}
                   entry={{
                     ...entry,
-                    animalName: animal?.name || "Unknown Animal",
+                    animalId: entry.animal_id,
                     tags: typeof entry.tags === 'string' 
                       ? entry.tags.split(',').filter(tag => tag.trim())
                       : (entry.tags || [])
                   }}
+                  animalName={animal?.name || "Unknown Animal"}
                 />
               );
             })
