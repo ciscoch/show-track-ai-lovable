@@ -96,7 +96,11 @@ const GalleryPage = () => {
     breederName: animal.breeder_name || animal.breeder_name,
     breed: animal.breed || "",
     species: animal.species || "",
-    createdAt: animal.created_at || animal.created_at || new Date().toISOString()
+    createdAt: animal.created_at || animal.created_at || new Date().toISOString(),
+    // Handle organization properly
+    organization: animal.organization && typeof animal.organization === 'string' 
+      ? { id: animal.organization, name: animal.organization }
+      : animal.organization || undefined
   }));
   
   // Extract all unique tags from photos
@@ -150,6 +154,7 @@ const GalleryPage = () => {
 
   const transformedUser: User = user ? {
     ...user,
+    email: user.email || "",
     firstName: user.user_metadata?.first_name || "",
     lastName: user.user_metadata?.last_name || "",
     subscriptionLevel: "pro" as "free" | "pro" | "elite",

@@ -11,6 +11,7 @@ const EditAnimal = () => {
 
   const transformedUser = user ? {
     ...user,
+    email: user.email || "",
     firstName: user.user_metadata?.first_name || "",
     lastName: user.user_metadata?.last_name || "",
     subscriptionLevel: "pro" as "free" | "pro" | "elite",

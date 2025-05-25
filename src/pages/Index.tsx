@@ -28,11 +28,16 @@ const Index = () => {
     breederName: animal.breeder_name || animal.breeder_name,
     breed: animal.breed || "",
     species: animal.species || "",
-    createdAt: animal.created_at || animal.created_at || new Date().toISOString()
+    createdAt: animal.created_at || animal.created_at || new Date().toISOString(),
+    // Handle organization properly
+    organization: animal.organization && typeof animal.organization === 'string' 
+      ? { id: animal.organization, name: animal.organization }
+      : animal.organization || undefined
   }));
 
   const transformedUser: User = {
     ...user,
+    email: user.email || "",
     firstName: user.user_metadata?.first_name || "",
     lastName: user.user_metadata?.last_name || "",
     subscriptionLevel: "pro" as "free" | "pro" | "elite",
@@ -44,24 +49,21 @@ const Index = () => {
     : user.email?.split('@')[0] || 'User';
   
   const isNewUser = transformedAnimals.length === 0;
-  const subscriptionLevel = "pro"; // For now, hardcode to pro
 
   return (
     <MainLayout title="Dashboard" user={transformedUser}>
       <div className="space-y-8">
         <WelcomeMessage 
-          userName={userName} 
+          user={transformedUser}
           animalCount={transformedAnimals.length}
           isNewUser={isNewUser}
-          user={transformedUser}
         />
         
         <QuickAccessSection 
-          animalCount={transformedAnimals.length}
           user={transformedUser}
         />
         
-        <PhotoGallery animals={transformedAnimals} />
+        <PhotoGallery />
       </div>
     </MainLayout>
   );

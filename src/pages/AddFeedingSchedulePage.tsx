@@ -40,11 +40,16 @@ const AddFeedingSchedulePage = () => {
     breederName: animal.breeder_name,
     breed: animal.breed || "",
     species: animal.species || "",
-    createdAt: animal.created_at || new Date().toISOString()
+    createdAt: animal.created_at || new Date().toISOString(),
+    // Fix organization handling
+    organization: animal.organization && typeof animal.organization === 'string' 
+      ? { id: animal.organization, name: animal.organization }
+      : animal.organization || undefined
   }));
 
   const transformedUser: User = user ? {
     ...user,
+    email: user.email || "", // Ensure email is present
     firstName: user.user_metadata?.first_name || "",
     lastName: user.user_metadata?.last_name || "",
     subscriptionLevel: "pro" as "free" | "pro" | "elite",

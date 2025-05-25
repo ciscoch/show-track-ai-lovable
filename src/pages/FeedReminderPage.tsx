@@ -41,7 +41,7 @@ const FeedReminderPage = () => {
     // Handle organization properly
     organization: animal.organization && typeof animal.organization === 'string' 
       ? { id: animal.organization, name: animal.organization }
-      : animal.organization
+      : animal.organization || undefined
   }));
 
   const transformedSchedules: FeedingSchedule[] = feedingSchedules.map(schedule => ({
@@ -63,6 +63,7 @@ const FeedReminderPage = () => {
 
   const transformedUser: User = user ? {
     ...user,
+    email: user.email || "",
     firstName: user.user_metadata?.first_name || "",
     lastName: user.user_metadata?.last_name || "",
     subscriptionLevel: "pro" as "free" | "pro" | "elite",
