@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -28,7 +27,12 @@ const AnimalHeader = ({ animal }: AnimalHeaderProps) => {
   };
 
   const handleAnimalUpdate = async (updatedAnimal: Animal) => {
-    await updateAnimal(updatedAnimal.id, updatedAnimal);
+    await updateAnimal(updatedAnimal.id, {
+      ...updatedAnimal,
+      organization: typeof updatedAnimal.organization === 'object' 
+        ? updatedAnimal.organization?.name 
+        : updatedAnimal.organization
+    });
   };
 
   return (
@@ -57,7 +61,7 @@ const AnimalHeader = ({ animal }: AnimalHeaderProps) => {
                   onNameUpdate={handleAnimalUpdate} 
                 />
                 <Badge>
-                  {animal.species.charAt(0).toUpperCase() + animal.species.slice(1)}
+                  {animal.species?.charAt(0).toUpperCase() + animal.species?.slice(1)}
                 </Badge>
                 <Button 
                   variant="outline" 

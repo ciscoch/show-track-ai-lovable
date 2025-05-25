@@ -1,31 +1,15 @@
 
-import { useParams, useNavigate } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import React from "react";
+import { useParams } from "react-router-dom";
 import MainLayout from "@/components/MainLayout";
-import { Button } from "@/components/ui/button";
+// Import your edit expense form component when available
 
 const EditExpensePage = () => {
   const { expenseId } = useParams();
-  const navigate = useNavigate();
 
   return (
-    <MainLayout>
-      <div className="container mx-auto py-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Edit Expense</CardTitle>
-            <CardDescription>
-              Update expense details for ID: {expenseId}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Edit expense form coming soon...</p>
-            <Button onClick={() => navigate("/expenses")} className="mt-4">
-              Back to Expenses
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+    <MainLayout title="Edit Expense">
+      <div>Edit expense form for ID: {expenseId}</div>
     </MainLayout>
   );
 };

@@ -1,108 +1,103 @@
 
+import React from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Expense } from "@/contexts/AppContextTypes";
+import { Badge } from "@/components/ui/badge";
+import { PencilIcon, TrashIcon } from "lucide-react";
 import { useAppContext } from "@/contexts/AppContext";
-import { format } from "date-fns";
-import { Edit2Icon, Trash2Icon, Image } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { useState } from "react";
+import { Expense } from "@/contexts/AppContextTypes";
 
 interface ExpensesTableProps {
   expenses: Expense[];
-  animalId?: string; // Make animalId optional
+  onEdit: (expense: Expense) => void;
 }
 
-const ExpensesTable = ({ expenses, animalId }: ExpensesTableProps) => {
-  const { animals, deleteExpense } = useAppContext();
-  const [viewingReceipt, setViewingReceipt] = useState<Expense | null>(null);
+const ExpensesTable = ({ expenses, onEdit }: ExpensesTableProps) => {
+  const { deleteExpenseEntry } = useAppContext();
 
-  // Filter expenses by animalId if provided
-  const filteredExpenses = animalId 
-    ? expenses.filter(expense => expense.animal_id === animalId) 
-    : expenses;
-
-  const getAnimalName = (animalId: string) => {
-    const animal = animals.find((a) => a.id === animalId);
-    return animal ? animal.name : "Unknown";
-  };
-
-  const handleDelete = (id: string) => {
-    if (typeof window !== "undefined" && window.confirm("Are you sure you want to delete this expense?")) {
-      deleteExpense(id);
+  const handleDelete = async (id: string) => {
+    if (window.confirm("Are you sure you want to delete this expense?")) {
+      try {
+        await deleteExpenseEntry(id);
+      } catch (error) {
+        console.error("Error deleting expense:", error);
+      }
     }
   };
 
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(amount);
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString();
+  };
+
   return (
-    <>
-      <div className="border rounded-md">
-        <Table>
-          <TableHeader>
+    <div className="rounded-md border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Date</TableHead>
+            <TableHead>Description</TableHead>
+            <TableHead>Category</TableHead>
+            <TableHead>Amount</TableHead>
+            <TableHead>Tax Deductible</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {expenses.length === 0 ? (
             <TableRow>
-              <TableHead>Date</TableHead>
-              <TableHead>Animal</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead className="text-right">Amount</TableHead>
-              <TableHead className="text-center">Receipt</TableHead>
-              <TableHead></TableHead>
+              <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                No expenses recorded yet
+              </TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredExpenses.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={7} className="text-center py-4">
-                  No expenses found. Add an expense to get started.
+          ) : (
+            expenses.map((expense) => (
+              <TableRow key={expense.id}>
+                <TableCell>{formatDate(expense.date)}</TableCell>
+                <TableCell>{expense.description}</TableCell>
+                <TableCell>
+                  <Badge variant="secondary">
+                    {expense.category?.charAt(0).toUpperCase() + expense.category?.slice(1)}
+                  </Badge>
+                </TableCell>
+                <TableCell>{formatCurrency(expense.amount)}</TableCell>
+                <TableCell>
+                  {expense.tax_deductible ? (
+                    <Badge variant="default">Yes</Badge>
+                  ) : (
+                    <Badge variant="outline">No</Badge>
+                  )}
+                </TableCell>
+                <TableCell className="text-right">
+                  <div className="flex justify-end gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onEdit(expense)}
+                    >
+                      <PencilIcon className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDelete(expense.id)}
+                    >
+                      <TrashIcon className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
-            ) : (
-              filteredExpenses.map((expense) => (
-                <TableRow key={expense.id}>
-                  <TableCell>{format(new Date(expense.date), "PP")}</TableCell>
-                  <TableCell>{getAnimalName(expense.animal_id)}</TableCell>
-                  <TableCell className="capitalize">{expense.category}</TableCell>
-                  <TableCell>{expense.description}</TableCell>
-                  <TableCell className="text-right">${expense.amount.toFixed(2)}</TableCell>
-                  <TableCell className="text-center">
-                    {/* Receipt functionality would be implemented here */}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button variant="ghost" size="icon">
-                        <Edit2Icon className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDelete(expense.id)}
-                      >
-                        <Trash2Icon className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
-      
-      <Dialog open={!!viewingReceipt} onOpenChange={() => setViewingReceipt(null)}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Receipt - {viewingReceipt?.description}</DialogTitle>
-          </DialogHeader>
-          <div className="flex items-center justify-center p-2">
-            {/* Receipt image would be displayed here */}
-          </div>
-        </DialogContent>
-      </Dialog>
-    </>
+            ))
+          )}
+        </TableBody>
+      </Table>
+    </div>
   );
 };
 

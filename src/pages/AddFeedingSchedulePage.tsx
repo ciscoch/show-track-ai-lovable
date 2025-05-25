@@ -1,30 +1,12 @@
 
-import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import React from "react";
 import MainLayout from "@/components/MainLayout";
-import { Button } from "@/components/ui/button";
+import ScheduleForm from "@/components/feeding/ScheduleForm";
 
 const AddFeedingSchedulePage = () => {
-  const navigate = useNavigate();
-
   return (
-    <MainLayout>
-      <div className="container mx-auto py-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Add Feeding Schedule</CardTitle>
-            <CardDescription>
-              Create a new feeding schedule for your animals
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Add feeding schedule form coming soon...</p>
-            <Button onClick={() => navigate("/feeding-schedules")} className="mt-4">
-              Back to Feeding Schedules
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+    <MainLayout title="Add Feeding Schedule">
+      <ScheduleForm />
     </MainLayout>
   );
 };

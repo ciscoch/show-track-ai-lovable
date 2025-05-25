@@ -1,15 +1,15 @@
 
-import { useState, useCallback } from 'react';
-import { User } from '@supabase/supabase-js';
+import { useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Animal, WeightEntry, JournalEntry, Expense, FeedingSchedule, FeedingTime } from '../AppContextTypes';
+import { Animal, WeightEntry, JournalEntry, Expense, FeedingSchedule } from '../AppContextTypes';
 
 export const useDataLoader = () => {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const loading = false;
+  const error = null;
+  const setError = (err: string | null) => console.log('Error:', err);
 
   const loadUserData = useCallback(async (
-    user: User | null,
+    user: any,
     setUserProfile: (profile: any) => void,
     setAnimals: (animals: Animal[]) => void,
     setWeightEntries: (entries: WeightEntry[]) => void,
@@ -18,103 +18,118 @@ export const useDataLoader = () => {
     setFeedingSchedules: (schedules: FeedingSchedule[]) => void
   ) => {
     if (!user) {
-      setUserProfile(null);
       setAnimals([]);
       setWeightEntries([]);
       setJournalEntries([]);
       setExpenses([]);
       setFeedingSchedules([]);
-      setLoading(false);
-      setError(null);
       return;
     }
-    
-    setLoading(true);
-    setError(null);
-    
+
     try {
       // Load user profile
-      const { data: profile, error: profileError } = await supabase
+      const { data: profile } = await supabase
         .from('user_profiles')
         .select('*')
         .eq('user_id', user.id)
         .single();
       
-      if (profileError && profileError.code !== 'PGRST116') {
-        throw profileError;
-      }
-      
-      setUserProfile(profile);
+      if (profile) setUserProfile(profile);
 
       // Load animals
-      const { data: animalsData, error: animalsError } = await supabase
+      const { data: animalsData } = await supabase
         .from('animals')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
-      
-      if (animalsError) throw animalsError;
-      setAnimals(animalsData || []);
+
+      if (animalsData) {
+        // Transform database fields to match context types
+        const transformedAnimals = animalsData.map(animal => ({
+          ...animal,
+          birth_date: animal.birth_date,
+          pen_number: animal.pen_number,
+          user_id: animal.user_id,
+          created_at: animal.created_at,
+          updated_at: animal.updated_at,
+          breeder_name: animal.breeder_name,
+          photo_url: animal.image
+        }));
+        setAnimals(transformedAnimals);
+      }
 
       // Load weight entries
-      const { data: weightData, error: weightError } = await supabase
+      const { data: weightData } = await supabase
         .from('weight_entries')
         .select('*')
         .eq('user_id', user.id)
         .order('date', { ascending: false });
-      
-      if (weightError) throw weightError;
-      setWeightEntries(weightData || []);
 
-      // Load journal entries - handle tags conversion
-      const { data: journalData, error: journalError } = await supabase
+      if (weightData) {
+        const transformedWeights = weightData.map(entry => ({
+          ...entry,
+          animal_id: entry.animal_id,
+          created_at: entry.created_at
+        }));
+        setWeightEntries(transformedWeights);
+      }
+
+      // Load journal entries
+      const { data: journalData } = await supabase
         .from('journal_entries')
         .select('*')
         .eq('user_id', user.id)
         .order('date', { ascending: false });
-      
-      if (journalError) throw journalError;
-      
-      // Convert tags from array to string for compatibility
-      const processedJournalData = (journalData || []).map(entry => ({
-        ...entry,
-        tags: Array.isArray(entry.tags) ? entry.tags.join(',') : entry.tags
-      }));
-      
-      setJournalEntries(processedJournalData);
+
+      if (journalData) {
+        const transformedJournals = journalData.map(entry => ({
+          ...entry,
+          animal_id: entry.animal_id,
+          tags: Array.isArray(entry.tags) ? entry.tags.join(',') : entry.tags || '',
+          created_at: entry.created_at
+        }));
+        setJournalEntries(transformedJournals);
+      }
 
       // Load expenses
-      const { data: expensesData, error: expensesError } = await supabase
+      const { data: expenseData } = await supabase
         .from('expenses')
         .select('*')
         .eq('user_id', user.id)
         .order('date', { ascending: false });
-      
-      if (expensesError) throw expensesError;
-      setExpenses(expensesData || []);
 
-      // Load feeding schedules with proper type casting
-      const { data: schedulesData, error: schedulesError } = await supabase
+      if (expenseData) {
+        const transformedExpenses = expenseData.map(expense => ({
+          ...expense,
+          animal_id: expense.animal_id,
+          tax_deductible: expense.tax_deductible,
+          created_at: expense.created_at
+        }));
+        setExpenses(transformedExpenses);
+      }
+
+      // Load feeding schedules
+      const { data: feedingData } = await supabase
         .from('feeding_schedules')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
-      
-      if (schedulesError) throw schedulesError;
-      
-      // Transform feeding_times from JSONB to proper type
-      const transformedSchedules: FeedingSchedule[] = (schedulesData || []).map(schedule => ({
-        ...schedule,
-        feeding_times: Array.isArray(schedule.feeding_times) ? schedule.feeding_times as unknown as FeedingTime[] : []
-      }));
-      
-      setFeedingSchedules(transformedSchedules);
+
+      if (feedingData) {
+        const transformedFeeding = feedingData.map(schedule => ({
+          ...schedule,
+          animal_id: schedule.animal_id,
+          feeding_times: schedule.feeding_times as any,
+          reminder_enabled: schedule.reminder_enabled,
+          reminder_minutes_before: schedule.reminder_minutes_before,
+          created_at: schedule.created_at
+        }));
+        setFeedingSchedules(transformedFeeding);
+      }
 
     } catch (error: any) {
       console.error('Error loading user data:', error);
-      setError(error.message || 'Failed to load data');
-    } finally {
-      setLoading(false);
+      setError(error.message);
     }
   }, []);
 

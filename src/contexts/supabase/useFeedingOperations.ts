@@ -25,7 +25,14 @@ export const useFeedingOperations = (
 
     if (error) throw error;
     if (data) {
-      setFeedingSchedules(prev => [{...data, feeding_times: data.feeding_times as any}, ...prev]);
+      setFeedingSchedules(prev => [{
+        ...data,
+        animal_id: data.animal_id,
+        feeding_times: data.feeding_times as any,
+        reminder_enabled: data.reminder_enabled,
+        reminder_minutes_before: data.reminder_minutes_before,
+        created_at: data.created_at
+      }, ...prev]);
     }
   }, [user, setFeedingSchedules]);
 
@@ -44,7 +51,16 @@ export const useFeedingOperations = (
 
     if (error) throw error;
     if (data) {
-      setFeedingSchedules(prev => prev.map(schedule => schedule.id === id ? {...data, feeding_times: data.feeding_times as any} : schedule));
+      setFeedingSchedules(prev => prev.map(schedule => 
+        schedule.id === id ? {
+          ...data,
+          animal_id: data.animal_id,
+          feeding_times: data.feeding_times as any,
+          reminder_enabled: data.reminder_enabled,
+          reminder_minutes_before: data.reminder_minutes_before,
+          created_at: data.created_at
+        } : schedule
+      ));
     }
   }, [setFeedingSchedules]);
 
