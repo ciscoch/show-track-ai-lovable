@@ -1,3 +1,4 @@
+
 import React from "react";
 
 const WebhookTestPage = () => {
@@ -11,10 +12,10 @@ const WebhookTestPage = () => {
     };
 
     try {
-      const response = await fetch(https://qmvbsrivanucfpfjchpw.supabase.co>.functions.supabase.co/upload-weight", {
+      const response = await fetch("https://qmvbsrivanucfpfjchpw.supabase.co/functions/v1/upload-weight", {
         method: "POST",
         headers: {
-          Authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtdmJzcml2YW51Y2ZwZmpjaHB3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDczMjgzMjksImV4cCI6MjA2MjkwNDMyOX0.jF7Tkz8pFtx4HHKrWfRRcQPpSeGR4xu8MQvlvV5VgxoY", // If required
+          Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtdmJzcml2YW51Y2ZwZmpjaHB3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDczMjgzMjksImV4cCI6MjA2MjkwNDMyOX0.jF7Tkz8pFtx4HHKrWfRRcQPpSeGR4xu8MQvlvV5VgxoY",
           "Content-Type": "application/json"
         },
         body: JSON.stringify(payload)
