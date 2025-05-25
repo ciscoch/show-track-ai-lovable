@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +18,7 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const result = await signIn(email, password) as { user?: any; error?: any };
+      const result = await signIn(email, password);
       
       if (result?.error) {
         toast({

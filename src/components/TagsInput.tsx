@@ -11,9 +11,11 @@ const DEFAULT_TAGS = ["Feed", "Behavior", "Health", "Exercise"];
 interface TagsInputProps {
   value: string[];
   onChange: (tags: string[]) => void;
+  suggestions?: string[];
+  placeholder?: string;
 }
 
-const TagsInput = ({ value, onChange }: TagsInputProps) => {
+const TagsInput = ({ value, onChange, suggestions = [], placeholder = "Add a custom tag" }: TagsInputProps) => {
   const [customTag, setCustomTag] = useState("");
   
   // Handle predefined tag checkboxes
@@ -65,7 +67,7 @@ const TagsInput = ({ value, onChange }: TagsInputProps) => {
       <div className="space-y-2">
         <div className="flex space-x-2">
           <Input
-            placeholder="Add a custom tag"
+            placeholder={placeholder}
             value={customTag}
             onChange={(e) => setCustomTag(e.target.value)}
             onKeyDown={handleKeyDown}
