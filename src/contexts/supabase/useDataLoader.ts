@@ -1,7 +1,7 @@
 
 import { useCallback, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Animal, WeightEntry, JournalEntry, Expense, FeedingSchedule } from '../AppContextTypes';
+import { Animal, WeightEntry, JournalEntry, Expense, FeedingSchedule, FeedingTime } from '../AppContextTypes';
 
 export const useDataLoader = () => {
   const [loading, setLoading] = useState(false);
@@ -111,7 +111,11 @@ export const useDataLoader = () => {
 
       if (feedingError) throw feedingError;
       if (feedingSchedules) {
-        setFeedingSchedules(feedingSchedules);
+        const transformedSchedules: FeedingSchedule[] = feedingSchedules.map(schedule => ({
+          ...schedule,
+          feeding_times: Array.isArray(schedule.feeding_times) ? schedule.feeding_times as FeedingTime[] : []
+        }));
+        setFeedingSchedules(transformedSchedules);
       }
 
     } catch (err: any) {

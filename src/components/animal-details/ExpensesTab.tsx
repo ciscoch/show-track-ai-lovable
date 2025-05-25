@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Expense } from "@/types/models";
+import { Expense } from "@/contexts/AppContextTypes";
 import ExpensesTable from "@/components/ExpensesTable";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";

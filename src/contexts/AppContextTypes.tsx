@@ -163,6 +163,9 @@ export interface SupabaseAppContextType {
   loading: boolean;
   error: string | null;
   
+  // User operations
+  setUser: (user: SupabaseUser | null) => void;
+  
   // Animal operations
   addAnimal: (animal: Omit<Animal, 'id'>) => Promise<void>;
   updateAnimal: (id: string, updates: Partial<Animal>) => Promise<void>;

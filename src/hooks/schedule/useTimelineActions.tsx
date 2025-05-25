@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { ShowEvent, PrepTimeline } from "@/types/schedule";
 import { toast } from "@/hooks/use-toast";
-import { supabase, isRealSupabaseConnection } from "@/lib/supabaseClient";
 import { logger } from "@/lib/logger";
 import { v4 as uuidv4 } from "uuid";
 
@@ -16,7 +15,7 @@ export const useTimelineActions = (
     try {
       setIsSaving(true);
       
-      // Update local state first
+      // Update local state only
       setEvents(prevEvents => 
         prevEvents.map(event => 
           event.id === eventId 
@@ -25,84 +24,11 @@ export const useTimelineActions = (
         )
       );
       
-      const usingRealSupabase = isRealSupabaseConnection();
-      
-      // Show appropriate toast for local mode
-      if (!usingRealSupabase) {
-        logger.warn("⚠️ Running in local-only mode: not connected to Supabase.");
-        toast({
-          title: "Local Save Mode",
-          description: "Timeline saved to local state only (no Supabase connection).",
-        });
-        setIsSaving(false);
-        return;
-      }
-
-      logger.info("Checking for authenticated user...");
-      const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser();
-
-      if (userError || !user) {
-        logger.warn("No authenticated user found:", userError);
-        toast({
-          title: "Not logged in",
-          description: "You must be logged in to save your timeline to Supabase.",
-          variant: "destructive",
-        });
-        setIsSaving(false);
-        return;
-      }
-
-      // Get the current event to update
-      const currentEvent = events.find(e => e.id === eventId);
-      
-      if (!currentEvent) {
-        toast({
-          title: "Error",
-          description: "Event not found",
-          variant: "destructive"
-        });
-        setIsSaving(false);
-        return;
-      }
-
-      logger.info("User authenticated:", user.id);
-      logger.info("Saving to Supabase 'events' table...");
-
-      // Update the event with the new timeline
-      const { error } = await supabase
-        .from("events")
-        .upsert({
-          id: eventId,
-          user_id: user.id,
-          title: currentEvent.title,
-          date: currentEvent.date.toISOString(),
-          location: currentEvent.location,
-          animals: currentEvent.animals,
-          category: currentEvent.category,
-          notes: currentEvent.notes || null,
-          reminder: currentEvent.reminder || false,
-          prep_timeline: timeline
-        }, {
-          onConflict: "id"
-        });
-
-      if (error) {
-        console.error("Supabase Save Error:", error);
-        toast({
-          title: "Save Failed",
-          description: `Could not save to Supabase: ${error.message}`,
-          variant: "destructive",
-        });
-      } else {
-        logger.info("Supabase save successful!");
-        toast({
-          title: "Timeline Saved",
-          description: "Your show preparation timeline was saved successfully to Supabase.",
-        });
-      }
+      logger.info("Timeline saved to local state only");
+      toast({
+        title: "Timeline Saved",
+        description: "Your show preparation timeline was saved successfully.",
+      });
     } catch (error) {
       console.error("Error saving timeline:", error);
       toast({

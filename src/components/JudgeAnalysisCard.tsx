@@ -14,8 +14,7 @@ import { CheckIcon, XIcon } from "lucide-react";
 import { navigate } from "@/platform/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LocalJudgeInsightFeed from "./Analysis/local-insights/LocalJudgeInsightFeed";
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { useState } from "react";
 
 type JudgeAnalysisCardProps = {
   animal: Animal;
@@ -27,30 +26,10 @@ const JudgeAnalysisCard = ({ animal, location = "default" }: JudgeAnalysisCardPr
   const isElite = userSubscription.level === "elite";
 
   const [useAI, setUseAI] = useState(false); // default to real animal data
-  const [aiInsights, setAiInsights] = useState<any>(null);
 
   const handleNavigateToSubscriptions = () => {
     navigate("/subscription");
   };
-
-  useEffect(() => {
-    if (useAI) {
-      async function fetchAiInsights() {
-        const { data, error } = await supabase
-          .from("animal_ai_insights")
-          .select("*")
-          .eq("animal_id", animal.id)
-          .single();
-
-        if (error) {
-          console.error("Error fetching AI insights:", error);
-        } else {
-          setAiInsights(data);
-        }
-      }
-      fetchAiInsights();
-    }
-  }, [useAI, animal.id]);
 
   if (!isElite) {
     return (
@@ -63,7 +42,8 @@ const JudgeAnalysisCard = ({ animal, location = "default" }: JudgeAnalysisCardPr
     );
   }
 
-  const judgePreferences = useAI && aiInsights ? aiInsights : {
+  // Mock data for judge preferences since the AI insights table doesn't exist
+  const judgePreferences = {
     name: "Judge Richard Anderson",
     preferredTraits: [
       "Strong muscle definition in the loin",

@@ -1,6 +1,5 @@
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 
 export interface Breeder {
   id: string;
@@ -12,23 +11,18 @@ export const useBreeders = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchBreeders = async () => {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from("breeders")
-        .select("id, name")
-        .order("name");
-
-      if (error) {
-        console.error("Failed to load breeders", error);
-      } else if (data) {
-        setBreeders(data as Breeder[]);
-      }
-
+    // Mock data since breeders table doesn't exist
+    const mockBreeders: Breeder[] = [
+      { id: "1", name: "Johnson Ranch" },
+      { id: "2", name: "Smith Cattle Co." },
+      { id: "3", name: "Brown Livestock" }
+    ];
+    
+    setLoading(true);
+    setTimeout(() => {
+      setBreeders(mockBreeders);
       setLoading(false);
-    };
-
-    fetchBreeders();
+    }, 500);
   }, []);
 
   const addBreeder = async (name: string) => {
@@ -40,18 +34,11 @@ export const useBreeders = () => {
     );
     if (existing) return existing;
 
-    const { data, error } = await supabase
-      .from("breeders")
-      .insert({ name: trimmed })
-      .select()
-      .single();
+    const newBreeder: Breeder = {
+      id: Date.now().toString(),
+      name: trimmed
+    };
 
-    if (error || !data) {
-      console.error("Failed to add breeder", error);
-      return null;
-    }
-
-    const newBreeder = data as Breeder;
     setBreeders((prev) => [...prev, newBreeder]);
     return newBreeder;
   };
