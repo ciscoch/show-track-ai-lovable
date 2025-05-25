@@ -28,6 +28,7 @@ import BuyerLoginPage from "@/pages/buyer/BuyerLoginPage";
 import FeedingSchedulePage from "@/pages/FeedingSchedulePage";
 import AddFeedingSchedulePage from "@/pages/AddFeedingSchedulePage";
 import EditFeedingSchedulePage from "@/pages/EditFeedingSchedulePage";
+import WebhookTestPage from "@/pages/WebhookTestPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -134,6 +135,9 @@ function App() {
                       <EditFeedingSchedulePage />
                     </ProtectedRoute>
                   } />
+
+                  {/* Webhook testing */}
+                  <Route path="/webhook-test" element={<WebhookTestPage />} />
 
                   {/* Buyer Routes */}
                   <Route path="/buyer/dashboard" element={<BuyerDashboard />} />
