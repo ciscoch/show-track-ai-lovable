@@ -69,6 +69,22 @@ VITE_SUPABASE_URL=<your supabase url>
 VITE_SUPABASE_ANON_KEY=<your supabase anon key>
 VITE_OPENAI_API_KEY=<your openai api key>
 VITE_WEATHER_API_KEY=35955fb435e4499fa2e15211252204
+N8N_HOST=<url of your n8n instance>
+N8N_API_KEY=<n8n api key>
+```
+
+## n8n workflow
+
+This project includes a sample workflow in `n8n-workflows/animalUpdates.workflow.json`.
+Run n8n and import the file to start automating notifications when new animals are added.
+
+Example docker command:
+
+```sh
+docker run -it --rm \
+  -e N8N_HOST=$N8N_HOST \
+  -e N8N_API_KEY=$N8N_API_KEY \
+  -p 5678:5678 n8nio/n8n
 ```
 
 
