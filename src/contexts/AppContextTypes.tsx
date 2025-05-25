@@ -31,6 +31,8 @@ export interface Animal {
   imageUrl?: string;
   image?: string;
   breeder_name?: string;
+  // Alias fields for compatibility
+  animalId?: string;
 }
 
 export interface WeightEntry {
@@ -154,10 +156,12 @@ export interface SupabaseAppContextType {
   photos: Photo[];
   feedingSchedules: FeedingSchedule[];
   user: SupabaseUser | null;
+  userProfile: any;
   userSubscription: UserSubscription;
   
   // Loading states
-  isLoading: boolean;
+  loading: boolean;
+  error: string | null;
   
   // Animal operations
   addAnimal: (animal: Omit<Animal, 'id'>) => Promise<void>;

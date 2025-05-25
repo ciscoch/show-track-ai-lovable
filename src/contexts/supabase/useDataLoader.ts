@@ -1,12 +1,11 @@
 
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Animal, WeightEntry, JournalEntry, Expense, FeedingSchedule } from '../AppContextTypes';
 
 export const useDataLoader = () => {
-  const loading = false;
-  const error = null;
-  const setError = (err: string | null) => console.log('Error:', err);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const loadUserData = useCallback(async (
     user: any,
@@ -26,6 +25,9 @@ export const useDataLoader = () => {
       return;
     }
 
+    setLoading(true);
+    setError(null);
+
     try {
       // Load user profile
       const { data: profile } = await supabase
@@ -34,28 +36,24 @@ export const useDataLoader = () => {
         .eq('user_id', user.id)
         .single();
       
-      if (profile) setUserProfile(profile);
+      if (profile) {
+        setUserProfile(profile);
+      }
 
       // Load animals
-      const { data: animalsData } = await supabase
+      const { data: animals, error: animalsError } = await supabase
         .from('animals')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (animalsData) {
-        // Transform database fields to match context types
-        const transformedAnimals = animalsData.map(animal => ({
+      if (animalsError) throw animalsError;
+      
+      if (animals) {
+        const transformedAnimals: Animal[] = animals.map(animal => ({
           ...animal,
-          birth_date: animal.birth_date,
-          pen_number: animal.pen_number,
-          user_id: animal.user_id,
-          created_at: animal.created_at,
-          updated_at: animal.updated_at,
-          breeder_name: animal.breeder_name,
-          photo_url: animal.image,
-          gender: animal.gender as "male" | "female" || undefined,
-          // Add compatibility fields
+          gender: (animal.gender as "male" | "female") || undefined,
+          purpose: (animal.purpose as "breeding" | "show" | "market" | "pet" | "other") || undefined,
           animalId: animal.id,
           birthdate: animal.birth_date,
           penNumber: animal.pen_number,
@@ -65,86 +63,62 @@ export const useDataLoader = () => {
       }
 
       // Load weight entries
-      const { data: weightData } = await supabase
+      const { data: weightEntries, error: weightError } = await supabase
         .from('weight_entries')
         .select('*')
         .eq('user_id', user.id)
         .order('date', { ascending: false });
 
-      if (weightData) {
-        const transformedWeights = weightData.map(entry => ({
-          ...entry,
-          animal_id: entry.animal_id,
-          created_at: entry.created_at,
-          animalId: entry.animal_id
-        }));
-        setWeightEntries(transformedWeights);
+      if (weightError) throw weightError;
+      if (weightEntries) {
+        setWeightEntries(weightEntries);
       }
 
       // Load journal entries
-      const { data: journalData } = await supabase
+      const { data: journalEntries, error: journalError } = await supabase
         .from('journal_entries')
         .select('*')
         .eq('user_id', user.id)
         .order('date', { ascending: false });
 
-      if (journalData) {
-        const transformedJournals = journalData.map(entry => ({
+      if (journalError) throw journalError;
+      if (journalEntries) {
+        const processedEntries = journalEntries.map(entry => ({
           ...entry,
-          animal_id: entry.animal_id,
-          tags: Array.isArray(entry.tags) ? entry.tags.join(',') : entry.tags || '',
-          created_at: entry.created_at,
-          animalId: entry.animal_id
+          tags: Array.isArray(entry.tags) ? entry.tags.join(',') : entry.tags
         }));
-        setJournalEntries(transformedJournals);
+        setJournalEntries(processedEntries);
       }
 
       // Load expenses
-      const { data: expenseData } = await supabase
+      const { data: expenses, error: expensesError } = await supabase
         .from('expenses')
         .select('*')
         .eq('user_id', user.id)
         .order('date', { ascending: false });
 
-      if (expenseData) {
-        const transformedExpenses = expenseData.map(expense => ({
-          ...expense,
-          animal_id: expense.animal_id,
-          tax_deductible: expense.tax_deductible,
-          created_at: expense.created_at,
-          animalId: expense.animal_id,
-          taxDeductible: expense.tax_deductible
-        }));
-        setExpenses(transformedExpenses);
+      if (expensesError) throw expensesError;
+      if (expenses) {
+        setExpenses(expenses);
       }
 
       // Load feeding schedules
-      const { data: feedingData } = await supabase
+      const { data: feedingSchedules, error: feedingError } = await supabase
         .from('feeding_schedules')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (feedingData) {
-        const transformedFeeding = feedingData.map(schedule => ({
-          ...schedule,
-          animal_id: schedule.animal_id,
-          feeding_times: schedule.feeding_times as any,
-          reminder_enabled: schedule.reminder_enabled,
-          reminder_minutes_before: schedule.reminder_minutes_before,
-          created_at: schedule.created_at,
-          animalId: schedule.animal_id,
-          feedingTimes: schedule.feeding_times as any,
-          reminderEnabled: schedule.reminder_enabled,
-          reminderMinutesBefore: schedule.reminder_minutes_before,
-          createdAt: schedule.created_at
-        }));
-        setFeedingSchedules(transformedFeeding);
+      if (feedingError) throw feedingError;
+      if (feedingSchedules) {
+        setFeedingSchedules(feedingSchedules);
       }
 
-    } catch (error: any) {
-      console.error('Error loading user data:', error);
-      setError(error.message);
+    } catch (err: any) {
+      setError(err.message);
+      console.error('Error loading user data:', err);
+    } finally {
+      setLoading(false);
     }
   }, []);
 

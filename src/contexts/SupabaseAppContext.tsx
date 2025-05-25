@@ -99,6 +99,7 @@ export const SupabaseAppProvider: React.FC<{ children: React.ReactNode }> = ({ c
     weightEntries,
     journalEntries,
     expenses,
+    photos: [], // Empty array for now since photos aren't implemented in Supabase yet
     feedingSchedules,
     loading,
     error,
@@ -110,6 +111,10 @@ export const SupabaseAppProvider: React.FC<{ children: React.ReactNode }> = ({ c
     addExpenseEntry: expenseOps.addExpense,
     updateExpenseEntry: expenseOps.updateExpense,
     deleteExpenseEntry: expenseOps.deleteExpense,
+    // Photo operations (placeholder)
+    addPhoto: async () => {},
+    updatePhoto: async () => {},
+    deletePhoto: async () => {},
     ...feedingOps,
     completeFeedingTime,
     refreshData,

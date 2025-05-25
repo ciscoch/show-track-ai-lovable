@@ -21,9 +21,10 @@ export const useAnimalOperations = (
 
     if (error) throw error;
     if (data) {
-      const transformedAnimal = {
+      const transformedAnimal: Animal = {
         ...data,
-        gender: data.gender as "male" | "female" || undefined,
+        gender: (data.gender as "male" | "female") || undefined,
+        purpose: (data.purpose as "breeding" | "show" | "market" | "pet" | "other") || undefined,
         animalId: data.id,
         birthdate: data.birth_date,
         penNumber: data.pen_number,
@@ -43,9 +44,10 @@ export const useAnimalOperations = (
 
     if (error) throw error;
     if (data) {
-      const transformedAnimal = {
+      const transformedAnimal: Animal = {
         ...data,
-        gender: data.gender as "male" | "female" || undefined,
+        gender: (data.gender as "male" | "female") || undefined,
+        purpose: (data.purpose as "breeding" | "show" | "market" | "pet" | "other") || undefined,
         animalId: data.id,
         birthdate: data.birth_date,
         penNumber: data.pen_number,
