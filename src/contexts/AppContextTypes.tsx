@@ -40,6 +40,8 @@ export interface WeightEntry {
   date: string;
   notes?: string;
   created_at?: string;
+  // Compatibility with models.ts
+  animalId?: string;
 }
 
 export interface JournalEntry {
@@ -53,6 +55,8 @@ export interface JournalEntry {
   photos?: string[];
   created_at?: string;
   updated_at?: string;
+  // Compatibility with models.ts
+  animalId?: string;
 }
 
 export interface Expense {
@@ -64,6 +68,9 @@ export interface Expense {
   category: string;
   tax_deductible?: boolean;
   created_at?: string;
+  // Compatibility with models.ts
+  animalId?: string;
+  taxDeductible?: boolean;
 }
 
 export interface Comment {
@@ -91,6 +98,8 @@ export interface Photo {
   comments?: Comment[];
   likedByUser?: boolean;
   analysisResult?: string;
+  // Compatibility with models.ts
+  animalId?: string;
 }
 
 export interface FeedingTime {
@@ -114,6 +123,12 @@ export interface FeedingSchedule {
   reminder_enabled: boolean;
   reminder_minutes_before: number;
   created_at?: string;
+  // Compatibility with models.ts
+  animalId?: string;
+  feedingTimes?: FeedingTime[];
+  reminderEnabled?: boolean;
+  reminderMinutesBefore?: number;
+  createdAt?: string;
 }
 
 export interface User {

@@ -53,7 +53,13 @@ export const useDataLoader = () => {
           created_at: animal.created_at,
           updated_at: animal.updated_at,
           breeder_name: animal.breeder_name,
-          photo_url: animal.image
+          photo_url: animal.image,
+          gender: animal.gender as "male" | "female" || undefined,
+          // Add compatibility fields
+          animalId: animal.id,
+          birthdate: animal.birth_date,
+          penNumber: animal.pen_number,
+          imageUrl: animal.image
         }));
         setAnimals(transformedAnimals);
       }
@@ -69,7 +75,8 @@ export const useDataLoader = () => {
         const transformedWeights = weightData.map(entry => ({
           ...entry,
           animal_id: entry.animal_id,
-          created_at: entry.created_at
+          created_at: entry.created_at,
+          animalId: entry.animal_id
         }));
         setWeightEntries(transformedWeights);
       }
@@ -86,7 +93,8 @@ export const useDataLoader = () => {
           ...entry,
           animal_id: entry.animal_id,
           tags: Array.isArray(entry.tags) ? entry.tags.join(',') : entry.tags || '',
-          created_at: entry.created_at
+          created_at: entry.created_at,
+          animalId: entry.animal_id
         }));
         setJournalEntries(transformedJournals);
       }
@@ -103,7 +111,9 @@ export const useDataLoader = () => {
           ...expense,
           animal_id: expense.animal_id,
           tax_deductible: expense.tax_deductible,
-          created_at: expense.created_at
+          created_at: expense.created_at,
+          animalId: expense.animal_id,
+          taxDeductible: expense.tax_deductible
         }));
         setExpenses(transformedExpenses);
       }
@@ -122,7 +132,12 @@ export const useDataLoader = () => {
           feeding_times: schedule.feeding_times as any,
           reminder_enabled: schedule.reminder_enabled,
           reminder_minutes_before: schedule.reminder_minutes_before,
-          created_at: schedule.created_at
+          created_at: schedule.created_at,
+          animalId: schedule.animal_id,
+          feedingTimes: schedule.feeding_times as any,
+          reminderEnabled: schedule.reminder_enabled,
+          reminderMinutesBefore: schedule.reminder_minutes_before,
+          createdAt: schedule.created_at
         }));
         setFeedingSchedules(transformedFeeding);
       }

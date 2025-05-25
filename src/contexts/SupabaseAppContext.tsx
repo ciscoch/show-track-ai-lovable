@@ -61,6 +61,36 @@ export const SupabaseAppProvider: React.FC<{ children: React.ReactNode }> = ({ c
     // This function is kept for compatibility but auth is handled by AuthContext
   };
 
+  const completeFeedingTime = async (scheduleId: string, timeIndex: number) => {
+    // Implementation for completing feeding time
+    const schedule = feedingSchedules.find(s => s.id === scheduleId);
+    if (schedule && schedule.feeding_times[timeIndex]) {
+      const updatedTimes = [...schedule.feeding_times];
+      updatedTimes[timeIndex] = {
+        ...updatedTimes[timeIndex],
+        completed: true,
+        lastCompleted: new Date().toISOString()
+      };
+      
+      await feedingOps.updateFeedingSchedule(scheduleId, {
+        feeding_times: updatedTimes
+      });
+    }
+  };
+
+  const refreshData = async () => {
+    // Refresh data implementation
+    await loadUserData(
+      user,
+      setUserProfile,
+      setAnimals,
+      setWeightEntries,
+      setJournalEntries,
+      setExpenses,
+      setFeedingSchedules
+    );
+  };
+
   const value: SupabaseAppContextType = {
     user,
     userProfile,
@@ -81,6 +111,8 @@ export const SupabaseAppProvider: React.FC<{ children: React.ReactNode }> = ({ c
     updateExpenseEntry: expenseOps.updateExpense,
     deleteExpenseEntry: expenseOps.deleteExpense,
     ...feedingOps,
+    completeFeedingTime,
+    refreshData,
   };
 
   return (

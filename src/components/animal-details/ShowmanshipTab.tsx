@@ -43,7 +43,7 @@ const ShowmanshipTab = ({ animal }: ShowmanshipTabProps) => {
         {/* Pass a default location so local insights can be shown */}
         <JudgeAnalysisCard animal={animal} location="Texas" />
         <JudgeInsightsCard animal={animal} />
-        <JudgeTrendAnalysis species={animal.species} />
+        <JudgeTrendAnalysis />
       </div>
       
       {isAdmin && (

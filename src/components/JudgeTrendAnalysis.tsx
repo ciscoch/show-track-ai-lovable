@@ -1,11 +1,8 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { useAppContext } from '@/contexts/AppContext';
-
-interface JudgeTrendAnalysisProps {
-  species: string;
-}
 
 const JudgeTrendAnalysis = () => {
   const navigate = useNavigate();

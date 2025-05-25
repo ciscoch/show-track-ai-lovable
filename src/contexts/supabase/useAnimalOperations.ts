@@ -7,7 +7,7 @@ export const useAnimalOperations = (
   user: any,
   setAnimals: React.Dispatch<React.SetStateAction<Animal[]>>
 ) => {
-  const addAnimal = useCallback(async (animalData: Omit<Animal, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const addAnimal = useCallback(async (animalData: Omit<Animal, 'id' | 'created_at' | 'updated_at'>) => {
     if (!user) return;
 
     const { data, error } = await supabase
@@ -21,7 +21,15 @@ export const useAnimalOperations = (
 
     if (error) throw error;
     if (data) {
-      setAnimals(prev => [data, ...prev]);
+      const transformedAnimal = {
+        ...data,
+        gender: data.gender as "male" | "female" || undefined,
+        animalId: data.id,
+        birthdate: data.birth_date,
+        penNumber: data.pen_number,
+        imageUrl: data.image
+      };
+      setAnimals(prev => [transformedAnimal, ...prev]);
     }
   }, [user, setAnimals]);
 
@@ -35,7 +43,15 @@ export const useAnimalOperations = (
 
     if (error) throw error;
     if (data) {
-      setAnimals(prev => prev.map(animal => animal.id === id ? data : animal));
+      const transformedAnimal = {
+        ...data,
+        gender: data.gender as "male" | "female" || undefined,
+        animalId: data.id,
+        birthdate: data.birth_date,
+        penNumber: data.pen_number,
+        imageUrl: data.image
+      };
+      setAnimals(prev => prev.map(animal => animal.id === id ? transformedAnimal : animal));
     }
   }, [setAnimals]);
 

@@ -32,9 +32,10 @@ export const usePhotoUpload = () => {
       // Create new photo object
       const newPhoto: Photo = {
         id: uuidv4(),
-        animalId,
+        animal_id: animalId,
         url,
-        date: new Date().toISOString(),
+        filename: file.name,
+        created_at: new Date().toISOString(),
         caption,
         tags: tags || [],
         likes: 0,
@@ -71,7 +72,7 @@ export const usePhotoUpload = () => {
         });
       }
 
-      refreshData();
+      await refreshData();
       return newPhoto;
     } catch (error) {
       console.error("Upload failed:", error);

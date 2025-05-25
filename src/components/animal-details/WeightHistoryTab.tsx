@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { WeightEntry } from "@/types/models";
 import WeightChart from "@/components/WeightChart";
@@ -74,20 +73,17 @@ const WeightHistoryTab = ({ weights, animalId, targetWeight }: WeightHistoryTabP
     }
   };
 
-  const onSubmitEdit = (values: FormValues) => {
+  const onSubmitEdit = async (values: FormValues) => {
     if (!currentEditEntry) return;
     
     setIsSubmitting(true);
     
     try {
-      const updatedEntry: WeightEntry = {
-        ...currentEditEntry,
+      await updateWeightEntry(currentEditEntry.id, {
         weight: values.weight,
         date: format(values.date, "yyyy-MM-dd"),
         notes: values.notes,
-      };
-      
-      updateWeightEntry(updatedEntry);
+      });
       
       toast({
         title: "Weight entry updated",
