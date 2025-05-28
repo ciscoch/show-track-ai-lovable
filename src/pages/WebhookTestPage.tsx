@@ -52,40 +52,28 @@ const WebhookTestPage = () => {
       return;
     }
 
-    // Convert image to base64
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const base64Image = e.target?.result as string;
-      
-      const payload = {
-        name: "WebhookTestWithImage",
-        user_email: "test-elite@example.com",
-        animal_id: "abc123",
-        weight: 135.2,
-        photo_url: base64Image,
-        photo_filename: selectedImage.name,
-        journal_text: "Testing webhook with uploaded image"
-      };
+    // Create FormData to send binary file
+    const formData = new FormData();
+    formData.append("name", "WebhookTestWithImage");
+    formData.append("user_email", "test-elite@example.com");
+    formData.append("animal_id", "abc123");
+    formData.append("weight", "135.2");
+    formData.append("journal_text", "Testing webhook with uploaded image");
+    formData.append("photo", selectedImage, selectedImage.name);
 
-      try {
-        const response = await fetch("https://cwcharles81.app.n8n.cloud/webhook-test/animal-entry-upload", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        });
+    try {
+      const response = await fetch("https://cwcharles81.app.n8n.cloud/webhook-test/animal-entry-upload", {
+        method: "POST",
+        body: formData, // No Content-Type header needed - browser sets it automatically with boundary
+      });
 
-        const result = await response.text();
-        console.log("✅ N8N Webhook with Image Success:", result);
-        alert("N8N Webhook with image triggered successfully!");
-      } catch (error) {
-        console.error("❌ N8N Webhook with Image Error:", error);
-        alert("N8N Webhook with image test failed — check console.");
-      }
-    };
-
-    reader.readAsDataURL(selectedImage);
+      const result = await response.text();
+      console.log("✅ N8N Webhook with Image Success:", result);
+      alert("N8N Webhook with image triggered successfully!");
+    } catch (error) {
+      console.error("❌ N8N Webhook with Image Error:", error);
+      alert("N8N Webhook with image test failed — check console.");
+    }
   };
 
   return (
@@ -146,7 +134,7 @@ const WebhookTestPage = () => {
           </Button>
           
           <p className="text-sm text-muted-foreground">
-            This will send the image data to: https://cwcharles81.app.n8n.cloud/webhook-test/animal-entry-upload
+            This will send the image data as a binary file to: https://cwcharles81.app.n8n.cloud/webhook-test/animal-entry-upload
           </p>
         </CardContent>
       </Card>
