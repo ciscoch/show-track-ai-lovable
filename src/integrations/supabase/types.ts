@@ -477,29 +477,44 @@ export type Database = {
       }
       weight_entries: {
         Row: {
+          ai_summary: string | null
           animal_id: string
+          body_composition: Json | null
           created_at: string | null
           date: string
           id: string
+          journal_text: string | null
+          n8n_response: Json | null
           notes: string | null
+          photo_url: string | null
           user_id: string
           weight: number
         }
         Insert: {
+          ai_summary?: string | null
           animal_id: string
+          body_composition?: Json | null
           created_at?: string | null
           date: string
           id?: string
+          journal_text?: string | null
+          n8n_response?: Json | null
           notes?: string | null
+          photo_url?: string | null
           user_id: string
           weight: number
         }
         Update: {
+          ai_summary?: string | null
           animal_id?: string
+          body_composition?: Json | null
           created_at?: string | null
           date?: string
           id?: string
+          journal_text?: string | null
+          n8n_response?: Json | null
           notes?: string | null
+          photo_url?: string | null
           user_id?: string
           weight?: number
         }
