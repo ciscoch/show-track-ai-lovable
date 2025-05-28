@@ -68,7 +68,7 @@ const WebhookTestPage = () => {
       };
 
       try {
-        const response = await fetch("https://qmvbsrivanucfpfjchpw.functions.supabase.co/dynamic-worker", {
+        const response = await fetch("https://cwcharles81.app.n8n.cloud/webhook-test/lovable-image-upload", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -76,12 +76,12 @@ const WebhookTestPage = () => {
           body: JSON.stringify(payload),
         });
 
-        const result = await response.json();
-        console.log("✅ Webhook with Image Success:", result);
-        alert("Webhook with image triggered successfully!");
+        const result = await response.text();
+        console.log("✅ N8N Webhook with Image Success:", result);
+        alert("N8N Webhook with image triggered successfully!");
       } catch (error) {
-        console.error("❌ Webhook with Image Error:", error);
-        alert("Webhook with image test failed — check console.");
+        console.error("❌ N8N Webhook with Image Error:", error);
+        alert("N8N Webhook with image test failed — check console.");
       }
     };
 
@@ -109,7 +109,7 @@ const WebhookTestPage = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Webhook Test with Image Upload</CardTitle>
+          <CardTitle>N8N Webhook Test with Image Upload</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
@@ -142,8 +142,12 @@ const WebhookTestPage = () => {
             disabled={!selectedImage}
             className="w-full"
           >
-            Trigger Webhook Test with Image
+            Trigger N8N Webhook Test with Image
           </Button>
+          
+          <p className="text-sm text-muted-foreground">
+            This will send the image data to: https://cwcharles81.app.n8n.cloud/webhook-test/lovable-image-upload
+          </p>
         </CardContent>
       </Card>
     </div>
