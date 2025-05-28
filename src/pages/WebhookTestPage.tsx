@@ -68,7 +68,7 @@ const WebhookTestPage = () => {
       };
 
       try {
-        const response = await fetch("https://cwcharles81.app.n8n.cloud/webhook-test/lovable-image-upload", {
+        const response = await fetch("https://cwcharles81.app.n8n.cloud/webhook-test/animal-entry-upload", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -146,7 +146,7 @@ const WebhookTestPage = () => {
           </Button>
           
           <p className="text-sm text-muted-foreground">
-            This will send the image data to: https://cwcharles81.app.n8n.cloud/webhook-test/lovable-image-upload
+            This will send the image data to: https://cwcharles81.app.n8n.cloud/webhook-test/animal-entry-upload
           </p>
         </CardContent>
       </Card>
